@@ -24,8 +24,8 @@ class _tabs_pageState extends State<tabs_page> {
             children: [
               myTittle(),
               fieldNumber(),
+              fieldCUI(),
               fieldName(),
-              fieldLastName(),
               fieldEmail(),
               fieldPassword(),
               SizedBox(height: 15),
@@ -64,30 +64,71 @@ Widget fieldName() {
     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
     child: TextField(
       decoration: InputDecoration(
-          hintText: "Nombre", fillColor: Colors.white, filled: true),
+        icon: Icon(
+          Icons.accessibility_new,
+          color: Colors.white,
+        ),
+        labelText: 'Nombre Completo',
+        labelStyle: TextStyle(
+          color: Color(0xFF6200EE),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF6200EE)),
+        ),
+      ),
     ),
   );
 }
 
-Widget fieldLastName() {
+Widget fieldCUI() {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
     child: TextField(
+      keyboardType: TextInputType.number,
+      maxLength: 13,
       decoration: InputDecoration(
-          hintText: "Apellido", fillColor: Colors.white, filled: true),
+        icon: Icon(
+          Icons.badge,
+          color: Colors.white,
+        ),
+        labelText: 'Código Único de Identificación',
+        labelStyle: TextStyle(
+          color: Color(0xFF6200EE),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF6200EE)),
+        ),
+      ),
     ),
   );
 }
 
 Widget fieldNumber() {
   return Container(
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-    child: TextField(
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-          hintText: "Carné", fillColor: Colors.white, filled: true),
-    ),
-  );
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextField(
+        keyboardType: TextInputType.number,
+        maxLength: 9,
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.account_circle_rounded,
+            color: Colors.white,
+          ),
+          labelText: 'Carné',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF6200EE)),
+          ),
+        ),
+      ));
 }
 
 Widget fieldEmail() {
@@ -96,9 +137,20 @@ Widget fieldEmail() {
     child: TextField(
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-          hintText: "Correo Institucional",
-          fillColor: Colors.white,
-          filled: true),
+        icon: Icon(
+          Icons.alternate_email_rounded,
+          color: Colors.white,
+        ),
+        labelText: 'Correo Electrónico',
+        labelStyle: TextStyle(
+          color: Color(0xFF6200EE),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF6200EE)),
+        ),
+      ),
     ),
   );
 }
@@ -109,7 +161,20 @@ Widget fieldPassword() {
     child: TextField(
       obscureText: true,
       decoration: InputDecoration(
-          hintText: "Contraseña", fillColor: Colors.white, filled: true),
+        icon: Icon(
+          Icons.admin_panel_settings,
+          color: Colors.white,
+        ),
+        labelText: 'Contraseña',
+        labelStyle: TextStyle(
+          color: Color(0xFF6200EE),
+        ),
+        fillColor: Colors.white,
+        filled: true,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF6200EE)),
+        ),
+      ),
     ),
   );
 }
