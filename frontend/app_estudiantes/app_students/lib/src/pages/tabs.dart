@@ -14,7 +14,7 @@ class _tabs_pageState extends State<tabs_page> {
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text(
-          "Universidad2",
+          "Registro Estudiante",
         ),
       ),
       body: Container(
@@ -46,15 +46,14 @@ Widget myTittle() {
 }
 
 Widget buttonRegister() {
-  return FlatButton(
+  return RaisedButton(
     onPressed: () {},
     child: Text(
       "Registrar",
-      style: TextStyle(color: Colors.white, fontSize: 18),
+      style: TextStyle(color: Colors.white, fontSize: 20),
     ),
     color: Colors.redAccent,
-    minWidth: 200,
-    height: 45,
+    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
   );
 }
@@ -75,7 +74,7 @@ Widget fieldName() {
         fillColor: Colors.white,
         filled: true,
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF6200EE)),
+          borderSide: BorderSide(color: Colors.redAccent),
         ),
       ),
     ),
@@ -93,14 +92,14 @@ Widget fieldCUI() {
           Icons.badge,
           color: Colors.white,
         ),
-        labelText: 'Código Único de Identificación',
+        labelText: 'Código Único de Identificación ',
         labelStyle: TextStyle(
           color: Color(0xFF6200EE),
         ),
         fillColor: Colors.white,
         filled: true,
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF6200EE)),
+          borderSide: BorderSide(color: Colors.redAccent),
         ),
       ),
     ),
@@ -125,7 +124,7 @@ Widget fieldNumber() {
           fillColor: Colors.white,
           filled: true,
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF6200EE)),
+            borderSide: BorderSide(color: Colors.redAccent),
           ),
         ),
       ));
@@ -148,7 +147,7 @@ Widget fieldEmail() {
         fillColor: Colors.white,
         filled: true,
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF6200EE)),
+          borderSide: BorderSide(color: Colors.redAccent),
         ),
       ),
     ),
@@ -172,7 +171,7 @@ Widget fieldPassword() {
         fillColor: Colors.white,
         filled: true,
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF6200EE)),
+          borderSide: BorderSide(color: Colors.redAccent),
         ),
       ),
     ),
