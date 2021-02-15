@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class tabs_page extends StatefulWidget {
   tabs_page({Key key}) : super(key: key);
@@ -8,6 +9,173 @@ class tabs_page extends StatefulWidget {
 }
 
 class _tabs_pageState extends State<tabs_page> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //Variables
+  String _number;
+  String _cui;
+  String _name;
+  String _email;
+  String _pass;
+
+  // Widgets
+  Widget myTittle() {
+    return Text(
+      "Registro Estudiante",
+      style: TextStyle(color: Colors.white, fontSize: 25),
+    );
+  }
+
+  Widget fieldName() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextFormField(
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.accessibility_new,
+            color: Colors.white,
+          ),
+          labelText: 'Nombre Completo',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent),
+          ),
+        ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Campo obligatorio.";
+          } else {
+            return null;
+          }
+        },
+        onSaved: (String value) {
+          _name = value;
+        },
+        maxLength: 50,
+      ),
+    );
+  }
+
+  Widget fieldCUI() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        maxLength: 13,
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.badge,
+            color: Colors.white,
+          ),
+          labelText: 'Código Único de Identificación ',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent),
+          ),
+        ),
+        validator: MinLengthValidator(13, errorText: "El CUI  es inválido."),
+        onSaved: (String value) {
+          _cui = value;
+        },
+      ),
+    );
+  }
+
+  Widget fieldNumber() {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+        child: TextFormField(
+          keyboardType: TextInputType.number,
+          maxLength: 9,
+          decoration: InputDecoration(
+            icon: Icon(
+              Icons.account_circle_rounded,
+              color: Colors.white,
+            ),
+            labelText: 'Carné',
+            labelStyle: TextStyle(
+              color: Color(0xFF6200EE),
+            ),
+            fillColor: Colors.white,
+            filled: true,
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.redAccent),
+            ),
+          ),
+          validator: MinLengthValidator(9, errorText: "El Carné no es válido."),
+          onSaved: (String value) {
+            _number = value;
+          },
+        ));
+  }
+
+  Widget fieldEmail() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.alternate_email_rounded,
+            color: Colors.white,
+          ),
+          labelText: 'Correo Electrónico',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent),
+          ),
+        ),
+        validator: EmailValidator(errorText: "El correo no es válido."),
+        onSaved: (String value) {
+          _email = value;
+        },
+        maxLength: 50,
+      ),
+    );
+  }
+
+  Widget fieldPassword() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextFormField(
+        obscureText: true,
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.admin_panel_settings,
+            color: Colors.white,
+          ),
+          labelText: 'Contraseña',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent),
+          ),
+        ),
+        validator:
+            MinLengthValidator(8, errorText: "Contraseña demasiado corta."),
+        onSaved: (String value) {
+          _pass = value;
+        },
+        maxLength: 15,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,161 +187,49 @@ class _tabs_pageState extends State<tabs_page> {
       ),
       body: Container(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              myTittle(),
-              fieldNumber(),
-              fieldCUI(),
-              fieldName(),
-              fieldEmail(),
-              fieldPassword(),
-              SizedBox(height: 15),
-              buttonRegister()
-            ],
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  myTittle(),
+                  fieldNumber(),
+                  fieldCUI(),
+                  fieldName(),
+                  fieldEmail(),
+                  fieldPassword(),
+//Button Register**************************************************************
+                  SizedBox(height: 15),
+                  RaisedButton(
+                    onPressed: () {
+                      if (!_formKey.currentState.validate()) {
+                        return;
+                      } else {
+                        _formKey.currentState.save();
+                      }
+
+                      print(_number);
+                      print(_cui);
+                      print(_name);
+                      print(_email);
+                      print(_pass);
+                    },
+                    child: Text(
+                      "Registrar",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    color: Colors.redAccent,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
-}
-
-Widget myTittle() {
-  return Text(
-    "Registro Estudiante",
-    style: TextStyle(color: Colors.white, fontSize: 25),
-  );
-}
-
-Widget buttonRegister() {
-  return RaisedButton(
-    onPressed: () {},
-    child: Text(
-      "Registrar",
-      style: TextStyle(color: Colors.white, fontSize: 20),
-    ),
-    color: Colors.redAccent,
-    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  );
-}
-
-Widget fieldName() {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-    child: TextField(
-      decoration: InputDecoration(
-        icon: Icon(
-          Icons.accessibility_new,
-          color: Colors.white,
-        ),
-        labelText: 'Nombre Completo',
-        labelStyle: TextStyle(
-          color: Color(0xFF6200EE),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.redAccent),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget fieldCUI() {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-    child: TextField(
-      keyboardType: TextInputType.number,
-      maxLength: 13,
-      decoration: InputDecoration(
-        icon: Icon(
-          Icons.badge,
-          color: Colors.white,
-        ),
-        labelText: 'Código Único de Identificación ',
-        labelStyle: TextStyle(
-          color: Color(0xFF6200EE),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.redAccent),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget fieldNumber() {
-  return Container(
-      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-      child: TextField(
-        keyboardType: TextInputType.number,
-        maxLength: 9,
-        decoration: InputDecoration(
-          icon: Icon(
-            Icons.account_circle_rounded,
-            color: Colors.white,
-          ),
-          labelText: 'Carné',
-          labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.redAccent),
-          ),
-        ),
-      ));
-}
-
-Widget fieldEmail() {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-    child: TextField(
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        icon: Icon(
-          Icons.alternate_email_rounded,
-          color: Colors.white,
-        ),
-        labelText: 'Correo Electrónico',
-        labelStyle: TextStyle(
-          color: Color(0xFF6200EE),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.redAccent),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget fieldPassword() {
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
-    child: TextField(
-      obscureText: true,
-      decoration: InputDecoration(
-        icon: Icon(
-          Icons.admin_panel_settings,
-          color: Colors.white,
-        ),
-        labelText: 'Contraseña',
-        labelStyle: TextStyle(
-          color: Color(0xFF6200EE),
-        ),
-        fillColor: Colors.white,
-        filled: true,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.redAccent),
-        ),
-      ),
-    ),
-  );
 }
