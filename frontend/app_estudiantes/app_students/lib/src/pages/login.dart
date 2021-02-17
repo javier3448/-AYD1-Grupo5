@@ -1,7 +1,11 @@
+import 'package:app_students/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class login_page extends StatefulWidget {
   login_page({Key key}) : super(key: key);
@@ -10,8 +14,44 @@ class login_page extends StatefulWidget {
   _login_pageState createState() => _login_pageState();
 }
 
+//prueba POST login EN TEORIA ESTA SERIA LA MENERA CORRECTA DE HACER UN POST
+// YA QUE SE PUEDEN MANEJAR LAS ESTRUCUTAS COMO TAL Y PODER USAR LOS DATOS DE RESPUESTA.
+// ESTE LO HICE CON UNA API DE EJEMPLO
+Future<UserModel> createUser(String carne, String contra) async {
+  final String myApi = "https://reqres.in/api/users";
+
+  final response = await http.post(myApi, body: {"name": carne, "job": contra});
+
+  if (response.statusCode == 201) {
+    final String responseString = response.body;
+
+    //AQUI CONSTRUYO EL OBJETO DE USERMODEL
+    return userModelFromJson(responseString);
+  } else {
+    return null;
+  }
+}
+
 class _login_pageState extends State<login_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //API REST
+
+  //user
+  UserModel _user;
+
+  //prueba GET
+  getUser() async {
+    http.Response response =
+        await http.get('http://3.15.181.144:4000/api/login');
+    debugPrint(response.body);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
 
   //Variables
   String _number;
@@ -129,19 +169,33 @@ class _login_pageState extends State<login_page> {
                     imageCenter(),
                     SizedBox(height: 20),
                     myTittle(),
+                    _user == null
+                        ? Container()
+                        : Text("El usuario ${_user.name} fue creado."),
                     fieldNumber(),
                     fieldPassword(),
 //BotonIniciar Sesion**********************************************************
                     RaisedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (!_formKey.currentState.validate()) {
                           return;
                         } else {
                           _formKey.currentState.save();
                         }
 
-                        print(_number);
-                        print(_pass);
+                        //print(_number);
+                        //String carne = _number;
+                        //String contra = _pass;
+                        //print(_pass);
+
+                        // AQUI ES DONDE DIGO QUE LA MANERA CORRECTA ES CREAR EL OBJETO
+                        // Y LOS DATOS DEL RESPONSE LOS TENDIRA user de tipo UserModel
+                        final UserModel user = await createUser(_number, _pass);
+
+                        //entonces ahora el state tiene como valor predefinido el user.
+                        setState(() {
+                          _user = user;
+                        });
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
