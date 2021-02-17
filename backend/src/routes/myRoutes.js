@@ -8,6 +8,15 @@ router.get('/api/login', (req, res) => {
     res.json({'Resultado': 'Endpoint para el login! :D'});
 });
 
+router.get('/login', (req, res) => {
+    const data = req.body;            
+
+    // Van a necesitar estos dos campos: 
+    data.carne;
+    data.password;
+    // tienen que hacer login, aunque sea todo pv sin token ni nada
+});
+
 router.post("/create", async (req, res) => {
     try {
 
