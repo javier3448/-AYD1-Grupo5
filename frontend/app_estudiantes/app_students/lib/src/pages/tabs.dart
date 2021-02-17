@@ -68,17 +68,41 @@ class _tabs_pageState extends State<tabs_page> {
       String body = json.encode(data);
 
       http.Response response = await http.post(
-        'http://3.15.181.144:4000/create',
+        'http://3.15.181.144:4000/new',
         headers: {"Content-Type": "application/json"},
         body: body,
       );
 
       debugPrint(response.body);
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         //SI ES CORRECTO QUE BORRE EL FORM
         _processData();
       } else {
         print("ninguna alerta");
+        // set up the button
+        Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop(); // dismiss dialog
+          },
+        );
+
+        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+          title: Text("Registro Estudiante"),
+          content: Text("No se ha podido realizar registro!"),
+          actions: [
+            okButton,
+          ],
+        );
+
+        // show the dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
       }
     }
 
@@ -93,12 +117,30 @@ class _tabs_pageState extends State<tabs_page> {
 
   //CON ESTE MUESTRO EL ALERTDIALOG DE QUE SE REGISTRO.... Faltaria otro si el registro no se realiza.
   void registroRealizado(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop(); // dismiss dialog
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Registro Estudiante"),
+      content: Text("Registro realizado!"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
     showDialog(
-        context: context,
-        child: AlertDialog(
-          title: Text("Registro Realizado!"),
-          content: Text("Listo!"),
-        ));
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
   //UserModelF _user;
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_session/flutter_session.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -39,6 +40,73 @@ class _login_pageState extends State<login_page> {
 
   //user
   UserModel _user;
+
+  ingresoUsuario(String nombre, String pass) async {
+    //ACA SE MANDA LA PETICION A LA BD
+    Map datos = {"nombre": nombre, "contrasena": pass};
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.post(
+      'http://3.15.181.144:4000/login',
+      headers: {'Content-Type': 'application/json'},
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print(response.body);
+      _formKey.currentState?.reset();
+      //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
+      var sesionActual = FlutterSession();
+      await sesionActual.set("token", "token123");
+      await sesionActual.set("user", nombre);
+
+      //LUEGO PARA RECUPERAR EL TOKEN -> dynamic token = await FlutterSession().get("token");
+
+      // anuncio
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Ingreso Estudiante"),
+        content: Text("Credenciales Correctas!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Registro Estudiante"),
+        content: Text("No se ha podido realizar registro!"),
+        actions: [
+          okButton,
+        ],
+      );
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
 
   //prueba GET
   getUser() async {
@@ -184,18 +252,20 @@ class _login_pageState extends State<login_page> {
                         }
 
                         //print(_number);
-                        //String carne = _number;
-                        //String contra = _pass;
+                        String carne = _number;
+                        String contra = _pass;
                         //print(_pass);
 
                         // AQUI ES DONDE DIGO QUE LA MANERA CORRECTA ES CREAR EL OBJETO
                         // Y LOS DATOS DEL RESPONSE LOS TENDIRA user de tipo UserModel
-                        final UserModel user = await createUser(_number, _pass);
+                        //final UserModel user = await createUser(_number, _pass);
 
                         //entonces ahora el state tiene como valor predefinido el user.
-                        setState(() {
+                        /*setState(() {
                           _user = user;
-                        });
+                        });*/
+
+                        ingresoUsuario(carne, contra);
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
