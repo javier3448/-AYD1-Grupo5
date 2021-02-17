@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'package:app_students/user_modelf.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class tabs_page extends StatefulWidget {
   tabs_page({Key key}) : super(key: key);
@@ -8,8 +13,94 @@ class tabs_page extends StatefulWidget {
   _tabs_pageState createState() => _tabs_pageState();
 }
 
+//prueba POST REGISTRO el future lleva un modelo aun se puede manejar. https://flutter.dev/docs/cookbook/networking/send-data
+Future<Estudiante> createUser(String nombre, String apellido, String cui,
+    String carne, String username, String pass) async {
+  Map data = {
+    "nombre": nombre,
+    "apellido": apellido,
+    "CUI": cui,
+    "carne": carne,
+    "username": username,
+    "password": pass
+  };
+
+  postRegister() async {
+    String body = json.encode(data);
+
+    http.Response response = await http.post(
+      'http://3.15.181.144:4000/create',
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    debugPrint(response.body);
+
+    if (response.statusCode == 201) {
+      final String responseString = response.body;
+      return responseString;
+    } else {
+      return null;
+    }
+  }
+}
+
 class _tabs_pageState extends State<tabs_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //INGRESE ESTE METODO PARA PODER MANEJAR EL FORMULARIO, SI SE ENCUENTRA OTRA
+  //MANERA DE NO HACERLO TAN FEO xd estaria mejor
+  //lo que faltaria para login seria manejar la SESION DE USUARIO
+  // Y SI FUERA UN GET MEJOR BASARSE EN LO QUE ESTA EN LOGIN Y NO LO DE ACA YA QUE LO VEO
+  // DE UNA MANERA MAS CORRECTA EL COMO MANEJA LOS DATOS.
+  void convertirDatos(nombre, apellido, cui, carne, username, pass) {
+    Map data = {
+      "nombre": nombre,
+      "apellido": apellido,
+      "CUI": cui,
+      "carne": carne,
+      "username": username,
+      "password": pass
+    };
+    print("aqui");
+
+    postRegister() async {
+      String body = json.encode(data);
+
+      http.Response response = await http.post(
+        'http://3.15.181.144:4000/create',
+        headers: {"Content-Type": "application/json"},
+        body: body,
+      );
+
+      debugPrint(response.body);
+      if (response.statusCode == 200) {
+        //SI ES CORRECTO QUE BORRE EL FORM
+        _processData();
+      } else {
+        print("ninguna alerta");
+      }
+    }
+
+    postRegister();
+  }
+
+  //REINICIA EL FORMULARIO Y MUESTRA EL MENSAJE
+  void _processData() {
+    _formKey.currentState?.reset();
+    registroRealizado(context);
+  }
+
+  //CON ESTE MUESTRO EL ALERTDIALOG DE QUE SE REGISTRO.... Faltaria otro si el registro no se realiza.
+  void registroRealizado(BuildContext context) {
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text("Registro Realizado!"),
+          content: Text("Listo!"),
+        ));
+  }
+  //UserModelF _user;
 
   //Variables
   String _number;
@@ -145,6 +236,7 @@ class _tabs_pageState extends State<tabs_page> {
       ),
     );
   }
+  //probando
 
   Widget fieldPassword() {
     return Container(
@@ -194,6 +286,11 @@ class _tabs_pageState extends State<tabs_page> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   myTittle(),
+                  //*_user == null
+                  //    ? Container(
+                  //        child: Text("NEL"),
+                  //      )
+                  //    : Text("El usuario ${_user.carne} fue creado."),
                   fieldNumber(),
                   fieldCUI(),
                   fieldName(),
@@ -202,18 +299,27 @@ class _tabs_pageState extends State<tabs_page> {
 //Button Register**************************************************************
                   SizedBox(height: 15),
                   RaisedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (!_formKey.currentState.validate()) {
                         return;
                       } else {
                         _formKey.currentState.save();
                       }
 
+                      //imprimimos los datos.
                       print(_number);
                       print(_cui);
                       print(_name);
                       print(_email);
                       print(_pass);
+
+                      //metodo el cual lleva a registrar.
+                      convertirDatos(
+                          _name, "last", _cui, _number, _email, _pass);
+/*
+                      setState(() {
+                        _user = user;
+                      });*/
                     },
                     child: Text(
                       "Registrar",
