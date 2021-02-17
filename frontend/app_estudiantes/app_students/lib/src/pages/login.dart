@@ -47,7 +47,7 @@ class _login_pageState extends State<login_page> {
     String cuerpo = json.encode(datos);
 
     http.Response response = await http.post(
-      'http://3.15.181.144:4000/login',
+      'http://13.58.126.153:4000/login',
       headers: {'Content-Type': 'application/json'},
       body: cuerpo,
     );
@@ -111,7 +111,7 @@ class _login_pageState extends State<login_page> {
   //prueba GET
   getUser() async {
     http.Response response =
-        await http.get('http://3.15.181.144:4000/api/login');
+        await http.get('http://13.58.126.153:4000/api/login');
     debugPrint(response.body);
   }
 

@@ -29,7 +29,7 @@ Future<Estudiante> createUser(String nombre, String apellido, String cui,
     String body = json.encode(data);
 
     http.Response response = await http.post(
-      'http://3.15.181.144:4000/create',
+      'http://13.58.126.153:4000/create',
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -68,7 +68,7 @@ class _tabs_pageState extends State<tabs_page> {
       String body = json.encode(data);
 
       http.Response response = await http.post(
-        'http://3.15.181.144:4000/new',
+        'http://13.58.126.153:4000/new',
         headers: {"Content-Type": "application/json"},
         body: body,
       );
