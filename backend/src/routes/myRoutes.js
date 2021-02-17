@@ -7,7 +7,7 @@ const Estudiante = require('../models/estudiante');
 router.post('/login', (req, res) => {
     const data = req.body;
     const resultado = Estudiante.find({carne: data.nombre, password: data.constrasena});
-    print (resultado);
+    console.log(resultado);
     res.json({'Resultado': 'Endpoint para el login! :D'});
 });
 
