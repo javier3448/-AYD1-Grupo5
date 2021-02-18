@@ -1,14 +1,21 @@
 const { Router } = require('express');
+const { Mongoose } = require('mongoose');
 const router = Router();
 const Estudiante = require('../models/estudiante');
 
 
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const data = req.body;
-    const resultado = Estudiante.find({carne: data.nombre, password: data.constrasena});
-    console.log(resultado);
-    res.json({'Resultado': 'Endpoint para el login! :D'});
+    const resultado = await Estudiante.findOne({ carne: data.nombre, password: data.contrasena});
+    if (resultado == null){
+        console.log(err);
+        res.status(404);
+    }else{
+        res.status(202);
+        res.json(resultado);
+        console.log("crendenciales correctas :3")
+    }
 });
 
 router.post("/create", async (req, res) => {

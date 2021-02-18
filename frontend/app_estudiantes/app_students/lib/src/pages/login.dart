@@ -33,6 +33,40 @@ Future<UserModel> createUser(String carne, String contra) async {
   }
 }
 
+class Usuario {
+  String _id;
+  String nombre;
+  String apellido;
+  String cui;
+  String carnet;
+  String username;
+  String password;
+  int __v;
+
+  Usuario(this.cui, this.carnet);
+
+  Usuario.fromJson(Map<String, dynamic> json)
+      : _id = json['_id'],
+        nombre = json['nombre'],
+        apellido = json['apellido'],
+        cui = json['cui'],
+        carnet = json['carnet'],
+        username = json['username'],
+        password = json['password'],
+        __v = json['__v'];
+
+  Map<String, dynamic> toJson() => {
+        '_id': _id,
+        'nombre': nombre,
+        'apellido': apellido,
+        'cui': cui,
+        'carnet': carnet,
+        'username': username,
+        'password': password,
+        '__v': __v
+      };
+}
+
 class _login_pageState extends State<login_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -53,11 +87,13 @@ class _login_pageState extends State<login_page> {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      print(response.body);
+      Map respuesta = jsonDecode(response.body);
+      var usuarioRes = Usuario.fromJson(respuesta);
       _formKey.currentState?.reset();
       //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
+      print("el token va a ser -> " + usuarioRes._id);
       var sesionActual = FlutterSession();
-      await sesionActual.set("token", "token123");
+      await sesionActual.set("token", usuarioRes._id);
       await sesionActual.set("user", nombre);
 
       //LUEGO PARA RECUPERAR EL TOKEN -> dynamic token = await FlutterSession().get("token");
@@ -83,6 +119,8 @@ class _login_pageState extends State<login_page> {
           return alert;
         },
       );
+
+      // ACA SE VA A LA PAG DE BIENVENIDO
     } else {
       Widget okButton = FlatButton(
         child: Text("OK"),
@@ -92,8 +130,8 @@ class _login_pageState extends State<login_page> {
       );
 
       AlertDialog alert = AlertDialog(
-        title: Text("Registro Estudiante"),
-        content: Text("No se ha podido realizar registro!"),
+        title: Text("Ingreso Estudiante"),
+        content: Text("Credenciales Incorrectas!"),
         actions: [
           okButton,
         ],
