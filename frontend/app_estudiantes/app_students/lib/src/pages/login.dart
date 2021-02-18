@@ -108,7 +108,7 @@ class _login_pageState extends State<login_page> {
 
       AlertDialog alert = AlertDialog(
         title: Text("Ingreso Estudiante"),
-        content: Text("Credenciales Correctas!"),
+        content: Text("Bienvenido " + usuarioRes.nombre + "!"),
         actions: [
           okButton,
         ],
