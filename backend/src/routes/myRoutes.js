@@ -100,6 +100,37 @@ router.post("/new", async (req, res) => {
   
 });
 
+router.post("/update", async (req, res) => {
 
+    try {
+
+        const data = req.body;
+
+        await Estudiante.findOneAndUpdate({ CUI: data.CUI, carne: data.carne, username: data.username},
+                {
+                nombre: data.nombre,
+                apellido: data.apellido,
+                CUI: data.CUI,
+                carne: data.carne,
+                username: data.username,
+                password: data.password},(err, doc) => {
+                    if (err){
+                        console.log(error)
+                        res.status(404);
+                        res.send({ message : error });
+                    } else {
+                        res.status(202);
+                        res.json({ message : 'Datos del estudiante actualizados :D'}); 
+                    }
+                }
+            );
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+    }
+
+});
 
 module.exports = router; 
