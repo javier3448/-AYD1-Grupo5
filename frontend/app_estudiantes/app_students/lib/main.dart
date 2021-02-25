@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/controlador.dart';
 import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/tabs.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Color.fromRGBO(15, 45, 80, 1),
-          accentColor: Color.fromRGBO(250, 164, 177, 1)),
+          accentColor: Colors.redAccent),
       routes: {
         'login': (BuildContext context) => login_page(),
-        'tans': (BuildContext context) => tabs_page()
+        'tans': (BuildContext context) => tabs_page(),
+        'controlador': (BuildContext context) => Controller_page()
       },
     );
   }

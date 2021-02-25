@@ -156,7 +156,7 @@ class _login_pageState extends State<login_page> {
   @override
   void initState() {
     super.initState();
-    getUser();
+    //getUser();
   }
 
   //Variables
@@ -252,6 +252,19 @@ class _login_pageState extends State<login_page> {
     );
   }
 
+  Widget buttonGoPrueba(BuildContext context) {
+    return RaisedButton(
+      onPressed: () {
+        _goRegisterPrueba(context);
+      },
+      child: Text("Iniciar"),
+    );
+  }
+
+  void _goRegisterPrueba(BuildContext context) {
+    Navigator.of(context).pushNamed("controlador");
+  }
+
   void _goRegisterPage(BuildContext context) {
     Navigator.of(context).pushNamed("tans");
   }
@@ -272,6 +285,7 @@ class _login_pageState extends State<login_page> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    buttonGoPrueba(context),
                     imageCenter(),
                     SizedBox(height: 20),
                     myTittle(),
