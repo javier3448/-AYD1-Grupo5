@@ -31,6 +31,10 @@ class _Controller_pageState extends State<Controller_page> {
     _controller.dispose();
   }
 
+  void SalirSesion(BuildContext context) {
+    Navigator.of(context).pushNamed("login");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +42,49 @@ class _Controller_pageState extends State<Controller_page> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text("Universidad"),
+        actions: [
+          Padding(
+              padding: EdgeInsets.all(5.0),
+              child: PopupMenuButton(
+                onSelected: (result) {
+                  if (result == 0) {
+                    SalirSesion(context);
+                  }
+                },
+                icon: Icon(Icons.more_vert),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.book,
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Acerca de"),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 0,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Cerrar Sesion"),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ],
       ),
       body: PageView(
         //aqui definimos nuestro _controler
