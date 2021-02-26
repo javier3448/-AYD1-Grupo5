@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,40 +34,6 @@ Future<UserModel> createUser(String carne, String contra) async {
   }
 }
 
-class Usuario {
-  String _id;
-  String nombre;
-  String apellido;
-  String cui;
-  String carnet;
-  String username;
-  String password;
-  int __v;
-
-  Usuario(this.cui, this.carnet);
-
-  Usuario.fromJson(Map<String, dynamic> json)
-      : _id = json['_id'],
-        nombre = json['nombre'],
-        apellido = json['apellido'],
-        cui = json['cui'],
-        carnet = json['carnet'],
-        username = json['username'],
-        password = json['password'],
-        __v = json['__v'];
-
-  Map<String, dynamic> toJson() => {
-        '_id': _id,
-        'nombre': nombre,
-        'apellido': apellido,
-        'cui': cui,
-        'carnet': carnet,
-        'username': username,
-        'password': password,
-        '__v': __v
-      };
-}
-
 class _login_pageState extends State<login_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -88,13 +55,12 @@ class _login_pageState extends State<login_page> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       Map respuesta = jsonDecode(response.body);
-      var usuarioRes = Usuario.fromJson(respuesta);
+      Usuario usuarioRes = Usuario.fromJson(respuesta);
+      GuardarSesion(usuarioRes);
       _formKey.currentState?.reset();
       //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
-      print("el token va a ser -> " + usuarioRes._id);
-      var sesionActual = FlutterSession();
-      await sesionActual.set("token", usuarioRes._id);
-      await sesionActual.set("user", nombre);
+      //await FlutterSession().set("token", usuarioRes.id);
+      //await FlutterSession().set("user", usuarioRes);
 
       //LUEGO PARA RECUPERAR EL TOKEN -> dynamic token = await FlutterSession().get("token");
 
@@ -262,6 +228,16 @@ class _login_pageState extends State<login_page> {
   }
 
   void _goRegisterPrueba(BuildContext context) {
+    Usuario userprueba = Usuario(
+        apellido: "Prueba",
+        carnet: "201504051",
+        cui: "3017873870101",
+        id: "id465",
+        nombre: "Usuario",
+        password: "123456",
+        username: "usuarioprueba",
+        v: 456487);
+    FlutterSession().set("user", userprueba);
     Navigator.of(context).pushNamed("controlador");
   }
 

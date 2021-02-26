@@ -2,6 +2,7 @@ import 'package:app_students/src/pages/calendar.dart';
 import 'package:app_students/src/pages/home.dart';
 import 'package:app_students/src/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 class Controller_page extends StatefulWidget {
   Controller_page({Key key}) : super(key: key);
@@ -32,7 +33,9 @@ class _Controller_pageState extends State<Controller_page> {
   }
 
   void SalirSesion(BuildContext context) {
-    Navigator.of(context).pushNamed("login");
+    FlutterSession().set("user", "");
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+    //Navigator.of(context).pushNamed("login");
   }
 
   @override
