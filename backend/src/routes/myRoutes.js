@@ -7,6 +7,11 @@ router.get('/', (req, res) => {
     res.json({'Resultado': 'API AYD1: Grupo 5! :D'});
 });
 
+// post simple para hacer pruebas
+router.post('/handle',(req, res) => {
+    console.log(request.body);
+});
+
 router.post('/login', async (req, res) => {
 
     try {
