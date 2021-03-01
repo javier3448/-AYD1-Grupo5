@@ -41,8 +41,6 @@ git --git-dir ./-AYD1-Grupo5/.git checkout develop
 
 npm install --prefix ./-AYD1-Grupo5/backend ./-AYD1-Grupo5/backend
 
-git --git-dir ./-AYD1-Grupo5/.git checkout branch
-
 pm2 start ./-AYD1-Grupo5/backend/src/index.js
 
 # comando ad hoc para tronarse el proceso de node si lo corremos a mano
