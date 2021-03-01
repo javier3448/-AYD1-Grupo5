@@ -39,7 +39,7 @@ git clone https://github.com/javier3448/-AYD1-Grupo5.git
 
 git --git-dir ./-AYD1-Grupo5/.git checkout develop
 
-npm install ./-AYD1-Grupo5/backend
+npm install --prefix ./-AYD1-Grupo5/backend ./-AYD1-Grupo5/backend
 
 git --git-dir ./-AYD1-Grupo5/.git checkout branch
 
