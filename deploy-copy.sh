@@ -41,7 +41,7 @@ git --git-dir ./-AYD1-Grupo5/.git checkout develop
 
 npm install --prefix ./-AYD1-Grupo5/backend ./-AYD1-Grupo5/backend
 
-pm2 start ./-AYD1-Grupo5/backend/src/index.js
+pm2 start ./-AYD1-Grupo5/backend/src/index.js --time
 
 # comando ad hoc para tronarse el proceso de node si lo corremos a mano
 # kill `ps aux | grep node | grep -v "grep" | awk '{print $2}'`
