@@ -3,7 +3,10 @@ const { Mongoose } = require('mongoose');
 const router = Router();
 const Estudiante = require('../models/estudiante');
 
-
+// post simple para hacer pruebas
+router.post('/handle',(req, res) => {
+    console.log(request.body);
+});
 
 router.post('/login', async (req, res) => {
     const data = req.body;
