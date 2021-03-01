@@ -3,22 +3,39 @@ const { Mongoose } = require('mongoose');
 const router = Router();
 const Estudiante = require('../models/estudiante');
 
-// post simple para hacer pruebas
-router.post('/handle',(req, res) => {
-    console.log(request.body);
+router.get('/', (req, res) => {
+    res.json({'Resultado': 'API AYD1: Grupo 5! :D'});
 });
 
 router.post('/login', async (req, res) => {
-    const data = req.body;
-    const resultado = await Estudiante.findOne({ carne: data.nombre, password: data.contrasena});
-    if (resultado == null){
-        console.log(err);
+
+    try {
+
+        const data = req.body;
+        await Estudiante.findOne({ carne: data.carne, password: data.password}, function (err, docs) { 
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : error }); 
+                console.log("crendenciales incorrectas o usuario no existe :c");
+            } else if (docs == null) {
+                res.status(404);
+                res.send({ message : "crendenciales incorrectas o usuario no existe" }); 
+                console.log("crendenciales incorrectas o usuario no existe :c");
+            } else{ 
+                res.status(202);
+                console.log("crendenciales correctas :3")
+                res.json(docs);              
+            } 
+        });
+        
+    } catch (error) {
+        console.log(error)
         res.status(404);
-    }else{
-        res.status(202);
-        res.json(resultado);
-        console.log("crendenciales correctas :3")
+        res.send({ message : error });
+        console.log("crendenciales incorrectas o usuario no existe :c");
     }
+
 });
 
 router.post("/create", async (req, res) => {
