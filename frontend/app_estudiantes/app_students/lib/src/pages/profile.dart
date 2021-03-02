@@ -1,5 +1,7 @@
+import 'package:app_students/src/pages/session.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -10,21 +12,10 @@ class Profile_page extends StatelessWidget {
   //List DatosUsuario;
   var DatosUsuario;
 
-  getUser() async {
-    http.Response response =
-        await http.get('http://13.58.126.153:4000/api/login');
-    Map respuesta = json.decode(response.body);
-    DatosUsuario = Usuario.fromJson(respuesta);
-
-    //DatosUsuario = respuesta['usuario'];
-    //respuesta['id'];
-    debugPrint(response.body);
-  }
-
   @override
   void initState() {
     //super.initState();
-    getUser();
+    //getUser();
   }
 
   Widget textfield({@required String hintText}) {
@@ -53,80 +44,92 @@ class Profile_page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                height: 450,
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
+    return Material(
+      child: FutureBuilder(
+        future: FlutterSession().get('user'),
+        builder: (context, snapshot) {
+          // -------- SCAFFOLD
+          return Scaffold(
+            body: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    textfield(hintText: 'Nombre completo'),
-                    textfield(hintText: 'Email'),
-                    textfield(hintText: 'CUI'),
-                    textfield(hintText: 'Carnet'),
+                    Container(
+                      height: 450,
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          textfield(
+                              hintText: snapshot.data['nombre'] +
+                                  " " +
+                                  snapshot.data['apellido']),
+                          textfield(hintText: snapshot.data['username']),
+                          textfield(hintText: snapshot.data['cui'].toString()),
+                          textfield(
+                              hintText: snapshot.data['carnet'].toString()),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-          CustomPaint(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-            ),
-            painter: HeaderCurvedContainer(),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  "Perfil",
-                  style: TextStyle(
-                      fontSize: 35,
-                      letterSpacing: 1.5,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.width / 2,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 5),
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage('lib/src/pages/perfil.jpg'),
+                CustomPaint(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                   ),
+                  painter: HeaderCurvedContainer(),
                 ),
-              )
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 270, left: 184),
-            child: CircleAvatar(
-              backgroundColor: Colors.indigo[600],
-              child: IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  color: Colors.white,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        "Perfil",
+                        style: TextStyle(
+                            fontSize: 35,
+                            letterSpacing: 1.5,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10.0),
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.width / 2,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 5),
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage('lib/src/pages/perfil.jpg'),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                onPressed: () {},
-              ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 270, left: 184),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.indigo[600],
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
