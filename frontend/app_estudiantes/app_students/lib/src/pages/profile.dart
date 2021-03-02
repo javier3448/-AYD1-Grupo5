@@ -18,26 +18,33 @@ class Profile_page extends StatelessWidget {
     //getUser();
   }
 
-  Widget textfield({@required String hintText}) {
+  Widget textfield({@required String hintText, String labelText}) {
     return Material(
       elevation: 4,
       shadowColor: Colors.grey,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: TextField(
-        decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(
-              letterSpacing: 2,
-              color: Colors.indigo[700],
-              fontWeight: FontWeight.bold,
-            ),
-            fillColor: Colors.white30,
-            filled: true,
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide.none)),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 5.0),
+        child: TextField(
+          decoration: InputDecoration(
+              labelText: labelText,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelStyle: TextStyle(
+                  color: Colors.lightBlue[300], fontWeight: FontWeight.bold),
+              hintText: hintText,
+              hintStyle: TextStyle(
+                  letterSpacing: 2,
+                  color: Colors.indigo[700],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0),
+              fillColor: Colors.white30,
+              filled: true,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none)),
+        ),
       ),
     );
   }
@@ -63,14 +70,57 @@ class Profile_page extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          textfield(
-                              hintText: snapshot.data['nombre'] +
-                                  " " +
-                                  snapshot.data['apellido']),
-                          textfield(hintText: snapshot.data['username']),
-                          textfield(hintText: snapshot.data['cui'].toString()),
-                          textfield(
-                              hintText: snapshot.data['carnet'].toString()),
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: textfield(
+                                labelText: "Nombre Completo",
+                                hintText: snapshot.data['nombre'] +
+                                    " " +
+                                    snapshot.data['apellido']),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: textfield(
+                                labelText: "Nombre de Usuario",
+                                hintText: snapshot.data['username']),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: textfield(
+                                labelText: "CUI",
+                                hintText: snapshot.data['cui'].toString()),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: textfield(
+                                labelText: "Carnet",
+                                hintText: snapshot.data['carnet'].toString()),
+                          ),
+                          Row(
+                            children: [
+                              OutlineButton(
+                                  padding: EdgeInsets.symmetric(horizontal: 40),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  onPressed: () {},
+                                  child: Text("CANCELAR",
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          letterSpacing: 2.2,
+                                          color: Colors.black))),
+                              RaisedButton(
+                                  padding: EdgeInsets.symmetric(horizontal: 42),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  color: Colors.lightGreen[600],
+                                  onPressed: () {},
+                                  child: Text("GUARDAR",
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          letterSpacing: 2.2,
+                                          color: Colors.black)))
+                            ],
+                          )
                         ],
                       ),
                     )
