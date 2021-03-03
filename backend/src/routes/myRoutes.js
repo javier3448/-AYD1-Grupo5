@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { Mongoose } = require('mongoose');
 const router = Router();
 const Estudiante = require('../models/estudiante');
+const Curso = require('../models/curso');
 
 router.get('/', (req, res) => {
     res.json({'Resultado': 'API AYD1: Grupo 5! :D'});
@@ -17,7 +18,7 @@ router.post('/login', async (req, res) => {
     try {
 
         const data = req.body;
-        await Estudiante.findOne({ carne: data.carne, password: data.password}, function (err, docs) { 
+        await Estudiante.findOne({ carne: data.nombre, password: data.contrasena}, function (err, docs) { 
             if (err){ 
                 console.log(err)
                 res.status(404);
@@ -66,10 +67,12 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/new", async (req, res) => {
-    
-    const data = req.body;  
 
-    Estudiante.exists({ CUI: data.CUI }, async function (err, doc) { 
+    try {
+
+        const data = req.body;  
+
+        Estudiante.exists({ CUI: data.CUI }, async function (err, doc) { 
         if (err){ 
             console.log(err)
             res.status(404);
@@ -122,7 +125,13 @@ router.post("/new", async (req, res) => {
             }
         } 
     }); 
-  
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+    }
+    
 });
 
 router.post("/update", async (req, res) => {
@@ -150,6 +159,66 @@ router.post("/update", async (req, res) => {
                 }
             );
         
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+    }
+
+});
+
+router.post("/newcourse", async (req, res) => {
+
+    try {
+        
+        const data = req.body;
+        await Curso.findOne({ 
+            nombre: data.nombre,
+            codigo: data.codigo,
+            seccion: data.seccion,
+            horainicio: data.horainicio,
+            horafinal: data.horafinal,
+            catedratico: data.catedratico,
+            lunes: data.lunes,
+            martes: data.martes,
+            miercoles: data.miercoles,
+            jueves: data.jueves,
+            viernes: data.viernes,
+            sabado: data.sabado,
+            domingo: data.domingo
+
+        }, async function (err, docs) { 
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : error }); 
+            } else if (docs == null) {
+               
+                await Curso.create({
+                    nombre: data.nombre,
+                    codigo: data.codigo,
+                    seccion: data.seccion,
+                    horainicio: data.horainicio,
+                    horafinal: data.horafinal,
+                    catedratico: data.catedratico,
+                    lunes: data.lunes,
+                    martes: data.martes,
+                    miercoles: data.miercoles,
+                    jueves: data.jueves,
+                    viernes: data.viernes,
+                    sabado: data.sabado,
+                    domingo: data.domingo
+                }); 
+                res.status(202);
+                res.json({ message : 'Curso registrado :)'});
+
+            } else{ 
+                res.status(404);
+                res.send({ message : "Ya existe un curso con las mismas caracteristicas." }); 
+                console.log("Ya existe un curso con las mismas caracteristicas."); 
+            } 
+        });
+
     } catch (error) {
         console.log(error)
         res.status(404);
