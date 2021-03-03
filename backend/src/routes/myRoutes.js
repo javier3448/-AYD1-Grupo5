@@ -13,6 +13,34 @@ router.post('/handle',(req, res) => {
     console.log(request.body);
 });
 
+router.get('/getcourses', async (req, res) => {
+    
+    try {
+
+        await Curso.find({}, function (err, courses) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("Error al obtener cursos :c");
+            } else{ 
+                res.status(202);
+                console.log("Cursos obtenidos correctamente :D")
+                res.json(courses);              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener cursos :c");
+    }
+
+});
+
 router.post('/login', async (req, res) => {
 
     try {
