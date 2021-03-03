@@ -107,7 +107,7 @@ class _Controller_pageState extends State<Controller_page> {
             _index = index;
           });
           _controller.animateToPage(_index,
-              duration: Duration(milliseconds: 250), curve: Curves.easeInCirc);
+              duration: Duration(milliseconds: 150), curve: Curves.easeInCirc);
         },
         currentIndex: _index,
         backgroundColor: Theme.of(context).primaryColor,
@@ -119,7 +119,7 @@ class _Controller_pageState extends State<Controller_page> {
           BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined), label: "Inicio"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.perm_contact_calendar), label: "Horario"),
+              icon: Icon(Icons.perm_contact_calendar), label: "Mi Horario"),
         ],
       ),
     );
