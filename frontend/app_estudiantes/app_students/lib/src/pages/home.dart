@@ -1,9 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:app_students/src/pages/session.dart';
+import 'dart:async';
+import 'dart:convert';
 
 class Home_page extends StatelessWidget {
-  const Home_page({Key key}) : super(key: key);
+  Home_page({Key key}) : super(key: key);
+  List<Curso> listadoCursos = new List<Curso>();
 
-  Widget _BCurso(String textTitle, codigo, seccion, hInicio, hFinal) {
+  List<Widget> obtenerCursos() {
+    apiCursos();
+
+    List<Widget> hijos = new List<Widget>();
+    listadoCursos.forEach((element) {
+      hijos.add(_BCurso(
+          element.nombre,
+          element.codigo.toString(),
+          element.seccion,
+          element.horaInicio,
+          element.horaFinal,
+          element.catedratico));
+    });
+
+    return hijos;
+  }
+
+  apiCursos() async {
+    Iterable lista = json.decode(
+        "[{\"_id\": \"603f27a2285e9b10c446ce4b\",\"nombre\": \"Analisis y diseño 1\",\"codigo\": 774,\"seccion\": \"A-\",\"horainicio\": \"7:00\",\"horafinal\": \"8:50\",\"catedratico\": \"Ivonne Aldana\",\"lunes\": \"N\",\"martes\": \"Y\",\"miercoles\": \"N\",\"jueves\": \"Y\",\"viernes\": \"N\",\"sabado\": \"N\",\"domingo\": \"N\",\"__v\": 0},{\"_id\": \"603feb20f881a22258af8d81\",\"nombre\": \"Analisis y diseño 2\",\"codigo\": 775,\"seccion\": \"A-\",\"horainicio\": \"7:00\",\"horafinal\": \"8:50\",\"catedratico\": \"Ivonne Aldana\",\"lunes\": \"N\",\"martes\": \"Y\",\"miercoles\": \"N\",\"jueves\": \"Y\",\"viernes\": \"N\",\"sabado\": \"N\",\"domingo\": \"N\",\"__v\": 0}]");
+    listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+
+    /*http.Response response = await http.get(
+      'http://13.58.126.153:4000/getcourses',
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      Iterable lista = json.decode(response.body);
+      listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+    }*/
+  }
+
+  Widget _BCurso(
+      String textTitle, codigo, seccion, hInicio, hFinal, catedratico) {
     return ExpansionTile(
       title: Text(codigo + " - " + textTitle),
       leading: Icon(Icons.school_sharp),
@@ -14,7 +53,7 @@ class Home_page extends StatelessWidget {
             Text(
               codigo + " - " + textTitle,
               style: TextStyle(
-                  fontSize: 35.0,
+                  fontSize: 30.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
@@ -23,13 +62,13 @@ class Home_page extends StatelessWidget {
               style: TextStyle(fontSize: 25.0, color: Colors.white),
             ),
             Text(
-              "MIRNA ALDANA ",
+              catedratico,
               style: TextStyle(fontSize: 25.0, color: Colors.white),
             ),
             Text(
               "Inicio: " + hInicio + " Final: " + hFinal,
               style: TextStyle(fontSize: 20.0, color: Colors.white),
-            )
+            ),
           ],
         )
       ],
@@ -44,26 +83,7 @@ class Home_page extends StatelessWidget {
       child: Center(
         child: Container(
           child: ListView(
-            children: [
-              _BCurso('Curso 1', "000", "-A", "14:50", "15:40"),
-              _BCurso('Curso 2', "756", "-B", "14:50", "15:40"),
-              _BCurso('Curso 3', "241", "B", "14:50", "15:40"),
-              _BCurso('Curso 4', "171", "+A", "14:50", "15:40"),
-              _BCurso('Curso 5', "283", "N", "14:50", "15:40"),
-              _BCurso('Curso 6', "455", "A", "14:50", "15:40"),
-              _BCurso('Curso 1', "000", "-A", "14:50", "15:40"),
-              _BCurso('Curso 2', "756", "-B", "14:50", "15:40"),
-              _BCurso('Curso 3', "241", "B", "14:50", "15:40"),
-              _BCurso('Curso 4', "171", "+A", "14:50", "15:40"),
-              _BCurso('Curso 5', "283", "N", "14:50", "15:40"),
-              _BCurso('Curso 6', "455", "A", "14:50", "15:40"),
-              _BCurso('Curso 1', "000", "-A", "14:50", "15:40"),
-              _BCurso('Curso 2', "756", "-B", "14:50", "15:40"),
-              _BCurso('Curso 3', "241", "B", "14:50", "15:40"),
-              _BCurso('Curso 4', "171", "+A", "14:50", "15:40"),
-              _BCurso('Curso 5', "283", "N", "14:50", "15:40"),
-              _BCurso('Curso 6', "455", "A", "14:50", "15:40"),
-            ],
+            children: obtenerCursos(),
           ),
         ),
       ),

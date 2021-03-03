@@ -67,14 +67,14 @@ class Usuario {
       this.v});
 
   Usuario.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : id = json['_id'],
         nombre = json['nombre'],
         apellido = json['apellido'],
         cui = json['cui'],
         carnet = json['carnet'],
         username = json['username'],
         password = json['password'],
-        v = json['v'];
+        v = json['__v'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -85,6 +85,78 @@ class Usuario {
     data["carnet"] = carnet;
     data["username"] = username;
     data["password"] = password;
+    data["v"] = v;
+    return data;
+  }
+}
+
+class Curso {
+  final String id;
+  final String nombre;
+  final int codigo;
+  final String seccion;
+  final String horaInicio;
+  final String horaFinal;
+  final String catedratico;
+  final String lunes;
+  final String martes;
+  final String miercoles;
+  final String jueves;
+  final String viernes;
+  final String sabado;
+  final String domingo;
+  final int v;
+
+  Curso(
+      {this.id,
+      this.nombre,
+      this.codigo,
+      this.seccion,
+      this.horaInicio,
+      this.horaFinal,
+      this.catedratico,
+      this.lunes,
+      this.martes,
+      this.miercoles,
+      this.jueves,
+      this.viernes,
+      this.sabado,
+      this.domingo,
+      this.v});
+
+  Curso.fromJson(Map<String, dynamic> json)
+      : id = json['_id'],
+        nombre = json['nombre'],
+        codigo = json['codigo'],
+        seccion = json['seccion'],
+        horaInicio = json['horainicio'],
+        horaFinal = json['horafinal'],
+        catedratico = json['catedratico'],
+        lunes = json['lunes'],
+        martes = json['martes'],
+        miercoles = json['miercoles'],
+        jueves = json['jueves'],
+        viernes = json['viernes'],
+        sabado = json['sabado'],
+        domingo = json['domingo'],
+        v = json['__v'];
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data["id"] = id;
+    data["nombre"] = nombre;
+    data['codigo'] = codigo;
+    data['seccion'] = seccion;
+    data['horaInicio'] = horaInicio;
+    data['horaFinal'] = horaFinal;
+    data['catedratico'] = catedratico;
+    data['lunes'] = lunes;
+    data['martes'] = martes;
+    data['miercoles'] = miercoles;
+    data['jueves'] = jueves;
+    data['viernes'] = viernes;
+    data['sabado'] = sabado;
+    data['domingo'] = domingo;
     data["v"] = v;
     return data;
   }
