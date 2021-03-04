@@ -42,7 +42,7 @@ class _login_pageState extends State<login_page> {
   //user
   UserModel _user;
 
-  ingresoUsuario(String nombre, String pass) async {
+  Future ingresoUsuario(String nombre, String pass) async {
     //ACA SE MANDA LA PETICION A LA BD
     Map datos = {"nombre": nombre, "contrasena": pass};
     String cuerpo = json.encode(datos);
@@ -54,9 +54,10 @@ class _login_pageState extends State<login_page> {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      Map respuesta = jsonDecode(response.body);
+      Map respuesta = json.decode(response.body);
       Usuario usuarioRes = Usuario.fromJson(respuesta);
-      GuardarSesion(usuarioRes);
+      await FlutterSession().set("user", usuarioRes);
+      //GuardarSesion(usuarioRes);
       _formKey.currentState?.reset();
       //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
       //await FlutterSession().set("token", usuarioRes.id);
@@ -87,6 +88,8 @@ class _login_pageState extends State<login_page> {
       );
 
       // ACA SE VA A LA PAG DE BIENVENIDO
+
+      Navigator.of(context).pushNamed("controlador");
     } else {
       Widget okButton = FlatButton(
         child: Text("OK"),
@@ -228,7 +231,7 @@ class _login_pageState extends State<login_page> {
   }
 
   void _goRegisterPrueba(BuildContext context) {
-    Usuario userprueba = Usuario(
+    /*Usuario userprueba = Usuario(
         apellido: "Prueba",
         carnet: "201504051",
         cui: "3017873870101",
@@ -236,8 +239,11 @@ class _login_pageState extends State<login_page> {
         nombre: "Usuario",
         password: "123456",
         username: "usuarioprueba",
-        v: 456487);
-    FlutterSession().set("user", userprueba);
+        v: 456487);*/
+    Map usuario = json.decode(
+        "{\"_id\": \"602f48eb23701b11bde2f578\",\"nombre\": \"Mariana Sic\",\"apellido\": \"last\",\"CUI\": \"3017873470101\",\"carne\": \"201504053\",\"username\": \"mariana@gmail.com\",\"password\": \"1234567892\",\"__v\": 0}");
+    Usuario userprueba = Usuario.fromJson(usuario);
+    GuardarSesion(userprueba);
     Navigator.of(context).pushNamed("controlador");
   }
 
@@ -262,7 +268,7 @@ class _login_pageState extends State<login_page> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buttonGoPrueba(context),
+                    //buttonGoPrueba(context),
                     imageCenter(),
                     SizedBox(height: 20),
                     myTittle(),

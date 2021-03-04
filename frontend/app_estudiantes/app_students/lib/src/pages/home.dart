@@ -4,12 +4,17 @@ import 'package:app_students/src/pages/session.dart';
 import 'dart:async';
 import 'dart:convert';
 
-class Home_page extends StatelessWidget {
+class Home_page extends StatefulWidget {
   Home_page({Key key}) : super(key: key);
+
+  _Home_pageState createState() => _Home_pageState();
+}
+
+class _Home_pageState extends State<Home_page> {
   List<Curso> listadoCursos = new List<Curso>();
 
   List<Widget> obtenerCursos() {
-    apiCursos();
+    //apiCursos();
 
     List<Widget> hijos = new List<Widget>();
     listadoCursos.forEach((element) {
@@ -26,19 +31,21 @@ class Home_page extends StatelessWidget {
   }
 
   apiCursos() async {
-    Iterable lista = json.decode(
+    /*Iterable lista = json.decode(
         "[{\"_id\": \"603f27a2285e9b10c446ce4b\",\"nombre\": \"Analisis y diseño 1\",\"codigo\": 774,\"seccion\": \"A-\",\"horainicio\": \"7:00\",\"horafinal\": \"8:50\",\"catedratico\": \"Ivonne Aldana\",\"lunes\": \"N\",\"martes\": \"Y\",\"miercoles\": \"N\",\"jueves\": \"Y\",\"viernes\": \"N\",\"sabado\": \"N\",\"domingo\": \"N\",\"__v\": 0},{\"_id\": \"603feb20f881a22258af8d81\",\"nombre\": \"Analisis y diseño 2\",\"codigo\": 775,\"seccion\": \"A-\",\"horainicio\": \"7:00\",\"horafinal\": \"8:50\",\"catedratico\": \"Ivonne Aldana\",\"lunes\": \"N\",\"martes\": \"Y\",\"miercoles\": \"N\",\"jueves\": \"Y\",\"viernes\": \"N\",\"sabado\": \"N\",\"domingo\": \"N\",\"__v\": 0}]");
-    listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
-
-    /*http.Response response = await http.get(
+    listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));*/
+    http.Response response = await http.get(
       'http://13.58.126.153:4000/getcourses',
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       Iterable lista = json.decode(response.body);
-      listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
-    }*/
+      //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+      lista.forEach((element) {
+        listadoCursos.add(Curso.fromJson(element));
+      });
+    }
   }
 
   Widget _BCurso(
@@ -53,21 +60,21 @@ class Home_page extends StatelessWidget {
             Text(
               codigo + " - " + textTitle,
               style: TextStyle(
-                  fontSize: 30.0,
+                  fontSize: 23.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
             Text(
               "Seccion: " + seccion,
-              style: TextStyle(fontSize: 25.0, color: Colors.white),
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
             Text(
               catedratico,
-              style: TextStyle(fontSize: 25.0, color: Colors.white),
+              style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
             Text(
               "Inicio: " + hInicio + " Final: " + hFinal,
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
+              style: TextStyle(fontSize: 17.0, color: Colors.white),
             ),
           ],
         )
@@ -88,5 +95,14 @@ class Home_page extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    //super.initState();
+    listadoCursos.clear();
+    apiCursos();
+    setState(() {});
   }
 }

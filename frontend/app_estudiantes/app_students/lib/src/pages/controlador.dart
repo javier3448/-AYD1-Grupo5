@@ -32,8 +32,8 @@ class _Controller_pageState extends State<Controller_page> {
     _controller.dispose();
   }
 
-  void SalirSesion(BuildContext context) {
-    FlutterSession().set("user", "");
+  Future SalirSesion(BuildContext context) async {
+    await FlutterSession().set("user", "");
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
     //Navigator.of(context).pushNamed("login");
   }

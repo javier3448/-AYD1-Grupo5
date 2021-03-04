@@ -18,11 +18,13 @@ class _Profile_pageState extends State<Profile_page> {
   bool esEditable = false;
   bool seIngresatxt = false;
   final nombreCompleto_Cntrl = TextEditingController();
-  final usu_Ctrl = TextEditingController();
+  final apellido_Ctrl = TextEditingController();
   final cui_Ctrl = TextEditingController();
   final carnet_Ctrl = TextEditingController();
+  final usuario_Ctrl = TextEditingController();
+  final contrasena_Ctrl = TextEditingController();
 
-  String nombreCString = '';
+  final String nombreCString = '';
   String usuString = '';
   String cuiString = '';
   String carnetString = '';
@@ -30,12 +32,74 @@ class _Profile_pageState extends State<Profile_page> {
   @override
   void initState() {
     //super.initState();
-    //getUser();
+  }
+
+  Future actualizarPerfil(Map datos) async {
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.post(
+      'http://13.58.126.153:4000/update',
+      headers: {'Content-Type': 'application/json'},
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      // anuncio
+      Usuario nuevo = Usuario.fromJson(datos.cast<String, dynamic>());
+      await FlutterSession().set("user", nuevo);
+
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          setState(() {
+            esEditable = false;
+            seIngresatxt = false;
+          });
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Editar Perfil"),
+        content: Text(
+            "Datos para " + datos['nombre'] + " actualizados éxitosamente!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      // anuncio
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Editar Perfil"),
+        content: Text("Error al actualizar datos de " + datos['nombre'] + "!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   }
 
   Widget textfield(
-      {@required String hintText,
-      String labelText,
+      {@required String labelText,
       TextEditingController contrl,
       TextInputType tipoDato}) {
     return Material(
@@ -56,7 +120,45 @@ class _Profile_pageState extends State<Profile_page> {
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelStyle: TextStyle(
                   color: Colors.lightBlue[300], fontWeight: FontWeight.bold),
-              hintText: hintText,
+              //hintText: hintText,
+              hintStyle: TextStyle(
+                  letterSpacing: 2,
+                  color: Colors.indigo[700],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0),
+              fillColor: Colors.white30,
+              filled: true,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none)),
+        ),
+      ),
+    );
+  }
+
+  Widget textfieldFalse(
+      {@required String labelText,
+      TextEditingController contrl,
+      TextInputType tipoDato}) {
+    return Material(
+      elevation: 4,
+      shadowColor: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 5.0),
+        child: TextField(
+          keyboardType: tipoDato,
+          controller: contrl,
+          autofocus: false,
+          decoration: InputDecoration(
+              enabled: false,
+              labelText: labelText,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelStyle: TextStyle(
+                  color: Colors.lightBlue[300], fontWeight: FontWeight.bold),
+              //hintText: hintText,
               hintStyle: TextStyle(
                   letterSpacing: 2,
                   color: Colors.indigo[700],
@@ -92,7 +194,7 @@ class _Profile_pageState extends State<Profile_page> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         child: Column(children: [
-                          Padding(
+                          /*Padding(
                             padding: EdgeInsets.all(20),
                             child: Text(
                               "Perfil",
@@ -102,7 +204,7 @@ class _Profile_pageState extends State<Profile_page> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600),
                             ),
-                          ),
+                          ),*/
                           Stack(children: [
                             //crossAxisAlignment: CrossAxisAlignment.center,
                             Container(
@@ -149,39 +251,61 @@ class _Profile_pageState extends State<Profile_page> {
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: textfield(
-                                      tipoDato: TextInputType.text,
-                                      contrl: nombreCompleto_Cntrl,
-                                      labelText: "Nombre Completo",
-                                      hintText: snapshot.data['nombre'] +
-                                          " " +
-                                          snapshot.data['apellido']),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfield(
                                     tipoDato: TextInputType.text,
-                                    contrl: usu_Ctrl,
-                                    labelText: "Nombre de Usuario",
-                                    hintText: snapshot.data['username'],
+                                    contrl: nombreCompleto_Cntrl
+                                      ..text = snapshot.data['nombre'],
+                                    labelText: "Nombre",
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: textfield(
-                                      tipoDato: TextInputType.number,
-                                      contrl: cui_Ctrl,
-                                      labelText: "CUI",
-                                      hintText:
-                                          snapshot.data['cui'].toString()),
+                                    tipoDato: TextInputType.text,
+                                    contrl: apellido_Ctrl
+                                      ..text = snapshot.data['apellido'],
+                                    labelText: "Apellido",
+                                    //hintText: snapshot.data['apellido'],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: textfieldFalse(
+                                    tipoDato: TextInputType.text,
+                                    contrl: cui_Ctrl
+                                      ..text = snapshot.data['cui'],
+                                    labelText: "CUI",
+                                    //hintText: snapshot.data['password']
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: textfieldFalse(
+                                    tipoDato: TextInputType.text,
+                                    contrl: carnet_Ctrl
+                                      ..text = snapshot.data['carnet'],
+                                    labelText: "Carné",
+                                    //hintText: snapshot.data['password']
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: textfieldFalse(
+                                    tipoDato: TextInputType.emailAddress,
+                                    contrl: usuario_Ctrl
+                                      ..text = snapshot.data['username'],
+                                    labelText: "Correo Electrónico",
+                                    //hintText: snapshot.data['password']
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: textfield(
-                                      tipoDato: TextInputType.number,
-                                      contrl: carnet_Ctrl,
-                                      labelText: "Carnet",
-                                      hintText:
-                                          snapshot.data['carnet'].toString()),
+                                    tipoDato: TextInputType.text,
+                                    contrl: contrasena_Ctrl
+                                      ..text = snapshot.data['password'],
+                                    labelText: "Contraseña",
+                                    //hintText: snapshot.data['password']
+                                  ),
                                 ),
                                 Visibility(
                                     visible: esEditable,
@@ -197,7 +321,7 @@ class _Profile_pageState extends State<Profile_page> {
                                                           20)),
                                               onPressed: () {
                                                 setState(() {
-                                                  nombreCString = '';
+                                                  //nombreCString = '';
                                                   usuString = '';
                                                   cuiString = '';
                                                   carnetString = '';
@@ -220,9 +344,8 @@ class _Profile_pageState extends State<Profile_page> {
                                               color: Colors.lightGreen[600],
                                               onPressed: () {
                                                 setState(() {
-                                                  nombreCString =
-                                                      nombreCompleto_Cntrl.text;
-                                                  usuString = usu_Ctrl.text;
+                                                  //nombreCString =  nombreCompleto_Cntrl.text;
+                                                  //usuString = usu_Ctrl.text;
                                                   cuiString = cui_Ctrl.text;
                                                   carnetString =
                                                       carnet_Ctrl.text;
@@ -230,31 +353,24 @@ class _Profile_pageState extends State<Profile_page> {
                                                       "Aca se enviarian los nuevos datos a la BD :D ");
 
                                                   //Se tendria que validar el guardado de datos en la BD
-                                                  Widget okButton = FlatButton(
-                                                    child: Text("OK"),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(); // dismiss dialog
-                                                    },
-                                                  );
+                                                  Map llaves = {
+                                                    "_id": snapshot.data['id'],
+                                                    "CUI": snapshot.data['cui'],
+                                                    "carne":
+                                                        snapshot.data['carnet'],
+                                                    "username": snapshot
+                                                        .data['username'],
+                                                    "nombre":
+                                                        nombreCompleto_Cntrl
+                                                            .text,
+                                                    "apellido":
+                                                        apellido_Ctrl.text,
+                                                    "password":
+                                                        contrasena_Ctrl.text,
+                                                    "__v": snapshot.data['v']
+                                                  };
 
-                                                  AlertDialog alert =
-                                                      AlertDialog(
-                                                    title: Text(
-                                                        "Edición de Perfil"),
-                                                    content: Text(
-                                                        "¡Se guardaron correctamente los datos!"),
-                                                    actions: [
-                                                      okButton,
-                                                    ],
-                                                  );
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return alert;
-                                                    },
-                                                  );
+                                                  actualizarPerfil(llaves);
                                                 });
                                               },
                                               child: Text("GUARDAR",

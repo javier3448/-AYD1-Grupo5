@@ -28,7 +28,7 @@ class LeerSesion extends StatelessWidget {
 }
 
 class GuardarSesion extends StatelessWidget {
-  final Usuario datos;
+  Usuario datos;
   GuardarSesion(this.datos);
   @override
   Widget build(BuildContext context) {
@@ -70,8 +70,8 @@ class Usuario {
       : id = json['_id'],
         nombre = json['nombre'],
         apellido = json['apellido'],
-        cui = json['cui'],
-        carnet = json['carnet'],
+        cui = json['CUI'],
+        carnet = json['carne'],
         username = json['username'],
         password = json['password'],
         v = json['__v'];
