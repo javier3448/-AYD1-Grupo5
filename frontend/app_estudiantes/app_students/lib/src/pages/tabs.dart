@@ -148,6 +148,7 @@ class _tabs_pageState extends State<tabs_page> {
   String _number;
   String _cui;
   String _name;
+  String _last;
   String _email;
   String _pass;
 
@@ -168,7 +169,7 @@ class _tabs_pageState extends State<tabs_page> {
             Icons.accessibility_new,
             color: Colors.white,
           ),
-          labelText: 'Nombre Completo',
+          labelText: 'Nombres',
           labelStyle: TextStyle(
             color: Color(0xFF6200EE),
           ),
@@ -187,6 +188,40 @@ class _tabs_pageState extends State<tabs_page> {
         },
         onSaved: (String value) {
           _name = value;
+        },
+        maxLength: 50,
+      ),
+    );
+  }
+
+  Widget fieldLastN() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: TextFormField(
+        decoration: InputDecoration(
+          icon: Icon(
+            Icons.accessibility_new,
+            color: Colors.white,
+          ),
+          labelText: 'Apellidos',
+          labelStyle: TextStyle(
+            color: Color(0xFF6200EE),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.redAccent),
+          ),
+        ),
+        validator: (value) {
+          if (value.isEmpty) {
+            return "Campo obligatorio.";
+          } else {
+            return null;
+          }
+        },
+        onSaved: (String value) {
+          _last = value;
         },
         maxLength: 50,
       ),
@@ -336,6 +371,7 @@ class _tabs_pageState extends State<tabs_page> {
                   fieldNumber(),
                   fieldCUI(),
                   fieldName(),
+                  fieldLastN(),
                   fieldEmail(),
                   fieldPassword(),
 //Button Register**************************************************************
@@ -357,7 +393,7 @@ class _tabs_pageState extends State<tabs_page> {
 
                       //metodo el cual lleva a registrar.
                       convertirDatos(
-                          _name, "last", _cui, _number, _email, _pass);
+                          _name, _last, _cui, _number, _email, _pass);
 /*
                       setState(() {
                         _user = user;
