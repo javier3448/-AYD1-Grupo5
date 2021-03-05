@@ -2,6 +2,7 @@ import 'package:app_students/src/pages/calendar.dart';
 import 'package:app_students/src/pages/home.dart';
 import 'package:app_students/src/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 
 class Controller_page extends StatefulWidget {
   Controller_page({Key key}) : super(key: key);
@@ -31,6 +32,12 @@ class _Controller_pageState extends State<Controller_page> {
     _controller.dispose();
   }
 
+  Future SalirSesion(BuildContext context) async {
+    await FlutterSession().set("user", "");
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+    //Navigator.of(context).pushNamed("login");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +45,49 @@ class _Controller_pageState extends State<Controller_page> {
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text("Universidad"),
+        actions: [
+          Padding(
+              padding: EdgeInsets.all(5.0),
+              child: PopupMenuButton(
+                onSelected: (result) {
+                  if (result == 0) {
+                    SalirSesion(context);
+                  }
+                },
+                icon: Icon(Icons.more_vert),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.book,
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Acerca de"),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 0,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Cerrar Sesion"),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+        ],
       ),
       body: PageView(
         //aqui definimos nuestro _controler
@@ -57,7 +107,7 @@ class _Controller_pageState extends State<Controller_page> {
             _index = index;
           });
           _controller.animateToPage(_index,
-              duration: Duration(milliseconds: 250), curve: Curves.easeInCirc);
+              duration: Duration(milliseconds: 150), curve: Curves.easeInCirc);
         },
         currentIndex: _index,
         backgroundColor: Theme.of(context).primaryColor,
@@ -69,7 +119,7 @@ class _Controller_pageState extends State<Controller_page> {
           BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined), label: "Inicio"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.perm_contact_calendar), label: "Horario"),
+              icon: Icon(Icons.perm_contact_calendar), label: "Mi Horario"),
         ],
       ),
     );

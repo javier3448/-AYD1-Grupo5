@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,40 +34,6 @@ Future<UserModel> createUser(String carne, String contra) async {
   }
 }
 
-class Usuario {
-  String _id;
-  String nombre;
-  String apellido;
-  String cui;
-  String carnet;
-  String username;
-  String password;
-  int __v;
-
-  Usuario(this.cui, this.carnet);
-
-  Usuario.fromJson(Map<String, dynamic> json)
-      : _id = json['_id'],
-        nombre = json['nombre'],
-        apellido = json['apellido'],
-        cui = json['cui'],
-        carnet = json['carnet'],
-        username = json['username'],
-        password = json['password'],
-        __v = json['__v'];
-
-  Map<String, dynamic> toJson() => {
-        '_id': _id,
-        'nombre': nombre,
-        'apellido': apellido,
-        'cui': cui,
-        'carnet': carnet,
-        'username': username,
-        'password': password,
-        '__v': __v
-      };
-}
-
 class _login_pageState extends State<login_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -75,7 +42,7 @@ class _login_pageState extends State<login_page> {
   //user
   UserModel _user;
 
-  ingresoUsuario(String nombre, String pass) async {
+  Future ingresoUsuario(String nombre, String pass) async {
     //ACA SE MANDA LA PETICION A LA BD
     Map datos = {"nombre": nombre, "contrasena": pass};
     String cuerpo = json.encode(datos);
@@ -87,14 +54,14 @@ class _login_pageState extends State<login_page> {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      Map respuesta = jsonDecode(response.body);
-      var usuarioRes = Usuario.fromJson(respuesta);
+      Map respuesta = json.decode(response.body);
+      Usuario usuarioRes = Usuario.fromJson(respuesta);
+      await FlutterSession().set("user", usuarioRes);
+      //GuardarSesion(usuarioRes);
       _formKey.currentState?.reset();
       //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
-      print("el token va a ser -> " + usuarioRes._id);
-      var sesionActual = FlutterSession();
-      await sesionActual.set("token", usuarioRes._id);
-      await sesionActual.set("user", nombre);
+      //await FlutterSession().set("token", usuarioRes.id);
+      //await FlutterSession().set("user", usuarioRes);
 
       //LUEGO PARA RECUPERAR EL TOKEN -> dynamic token = await FlutterSession().get("token");
 
@@ -121,6 +88,8 @@ class _login_pageState extends State<login_page> {
       );
 
       // ACA SE VA A LA PAG DE BIENVENIDO
+
+      Navigator.of(context).pushNamed("controlador");
     } else {
       Widget okButton = FlatButton(
         child: Text("OK"),
@@ -262,6 +231,19 @@ class _login_pageState extends State<login_page> {
   }
 
   void _goRegisterPrueba(BuildContext context) {
+    /*Usuario userprueba = Usuario(
+        apellido: "Prueba",
+        carnet: "201504051",
+        cui: "3017873870101",
+        id: "id465",
+        nombre: "Usuario",
+        password: "123456",
+        username: "usuarioprueba",
+        v: 456487);*/
+    Map usuario = json.decode(
+        "{\"_id\": \"602f48eb23701b11bde2f578\",\"nombre\": \"Mariana Sic\",\"apellido\": \"last\",\"CUI\": \"3017873470101\",\"carne\": \"201504053\",\"username\": \"mariana@gmail.com\",\"password\": \"1234567892\",\"__v\": 0}");
+    Usuario userprueba = Usuario.fromJson(usuario);
+    GuardarSesion(userprueba);
     Navigator.of(context).pushNamed("controlador");
   }
 
@@ -272,6 +254,7 @@ class _login_pageState extends State<login_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Theme.of(context).primaryColor,
       appBar: null,
       body: Container(
@@ -285,7 +268,7 @@ class _login_pageState extends State<login_page> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buttonGoPrueba(context),
+                    //buttonGoPrueba(context),
                     imageCenter(),
                     SizedBox(height: 20),
                     myTittle(),
