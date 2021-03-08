@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/cursosPorAsignar.dart';
 import 'package:app_students/src/pages/controlador.dart';
 import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/tabs.dart';
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Students App',
-      initialRoute: 'login',
+      initialRoute: 'controlador',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Color.fromRGBO(15, 45, 80, 1),
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'login': (BuildContext context) => login_page(),
         'tans': (BuildContext context) => tabs_page(),
+        'cursosPorAsignar': (BuildContext context) => cursoPorAsignar(),
         'controlador': (BuildContext context) => Controller_page()
       },
     );
