@@ -13,8 +13,7 @@ const cursoSchema = new Schema({
     jueves: { type : String , required : true},
     viernes: { type : String , required : true},
     sabado: { type : String , required : true},
-    domingo: { type : String , required : true},
-    cursos: [{ id: String }]
+    domingo: { type : String , required : true}
 });
 
 module.exports = model('Curso', cursoSchema);
