@@ -250,8 +250,23 @@ router.put("/assign", async (req, res) => {
              res.send({ message : "Usuario no existe" }); 
              console.log("Usuario no existe :c");
          } else {
-             await Estudiante.update(
-                 { $push : { cursos: {id : data.cursoID} } }
+             await Estudiante.findOneAndUpdate(
+                 { carne: data.carne },
+                 { $push : { cursos: {
+                     cursoid : data.cursoid,
+                     nombre: data.nombre,
+                     codigo: data.codigo,
+                     seccion: data.seccion,
+                     horainicio: data.horainicio,
+                     horafinal: data.horafinal,
+                     lunes: data.lunes,
+                     martes: data.martes,
+                     miercoles: data.miercoles,
+                     jueves: data.jueves,
+                     viernes: data.viernes,
+                     sabado: data.sabado,
+                     domingo: data.domingo
+                 }}}
              );
              res.status(202);
              res.json({ message : 'Curso asignado :)'});
@@ -264,5 +279,6 @@ router.put("/assign", async (req, res) => {
      res.send({ message : error });
     }
  });
+ 
 
 module.exports = router; 
