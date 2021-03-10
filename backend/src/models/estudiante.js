@@ -6,7 +6,8 @@ const estudianteSchema = new Schema({
     CUI: { type : String , unique : true, required : true},
     carne: { type : String , unique : true, required : true},
     username: { type : String , unique : true, required : true},
-    password: { type : String , required : true}
+    password: { type : String , required : true},
+    cursos: [{ id: String }]
 });
 
 module.exports = model('Estudiante', estudianteSchema);

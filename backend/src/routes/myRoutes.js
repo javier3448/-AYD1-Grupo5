@@ -72,27 +72,6 @@ router.post('/login', async (req, res) => {
 
 });
 
-router.post("/create", async (req, res) => {
-    try {
-
-        const data = req.body;            
-        await Estudiante.create({
-            nombre: data.nombre,
-            apellido: data.apellido,
-            CUI: data.CUI,
-            carne: data.carne,
-            username: data.username,
-            password: data.password
-        }); 
-        res.status(202);
-        res.json({ message : 'Estudiante registrado'});
-
-    } catch (error) {
-        console.log(error)
-        res.status(404);
-        res.send({ message : error });
-    }
-});
 
 router.post("/new", async (req, res) => {
 
@@ -254,5 +233,36 @@ router.post("/newcourse", async (req, res) => {
     }
 
 });
+
+router.put("/assign", async (req, res) => {
+
+    try {
+ 
+     const data = req.body;
+     await Estudiante.findOne({carne: data.carne}, async function (err, docs){
+ 
+         if (err){ 
+             console.log(err)
+             res.status(404);
+             res.send({ message : err }); 
+         } else if (docs == null) {
+             res.status(404);
+             res.send({ message : "Usuario no existe" }); 
+             console.log("Usuario no existe :c");
+         } else {
+             await Estudiante.update(
+                 { $push : { cursos: {id : data.cursoID} } }
+             );
+             res.status(202);
+             res.json({ message : 'Curso asignado :)'});
+         }
+     });
+    
+    } catch (error) {
+     console.log(error)
+     res.status(404);
+     res.send({ message : error });
+    }
+ });
 
 module.exports = router; 
