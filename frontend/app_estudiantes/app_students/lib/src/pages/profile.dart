@@ -182,19 +182,21 @@ class _Profile_pageState extends State<Profile_page> {
         builder: (context, snapshot) {
           // -------- SCAFFOLD
           return Scaffold(
+              resizeToAvoidBottomPadding: false,
+              resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
                   child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                alignment: Alignment.center,
                 children: [
-                  CustomPaint(
-                    child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(children: [
-                          /*Padding(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomPaint(
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: Column(children: [
+                              /*Padding(
                             padding: EdgeInsets.all(20),
                             child: Text(
                               "Perfil",
@@ -205,192 +207,199 @@ class _Profile_pageState extends State<Profile_page> {
                                   fontWeight: FontWeight.w600),
                             ),
                           ),*/
-                          Stack(children: [
-                            //crossAxisAlignment: CrossAxisAlignment.center,
-                            Container(
-                              padding: EdgeInsets.all(10.0),
-                              width: MediaQuery.of(context).size.width / 2,
-                              height: MediaQuery.of(context).size.height / 4,
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 5),
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                image: DecorationImage(
-                                    fit: BoxFit.contain,
-                                    image: NetworkImage(
-                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png")),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 30, left: 140),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.lightBlue[300],
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.edit,
+                              Stack(children: [
+                                //crossAxisAlignment: CrossAxisAlignment.center,
+                                Container(
+                                  padding: EdgeInsets.all(10.0),
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  height:
+                                      MediaQuery.of(context).size.height / 4,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.white, width: 5),
+                                    shape: BoxShape.circle,
                                     color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      esEditable = true;
-                                      seIngresatxt = true;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
-                          ]),
-                          Container(
-                            height: 450,
-                            width: double.infinity,
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfield(
-                                    tipoDato: TextInputType.text,
-                                    contrl: nombreCompleto_Cntrl
-                                      ..text = snapshot.data['nombre'],
-                                    labelText: "Nombre",
+                                    image: DecorationImage(
+                                        fit: BoxFit.contain,
+                                        image: NetworkImage(
+                                            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png")),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfield(
-                                    tipoDato: TextInputType.text,
-                                    contrl: apellido_Ctrl
-                                      ..text = snapshot.data['apellido'],
-                                    labelText: "Apellido",
-                                    //hintText: snapshot.data['apellido'],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfieldFalse(
-                                    tipoDato: TextInputType.text,
-                                    contrl: cui_Ctrl
-                                      ..text = snapshot.data['cui'],
-                                    labelText: "CUI",
-                                    //hintText: snapshot.data['password']
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfieldFalse(
-                                    tipoDato: TextInputType.text,
-                                    contrl: carnet_Ctrl
-                                      ..text = snapshot.data['carnet'],
-                                    labelText: "Carné",
-                                    //hintText: snapshot.data['password']
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfieldFalse(
-                                    tipoDato: TextInputType.emailAddress,
-                                    contrl: usuario_Ctrl
-                                      ..text = snapshot.data['username'],
-                                    labelText: "Correo Electrónico",
-                                    //hintText: snapshot.data['password']
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: textfield(
-                                    tipoDato: TextInputType.text,
-                                    contrl: contrasena_Ctrl
-                                      ..text = snapshot.data['password'],
-                                    labelText: "Contraseña",
-                                    //hintText: snapshot.data['password']
-                                  ),
-                                ),
-                                Visibility(
-                                    visible: esEditable,
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          OutlineButton(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 40),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              onPressed: () {
-                                                setState(() {
-                                                  //nombreCString = '';
-                                                  usuString = '';
-                                                  cuiString = '';
-                                                  carnetString = '';
-                                                  esEditable = false;
-                                                  seIngresatxt = false;
-                                                });
-                                              },
-                                              child: Text("CANCELAR",
-                                                  style: TextStyle(
-                                                      fontSize: 14.0,
-                                                      letterSpacing: 2.2,
-                                                      color: Colors.black))),
-                                          RaisedButton(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 42),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              color: Colors.lightGreen[600],
-                                              onPressed: () {
-                                                setState(() {
-                                                  //nombreCString =  nombreCompleto_Cntrl.text;
-                                                  //usuString = usu_Ctrl.text;
-                                                  cuiString = cui_Ctrl.text;
-                                                  carnetString =
-                                                      carnet_Ctrl.text;
-                                                  print(
-                                                      "Aca se enviarian los nuevos datos a la BD :D ");
-
-                                                  //Se tendria que validar el guardado de datos en la BD
-                                                  Map llaves = {
-                                                    "_id": snapshot.data['id'],
-                                                    "CUI": snapshot.data['cui'],
-                                                    "carne":
-                                                        snapshot.data['carnet'],
-                                                    "username": snapshot
-                                                        .data['username'],
-                                                    "nombre":
-                                                        nombreCompleto_Cntrl
-                                                            .text,
-                                                    "apellido":
-                                                        apellido_Ctrl.text,
-                                                    "password":
-                                                        contrasena_Ctrl.text,
-                                                    "__v": snapshot.data['v']
-                                                  };
-
-                                                  actualizarPerfil(llaves);
-                                                });
-                                              },
-                                              child: Text("GUARDAR",
-                                                  style: TextStyle(
-                                                      fontSize: 14.0,
-                                                      letterSpacing: 2.2,
-                                                      color: Colors.black)))
-                                        ],
+                                  padding: EdgeInsets.only(top: 30, left: 140),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.lightBlue[300],
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
                                       ),
-                                    ))
-                              ],
-                            ),
-                          )
-                        ])),
-                    painter: HeaderCurvedContainer(),
-                  ),
+                                      onPressed: () {
+                                        setState(() {
+                                          esEditable = true;
+                                          seIngresatxt = true;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ]),
+                              Container(
+                                height: MediaQuery.of(context).size.height / 2 +
+                                    100,
+                                width: double.infinity,
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfield(
+                                        tipoDato: TextInputType.text,
+                                        contrl: nombreCompleto_Cntrl
+                                          ..text = snapshot.data['nombre'],
+                                        labelText: "Nombre",
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfield(
+                                        tipoDato: TextInputType.text,
+                                        contrl: apellido_Ctrl
+                                          ..text = snapshot.data['apellido'],
+                                        labelText: "Apellido",
+                                        //hintText: snapshot.data['apellido'],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfieldFalse(
+                                        tipoDato: TextInputType.text,
+                                        contrl: cui_Ctrl
+                                          ..text = snapshot.data['cui'],
+                                        labelText: "CUI",
+                                        //hintText: snapshot.data['password']
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfieldFalse(
+                                        tipoDato: TextInputType.text,
+                                        contrl: carnet_Ctrl
+                                          ..text = snapshot.data['carnet'],
+                                        labelText: "Carné",
+                                        //hintText: snapshot.data['password']
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfieldFalse(
+                                        tipoDato: TextInputType.emailAddress,
+                                        contrl: usuario_Ctrl
+                                          ..text = snapshot.data['username'],
+                                        labelText: "Correo Electrónico",
+                                        //hintText: snapshot.data['password']
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: textfield(
+                                        tipoDato: TextInputType.text,
+                                        contrl: contrasena_Ctrl
+                                          ..text = snapshot.data['password'],
+                                        labelText: "Contraseña",
+                                        //hintText: snapshot.data['password']
+                                      ),
+                                    ),
+                                    Visibility(
+                                        visible: esEditable,
+                                        child: Container(
+                                          child: Row(
+                                            children: [
+                                              OutlineButton(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 40),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      //nombreCString = '';
+                                                      usuString = '';
+                                                      cuiString = '';
+                                                      carnetString = '';
+                                                      esEditable = false;
+                                                      seIngresatxt = false;
+                                                    });
+                                                  },
+                                                  child: Text("CANCELAR",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          letterSpacing: 2.2,
+                                                          color:
+                                                              Colors.black))),
+                                              RaisedButton(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 42),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  color: Colors.lightGreen[600],
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      //nombreCString =  nombreCompleto_Cntrl.text;
+                                                      //usuString = usu_Ctrl.text;
+                                                      cuiString = cui_Ctrl.text;
+                                                      carnetString =
+                                                          carnet_Ctrl.text;
+                                                      print(
+                                                          "Aca se enviarian los nuevos datos a la BD :D ");
+
+                                                      //Se tendria que validar el guardado de datos en la BD
+                                                      Map llaves = {
+                                                        "_id":
+                                                            snapshot.data['id'],
+                                                        "CUI": snapshot
+                                                            .data['cui'],
+                                                        "carne": snapshot
+                                                            .data['carnet'],
+                                                        "username": snapshot
+                                                            .data['username'],
+                                                        "nombre":
+                                                            nombreCompleto_Cntrl
+                                                                .text,
+                                                        "apellido":
+                                                            apellido_Ctrl.text,
+                                                        "password":
+                                                            contrasena_Ctrl
+                                                                .text,
+                                                        "__v":
+                                                            snapshot.data['v']
+                                                      };
+
+                                                      actualizarPerfil(llaves);
+                                                    });
+                                                  },
+                                                  child: Text("GUARDAR",
+                                                      style: TextStyle(
+                                                          fontSize: 14.0,
+                                                          letterSpacing: 2.2,
+                                                          color: Colors.black)))
+                                            ],
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ])),
+                        painter: HeaderCurvedContainer(),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          )));
+              )));
         },
       ),
     );
