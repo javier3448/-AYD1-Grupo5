@@ -259,6 +259,7 @@ router.put("/assign", async (req, res) => {
                      seccion: data.seccion,
                      horainicio: data.horainicio,
                      horafinal: data.horafinal,
+                     catedratico: data.catedratico,
                      lunes: data.lunes,
                      martes: data.martes,
                      miercoles: data.miercoles,
