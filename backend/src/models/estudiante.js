@@ -13,6 +13,7 @@ const estudianteSchema = new Schema({
                 seccion: String,
                 horainicio: String,
                 horafinal: String,
+                catedratico : String,
                 lunes: String,
                 martes: String,
                 miercoles: String,
