@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:app_students/src/pages/session.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_session/flutter_session.dart';
 
 class Home_page extends StatefulWidget {
   Home_page({Key key}) : super(key: key);
@@ -24,6 +25,7 @@ class CursoPorAsignar {
 
 class _Home_pageState extends State<Home_page> {
   List<CursoPorAsignar> listadoCursos = new List<CursoPorAsignar>();
+  List<CursoPorAsignar> listaAuxiliar = new List<CursoPorAsignar>();
 
   List<Widget> obtenerCursos() {
     //apiCursos();
@@ -55,6 +57,50 @@ class _Home_pageState extends State<Home_page> {
         listadoCursos.add(CursoPorAsignar(Curso.fromJson(element), false));
       });
     }
+  }
+
+  asignarCursos(Curso curso, String carnet) async {
+    Map datos = {
+      "carne": carnet,
+      "cursoid": curso.id,
+      "nombre": curso.nombre,
+      "codigo": curso.codigo.toString(),
+      "seccion": curso.seccion,
+      "horainicio": curso.horaInicio,
+      "horafinal": curso.horaFinal,
+      "catedratico": curso.catedratico,
+      "lunes": curso.lunes,
+      "martes": curso.martes,
+      "miercoles": curso.miercoles,
+      "jueves": curso.jueves,
+      "viernes": curso.viernes,
+      "sabado": curso.sabado,
+      "domingo": curso.domingo
+    };
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.put(
+      'http://13.58.126.153:4000/assign',
+      headers: {'Content-Type': 'application/json'},
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print(":D");
+    }
+  }
+
+  asignaciones(String carnet, List<Curso> cursos, Map datos) async {
+    await Future.forEach(listaAuxiliar, (element) async {
+      await asignarCursos(element.curso, carnet);
+    });
+
+    listaAuxiliar.forEach((element) {
+      cursos.add(element.curso);
+    });
+
+    Usuario nuevo = Usuario.fromJson(datos.cast<String, dynamic>(), cursos);
+    await FlutterSession().set("user", nuevo);
   }
 
   Widget _BCurso(CursoPorAsignar cursoPorAsignar) {
@@ -104,6 +150,18 @@ class _Home_pageState extends State<Home_page> {
                   setState(() {
                     cursoPorAsignar.isAgregado = !cursoPorAsignar.isAgregado;
                   });
+
+                  if (cursoPorAsignar.isAgregado)
+                    listaAuxiliar.add(cursoPorAsignar);
+                  else {
+                    List<CursoPorAsignar> aux = new List<CursoPorAsignar>();
+                    listaAuxiliar.forEach((element) {
+                      if (element.curso.id != cursoPorAsignar.curso.id)
+                        aux.add(element);
+                    });
+
+                    listaAuxiliar = aux;
+                  }
                 },
                 child: Text(isAgregado ? "Quitar" : "Agregar")),
           ],
@@ -116,25 +174,65 @@ class _Home_pageState extends State<Home_page> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: null,
-      body: Container(
-        child: Center(
-          child: Container(
-            child: ListView(
-              children: obtenerCursos(),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.save),
-          onPressed: () {
-            // Aqui hacemos la asignacion. Creo que el carrito ya no sirviria
-            // de nada entonces. El listview nos debe mostrar si el curso esta
-            // asignado, 'agregado', o ninguno
-            debugPrint("Ir a preview");
+    return Material(
+      child: FutureBuilder(
+          future: FlutterSession().get('user'),
+          builder: (context, snapshot) {
+            return Scaffold(
+              resizeToAvoidBottomInset: true,
+              appBar: null,
+              body: Container(
+                child: Center(
+                  child: Container(
+                    child: ListView(
+                      children: obtenerCursos(),
+                    ),
+                  ),
+                ),
+              ),
+              floatingActionButton: FloatingActionButton(
+                  child: Icon(Icons.save),
+                  onPressed: () {
+                    // Aqui hacemos la asignacion. Creo que el carrito ya no sirviria
+                    // de nada entonces. El listview nos debe mostrar si el curso esta
+                    // asignado, 'agregado', o ninguno
+                    debugPrint("Ir a preview");
+                    Map llaves = {
+                      "_id": snapshot.data['id'],
+                      "CUI": snapshot.data['cui'],
+                      "carne": snapshot.data['carnet'],
+                      "username": snapshot.data['username'],
+                      "nombre": snapshot.data['nombre'],
+                      "apellido": snapshot.data['apellido'],
+                      "password": snapshot.data['password'],
+                      "__v": snapshot.data['v']
+                    };
+
+                    List<Curso> cursos = new List<Curso>();
+
+                    List<dynamic> lista = snapshot.data['cursosAsignados'];
+                    lista.forEach((element) {
+                      cursos.add(Curso(
+                          id: element['id'],
+                          nombre: element['nombre'],
+                          codigo: element['codigo'],
+                          seccion: element['seccion'],
+                          horaInicio: element['horaInicio'],
+                          horaFinal: element['horaFinal'],
+                          lunes: element['lunes'],
+                          martes: element['martes'],
+                          miercoles: element['miercoles'],
+                          jueves: element['jueves'],
+                          viernes: element['viernes'],
+                          sabado: element['sabado'],
+                          domingo: element['domingo'],
+                          catedratico: element['catedratico']));
+                    });
+
+                    asignaciones(
+                        snapshot.data['carnet'].toString(), cursos, llaves);
+                  }),
+            );
           }),
     );
   }

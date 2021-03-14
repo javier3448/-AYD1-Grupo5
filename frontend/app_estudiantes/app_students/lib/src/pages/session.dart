@@ -54,6 +54,7 @@ class Usuario {
   final String carnet;
   final String username;
   final String password;
+  final List<Curso> cursosAsignados;
   final int v;
 
   Usuario(
@@ -64,9 +65,10 @@ class Usuario {
       this.carnet,
       this.username,
       this.password,
+      this.cursosAsignados,
       this.v});
 
-  Usuario.fromJson(Map<String, dynamic> json)
+  Usuario.fromJson(Map<String, dynamic> json, List<Curso> cursos)
       : id = json['_id'],
         nombre = json['nombre'],
         apellido = json['apellido'],
@@ -74,6 +76,7 @@ class Usuario {
         carnet = json['carne'],
         username = json['username'],
         password = json['password'],
+        cursosAsignados = cursos,
         v = json['__v'];
 
   Map<String, dynamic> toJson() {
@@ -85,6 +88,7 @@ class Usuario {
     data["carnet"] = carnet;
     data["username"] = username;
     data["password"] = password;
+    data['cursosAsignados'] = cursosAsignados;
     data["v"] = v;
     return data;
   }
