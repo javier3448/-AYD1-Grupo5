@@ -183,7 +183,7 @@ class _Profile_pageState extends State<Profile_page> {
         builder: (context, snapshot) {
           // -------- SCAFFOLD
           return Scaffold(
-              resizeToAvoidBottomPadding: false,
+              //resizeToAvoidBottomPadding: false,
               resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
                   child: Stack(
