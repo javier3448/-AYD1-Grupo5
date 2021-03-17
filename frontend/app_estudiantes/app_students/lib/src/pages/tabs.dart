@@ -122,6 +122,7 @@ class _tabs_pageState extends State<tabs_page> {
       child: Text("OK"),
       onPressed: () {
         Navigator.of(context).pop(); // dismiss dialog
+        Navigator.of(context).pushNamed("login");
       },
     );
 

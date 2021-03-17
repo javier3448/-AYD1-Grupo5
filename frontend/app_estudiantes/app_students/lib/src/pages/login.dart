@@ -55,7 +55,26 @@ class _login_pageState extends State<login_page> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       Map respuesta = json.decode(response.body);
-      Usuario usuarioRes = Usuario.fromJson(respuesta);
+      List<Curso> cursosAsignados = new List<Curso>();
+      Iterable cursos = respuesta['cursos'];
+      cursos.forEach((element) {
+        cursosAsignados.add(Curso(
+            id: element['cursoid'],
+            nombre: element['nombre'],
+            codigo: element['codigo'],
+            seccion: element['seccion'],
+            horaInicio: element['horainicio'],
+            horaFinal: element['horafinal'],
+            lunes: element['lunes'],
+            martes: element['martes'],
+            miercoles: element['miercoles'],
+            jueves: element['jueves'],
+            viernes: element['viernes'],
+            sabado: element['sabado'],
+            domingo: element['domingo'],
+            catedratico: element['catedratico']));
+      });
+      Usuario usuarioRes = Usuario.fromJson(respuesta, cursosAsignados);
       await FlutterSession().set("user", usuarioRes);
       //GuardarSesion(usuarioRes);
       _formKey.currentState?.reset();
@@ -242,8 +261,8 @@ class _login_pageState extends State<login_page> {
         v: 456487);*/
     Map usuario = json.decode(
         "{\"_id\": \"602f48eb23701b11bde2f578\",\"nombre\": \"Mariana Sic\",\"apellido\": \"last\",\"CUI\": \"3017873470101\",\"carne\": \"201504053\",\"username\": \"mariana@gmail.com\",\"password\": \"1234567892\",\"__v\": 0}");
-    Usuario userprueba = Usuario.fromJson(usuario);
-    GuardarSesion(userprueba);
+    //Usuario userprueba = Usuario.fromJson(usuario);
+    //GuardarSesion(userprueba);
     Navigator.of(context).pushNamed("controlador");
   }
 

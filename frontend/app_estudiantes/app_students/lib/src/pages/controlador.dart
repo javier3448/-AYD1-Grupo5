@@ -4,6 +4,8 @@ import 'package:app_students/src/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 
+import 'cursos.dart';
+
 class Controller_page extends StatefulWidget {
   Controller_page({Key key}) : super(key: key);
 
@@ -98,7 +100,7 @@ class _Controller_pageState extends State<Controller_page> {
         onPageChanged: (index) {
           setState(() => _index = index);
         },
-        children: [Profile_page(), Home_page(), Calendar_page()],
+        children: [Profile_page(), Home_page(), Cursos(), Calendar_page()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         //para cambiar de paginas usando el navbar
@@ -118,6 +120,8 @@ class _Controller_pageState extends State<Controller_page> {
               icon: Icon(Icons.person_pin), label: "Perfil"),
           BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined), label: "Inicio"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.all_inbox_sharp), label: "Mis cursos"),
           BottomNavigationBarItem(
               icon: Icon(Icons.perm_contact_calendar), label: "Mi Horario"),
         ],

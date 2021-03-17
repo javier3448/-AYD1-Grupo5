@@ -7,7 +7,21 @@ const estudianteSchema = new Schema({
     carne: { type : String , unique : true, required : true},
     username: { type : String , unique : true, required : true},
     password: { type : String , required : true},
-    cursos: [{ id: String }]
+    cursos: [{  cursoid: String,
+                nombre: String,
+                codigo: Number,
+                seccion: String,
+                horainicio: String,
+                horafinal: String,
+                catedratico : String,
+                lunes: String,
+                martes: String,
+                miercoles: String,
+                jueves: String,
+                viernes: String,
+                sabado: String,
+                domingo: String
+             }]
 });
 
 module.exports = model('Estudiante', estudianteSchema);
