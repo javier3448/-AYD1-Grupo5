@@ -121,7 +121,7 @@ class _Controller_pageState extends State<Controller_page> {
           BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined), label: "Inicio"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.perm_contact_calendar), label: "Mis cursos"),
+              icon: Icon(Icons.all_inbox_sharp), label: "Mis cursos"),
           BottomNavigationBarItem(
               icon: Icon(Icons.perm_contact_calendar), label: "Mi Horario"),
         ],
