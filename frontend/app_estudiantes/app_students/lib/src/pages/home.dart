@@ -27,14 +27,48 @@ class _Home_pageState extends State<Home_page> {
   List<CursoPorAsignar> listadoCursos = new List<CursoPorAsignar>();
   List<CursoPorAsignar> listaAuxiliar = new List<CursoPorAsignar>();
 
-  List<Widget> obtenerCursos() {
+  List<Widget> obtenerCursos(List<dynamic> cursosAsignados) {
     //apiCursos();
 
-    List<Widget> hijos = new List<Widget>();
-    listadoCursos.forEach((element) {
-      hijos.add(_BCurso(element));
+    List<Curso> cursos = new List<Curso>();
+    cursosAsignados.forEach((element) {
+      cursos.add(Curso(
+          id: element['id'],
+          nombre: element['nombre'],
+          codigo: element['codigo'],
+          seccion: element['seccion'],
+          horaInicio: element['horaInicio'],
+          horaFinal: element['horaFinal'],
+          lunes: element['lunes'],
+          martes: element['martes'],
+          miercoles: element['miercoles'],
+          jueves: element['jueves'],
+          viernes: element['viernes'],
+          sabado: element['sabado'],
+          domingo: element['domingo'],
+          catedratico: element['catedratico']));
     });
 
+    List<Widget> hijos = new List<Widget>();
+    hijos.clear();
+
+    if (cursos.isEmpty) {
+      listadoCursos.forEach((element) {
+        hijos.add(_BCurso(element));
+      });
+    } else {
+      List<CursoPorAsignar> copiaLista = listadoCursos;
+      var ids = [];
+      cursos.forEach((element) {
+        ids.add(element.id);
+      });
+
+      copiaLista.removeWhere((item) => (ids).contains(item.curso.id));
+
+      copiaLista.forEach((element) {
+        hijos.add(_BCurso(element));
+      });
+    }
     return hijos;
   }
 
@@ -53,6 +87,7 @@ class _Home_pageState extends State<Home_page> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       Iterable lista = json.decode(response.body);
       //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+      listadoCursos.clear();
       lista.forEach((element) {
         listadoCursos.add(CursoPorAsignar(Curso.fromJson(element), false));
       });
@@ -185,7 +220,7 @@ class _Home_pageState extends State<Home_page> {
                 child: Center(
                   child: Container(
                     child: ListView(
-                      children: obtenerCursos(),
+                      children: obtenerCursos(snapshot.data['cursosAsignados']),
                     ),
                   ),
                 ),

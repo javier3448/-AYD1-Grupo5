@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
             if (err){ 
                 console.log(err)
                 res.status(404);
-                res.send({ message : error }); 
+                res.send({ message : err }); 
                 console.log("crendenciales incorrectas o usuario no existe :c");
             } else if (docs == null) {
                 res.status(404);
