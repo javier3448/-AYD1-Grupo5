@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/cursos.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
@@ -34,7 +35,7 @@ class _Profile_pageState extends State<Profile_page> {
     //super.initState();
   }
 
-  Future actualizarPerfil(Map datos) async {
+  Future actualizarPerfil(Map datos, List<Curso> listado) async {
     String cuerpo = json.encode(datos);
 
     http.Response response = await http.post(
@@ -45,7 +46,7 @@ class _Profile_pageState extends State<Profile_page> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       // anuncio
-      Usuario nuevo = Usuario.fromJson(datos.cast<String, dynamic>());
+      Usuario nuevo = Usuario.fromJson(datos.cast<String, dynamic>(), listado);
       await FlutterSession().set("user", nuevo);
 
       Widget okButton = FlatButton(
@@ -182,7 +183,7 @@ class _Profile_pageState extends State<Profile_page> {
         builder: (context, snapshot) {
           // -------- SCAFFOLD
           return Scaffold(
-              resizeToAvoidBottomPadding: false,
+              //resizeToAvoidBottomPadding: false,
               resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
                   child: Stack(
@@ -379,7 +380,46 @@ class _Profile_pageState extends State<Profile_page> {
                                                             snapshot.data['v']
                                                       };
 
-                                                      actualizarPerfil(llaves);
+                                                      List<Curso> cursos =
+                                                          new List<Curso>();
+
+                                                      List<dynamic> lista =
+                                                          snapshot.data[
+                                                              'cursosAsignados'];
+                                                      lista.forEach((element) {
+                                                        cursos.add(Curso(
+                                                            id: element['id'],
+                                                            nombre: element[
+                                                                'nombre'],
+                                                            codigo: element[
+                                                                'codigo'],
+                                                            seccion: element[
+                                                                'seccion'],
+                                                            horaInicio: element[
+                                                                'horaInicio'],
+                                                            horaFinal: element[
+                                                                'horaFinal'],
+                                                            lunes: element[
+                                                                'lunes'],
+                                                            martes: element[
+                                                                'martes'],
+                                                            miercoles: element[
+                                                                'miercoles'],
+                                                            jueves: element[
+                                                                'jueves'],
+                                                            viernes: element[
+                                                                'viernes'],
+                                                            sabado: element[
+                                                                'sabado'],
+                                                            domingo: element[
+                                                                'domingo'],
+                                                            catedratico: element[
+                                                                'catedratico']));
+                                                      });
+                                                      print(cursos);
+
+                                                      actualizarPerfil(
+                                                          llaves, cursos);
                                                     });
                                                   },
                                                   child: Text("GUARDAR",
