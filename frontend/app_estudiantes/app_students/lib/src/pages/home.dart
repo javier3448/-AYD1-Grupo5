@@ -121,14 +121,67 @@ class _Home_pageState extends State<Home_page> {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      print(":D");
+      return true;
     }
+
+    return false;
   }
 
   asignaciones(String carnet, List<Curso> cursos, Map datos) async {
+    bool bandera = false;
     await Future.forEach(listaAuxiliar, (element) async {
-      await asignarCursos(element.curso, carnet);
+      bandera = await asignarCursos(element.curso, carnet);
     });
+
+    if (bandera) {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Asignación de Estudiante"),
+        content: Text("Cursos Seleccionados Asignados!"),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("Asignación de Estudiante"),
+        content: Text("No se ha podido asignar cursos!"),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
 
     listaAuxiliar.forEach((element) {
       cursos.add(element.curso);
@@ -232,40 +285,67 @@ class _Home_pageState extends State<Home_page> {
                     // de nada entonces. El listview nos debe mostrar si el curso esta
                     // asignado, 'agregado', o ninguno
                     debugPrint("Ir a preview");
-                    Map llaves = {
-                      "_id": snapshot.data['id'],
-                      "CUI": snapshot.data['cui'],
-                      "carne": snapshot.data['carnet'],
-                      "username": snapshot.data['username'],
-                      "nombre": snapshot.data['nombre'],
-                      "apellido": snapshot.data['apellido'],
-                      "password": snapshot.data['password'],
-                      "__v": snapshot.data['v']
-                    };
+                    if (listaAuxiliar.isEmpty) {
+                      Widget okButton = FlatButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // dismiss dialog
+                        },
+                      );
 
-                    List<Curso> cursos = new List<Curso>();
+                      // set up the AlertDialog
+                      AlertDialog alert = AlertDialog(
+                        title: Text("Asignación de Estudiante"),
+                        content:
+                            Text("No hay cursos seleccionados por asignar!"),
+                        actions: [
+                          okButton,
+                        ],
+                      );
 
-                    List<dynamic> lista = snapshot.data['cursosAsignados'];
-                    lista.forEach((element) {
-                      cursos.add(Curso(
-                          id: element['id'],
-                          nombre: element['nombre'],
-                          codigo: element['codigo'],
-                          seccion: element['seccion'],
-                          horaInicio: element['horaInicio'],
-                          horaFinal: element['horaFinal'],
-                          lunes: element['lunes'],
-                          martes: element['martes'],
-                          miercoles: element['miercoles'],
-                          jueves: element['jueves'],
-                          viernes: element['viernes'],
-                          sabado: element['sabado'],
-                          domingo: element['domingo'],
-                          catedratico: element['catedratico']));
-                    });
+                      // show the dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      );
+                    } else {
+                      Map llaves = {
+                        "_id": snapshot.data['id'],
+                        "CUI": snapshot.data['cui'],
+                        "carne": snapshot.data['carnet'],
+                        "username": snapshot.data['username'],
+                        "nombre": snapshot.data['nombre'],
+                        "apellido": snapshot.data['apellido'],
+                        "password": snapshot.data['password'],
+                        "__v": snapshot.data['v']
+                      };
 
-                    asignaciones(
-                        snapshot.data['carnet'].toString(), cursos, llaves);
+                      List<Curso> cursos = new List<Curso>();
+
+                      List<dynamic> lista = snapshot.data['cursosAsignados'];
+                      lista.forEach((element) {
+                        cursos.add(Curso(
+                            id: element['id'],
+                            nombre: element['nombre'],
+                            codigo: element['codigo'],
+                            seccion: element['seccion'],
+                            horaInicio: element['horaInicio'],
+                            horaFinal: element['horaFinal'],
+                            lunes: element['lunes'],
+                            martes: element['martes'],
+                            miercoles: element['miercoles'],
+                            jueves: element['jueves'],
+                            viernes: element['viernes'],
+                            sabado: element['sabado'],
+                            domingo: element['domingo'],
+                            catedratico: element['catedratico']));
+                      });
+
+                      asignaciones(
+                          snapshot.data['carnet'].toString(), cursos, llaves);
+                    }
                   }),
             );
           }),
@@ -277,6 +357,7 @@ class _Home_pageState extends State<Home_page> {
     // TODO: implement initState
     //super.initState();
     listadoCursos.clear();
+    listaAuxiliar.clear();
     apiCursos();
     setState(() {});
   }
