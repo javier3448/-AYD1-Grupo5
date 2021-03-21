@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.868.0",
     "chai": "^4.3.3",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
