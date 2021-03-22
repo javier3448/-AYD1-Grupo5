@@ -26,6 +26,9 @@ dependencies:
   form_field_validator: ^1.0.0
   flutter_session: ^0.1.1
 
+  # 2 dependencias del paquete: timetable
+  time_machine: ^0.9.16
+  timetable: ^0.2.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -41,6 +44,11 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  # Agregamos esto para poder usar el paquete: timetable
+  # https://pub.dev/packages/timetable#getting-started
+  assets:
+    - packages/time_machine/data/cultures/cultures.bin
+    - packages/time_machine/data/tzdb/tzdb.bin
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
