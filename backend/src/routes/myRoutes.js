@@ -3,6 +3,10 @@ const { Mongoose } = require('mongoose');
 const router = Router();
 const Estudiante = require('../models/estudiante');
 const Curso = require('../models/curso');
+var uuid = require('uuid');
+var AWS = require('aws-sdk');
+const aws_keys = require('../keys');
+
 
 router.get('/', (req, res) => {
     res.json({'Resultado': 'API AYD1: Grupo 5! :D'});
@@ -281,5 +285,44 @@ router.put("/assign", async (req, res) => {
     }
  });
  
+router.post("/updateImage", async (req, res) => {
+
+    const data = req.body;
+    try {
+    console.log(data.image.toString());
+        
+    if (data.image.toString() != ""){
+
+        var nombrei = uuid() + ".jpg";
+    
+        //se convierte la base64 a bytes
+        let buff = new Buffer.from(data.image, 'base64');
+        
+        
+        var s3 = new AWS.S3(aws_keys.s3);
+        
+        const params = {
+            Bucket: "proyecto1-ayd1",
+            Key: nombrei,
+            Body: buff,
+            ContentType: "image",
+            ACL: 'public-read'
+        };
+        var resultado = s3.putObject(params).promise();
+        
+        result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
+        console.log(nombrei);
+        res.json({ message : 'Imagen guardada!'});
+
+    }
+
+    } catch (error) {
+        console.log(data.image.toString());
+        console.log(error);
+        res.status(404);
+        res.send({ message : error });
+    }
+});
+
 
 module.exports = router; 

@@ -7,6 +7,7 @@ const estudianteSchema = new Schema({
     carne: { type : String , unique : true, required : true},
     username: { type : String , unique : true, required : true},
     password: { type : String , required : true},
+    image: { type: String },
     cursos: [{  cursoid: String,
                 nombre: String,
                 codigo: Number,

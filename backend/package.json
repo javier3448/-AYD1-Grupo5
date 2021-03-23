@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "node .\\src\\index.js",
-    "test": ".\\node_modules\\.bin\\mocha --reporter spec"
+    "test": "mocha ./src/test/*.js --timeout 15000",
+    "coverage": "nyc --reporter=text  npm test",
+    "coverage-html": "nyc --reporter=html --reporter=text  npm test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.868.0",
     "chai": "^4.3.3",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
