@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Students App',
-      initialRoute: 'calendar',
+      initialRoute: 'login',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Color.fromRGBO(15, 45, 80, 1),
@@ -20,8 +20,6 @@ class MyApp extends StatelessWidget {
         'login': (BuildContext context) => login_page(),
         'tans': (BuildContext context) => tabs_page(),
         'controlador': (BuildContext context) => Controller_page(),
-        // @DEBUG:
-        // @NOCHECKIN:
         'calendar': (BuildContext context) => Calendar_page()
       },
     );
