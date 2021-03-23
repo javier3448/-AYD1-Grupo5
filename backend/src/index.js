@@ -1,4 +1,4 @@
-const app = require('./app');
+let app = require('./app');
 const { PORT } = require('./config');
 const { connect } = require('./database');
 
@@ -15,3 +15,5 @@ async function main(){
 };
 
 main();
+
+module.exports = { main, app };
