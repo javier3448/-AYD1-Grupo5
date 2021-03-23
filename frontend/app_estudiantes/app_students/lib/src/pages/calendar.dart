@@ -4,9 +4,13 @@ import 'package:timetable/timetable.dart';
 
 class CursoSemanal {
 
+  // @Mejora: usar named params y esas cosas, creo que flutter tiene monto de syntax 
+  // sugar para este tipo de clases con todo publico y un constructor sencillo
+
   String nombre;
 
-  // @Mejora?: validar que estos ints esten en rangos correctos (0-23 y 0-59)
+  Color color;
+
   int horaInicio;
   int minutoInicio;
   int horaFinal;
@@ -14,8 +18,8 @@ class CursoSemanal {
 
   List<bool> hasEventDay;
 
-  // que dia representa cada bool en hasEventDay, facilita un poco las funciones
-  // getAllDayEventsIntersecting y getAllDayIntersecting
+  // Que dia representa cada bool en hasEventDay, facilita un poco las funciones
+  // getAllDayEventsIntersecting y getAllDayIntersecting de WeeklyEventProvider
   static const List<DayOfWeek> DaysOfWeek = [
     DayOfWeek.monday,
     DayOfWeek.tuesday,
@@ -26,11 +30,15 @@ class CursoSemanal {
     DayOfWeek.sunday,
   ];
 
-
-  CursoSemanal(String nombre, int horaInicio, int minutoInicio, int horaFinal, int minutoFinal, List<bool> hasEventDay){
+  CursoSemanal(String nombre, Color color, int horaInicio, int minutoInicio, int horaFinal, int minutoFinal, List<bool> hasEventDay){
     assert(hasEventDay.length == 7);
+    assert(horaInicio < 24);
+    assert(horaFinal < 23);
+    assert(minutoInicio < 60);
+    assert(minutoFinal < 60);
 
     this.nombre = nombre;
+    this.color = color;
     this.horaInicio = horaInicio;
     this.minutoInicio = minutoInicio;
     this.horaFinal = horaFinal;
@@ -44,6 +52,8 @@ class CursoSemanal {
 // semanales. Ademas no podemos limitar al TimeTableControler a mostrar solo una
 // semana, entonces se va  a ver muy mal si el estudiante scrollea a la siguiente
 // semana y que no tenga ningun evento.
+// NO estoy seguro porque estos dos metodos son los que tengo que sobreescribir 
+// para hacer 
 class WeeklyEventProvider extends EventProvider<BasicEvent> {
   WeeklyEventProvider(List<CursoSemanal>cursosSemanales)
       : assert(cursosSemanales != null),
@@ -76,7 +86,7 @@ class WeeklyEventProvider extends EventProvider<BasicEvent> {
               // @[!!!] NI IDEA QUE HACE EL ID, LO DEJAMOS EN 0 PARA TODOS D:
               id: 0,
               title: cursoSemanal.nombre,
-              color: Colors.blue,
+              color: cursoSemanal.color,
               start: begEvent,
               end: endEvent
             ));
@@ -86,13 +96,35 @@ class WeeklyEventProvider extends EventProvider<BasicEvent> {
       iter = iter.addDays(1);
     }
 
-    return Stream.value(eventosParaTimetable);  
+    return Stream.value(eventosParaTimetable.allDayEvents);  
   }
-
   @override
-  Stream<Iterable<E>> getPartDayEventsIntersecting(LocalDate date) {
-    final events = _events.partDayEvents.intersectingDate(date);
-    return Stream.value(events);
+  Stream<Iterable<BasicEvent>> getPartDayEventsIntersecting(LocalDate date) {
+    // Sacamos los eventos que ocurriran en esta semana
+    LocalDate iter = date;
+
+    List<BasicEvent> eventosParaTimetable = [];
+
+    for(var cursoSemanal in _cursosSemanales){
+      for (var i = 0; i < cursoSemanal.hasEventDay.length; i++) {
+        if(iter.dayOfWeek == CursoSemanal.DaysOfWeek[i] && 
+            cursoSemanal.hasEventDay[i]){
+          LocalDateTime begEvent = iter.atMidnight().addHours(cursoSemanal.horaInicio).addMinutes(cursoSemanal.minutoInicio);
+          LocalDateTime endEvent = iter.atMidnight().addHours(cursoSemanal.horaFinal).addMinutes(cursoSemanal.minutoFinal);
+
+          eventosParaTimetable.add(BasicEvent(
+            // @[!!!] NI IDEA QUE HACE EL ID, LO DEJAMOS EN 0 PARA TODOS D:
+            id: 0,
+            title: cursoSemanal.nombre,
+            color: cursoSemanal.color,
+            start: begEvent,
+            end: endEvent
+          ));
+        }
+      }
+    }
+
+    return Stream.value(eventosParaTimetable);  
   }
 }
 
@@ -110,53 +142,44 @@ class _Calendar_pageState extends State<Calendar_page> {
     super.initState();
 
     _controller = TimetableController(
-      // A basic EventProvider containing a single event:
-      // eventProvider: EventProvider.list([
-      //   BasicEvent(
-      //     id: 0,
-      //     title: 'My Event',
-      //     color: Colors.blue,
-      //     start: LocalDate.today().at(LocalTime(13, 0, 0)),
-      //     end: LocalDate.today().at(LocalTime(15, 0, 0)),
-      //   ),
-      //   BasicEvent(
-      //     id: 0,
-      //     title: 'My Event',
-      //     color: Colors.blue,
-      //     start: LocalDate.today().at(LocalTime(13, 0, 0)),
-      //     end: LocalDate.today().at(LocalTime(15, 0, 0)),
-      //   ),
-      // ]),
-
-      // Or even this short example using a Stream:
-      // eventProvider: EventProvider.stream(
-      //   // @Mejora?: Podemos conseguir eventos de la base de datos con el stream
-      //   // Siempre y cuando no podemaso tener actividades que no tenga un ciclo semanal
-      //   // Eso no es necesario
-      //   eventGetter: (range) => Stream.periodic(
-      //     Duration(milliseconds: 16),
-      //     (i) {
-      //       final start =
-      //           LocalDate.today().atMidnight() + Period(minutes: i * 2);
-      //       return [
-      //         BasicEvent(
-      //           id: 0,
-      //           title: 'Event',
-      //           color: Colors.blue,
-      //           start: start,
-      //           end: start + Period(hours: 5),
-      //         ),
-      //       ];
-      //     },
-      //   ),
-      // ),
-
-      // Simple stream
-      eventProvider: EventProvider.simpleStream(
-
+      eventProvider: WeeklyEventProvider(
+        [
+          // Para Mariana:
+          // Por ahora queme los cursos aqui, tendria que ir una lista con los
+          // 'CursoSemanal' del estudiante logeado.
+          CursoSemanal(
+            "curso\ncatedratico\ndescripcion", // string que aparece en la celda
+            Colors.blue, //color de la celda
+            8, 10,   //hora inicio (8:10)
+            10, 10,  //hora fin (10:10)
+            [
+              true,  // Lunes
+              false, // Martes
+              true,  // Miercoles
+              false, // Jueves
+              true,  // Viernes
+              false, // Sabado
+              true   // domingo
+            ]
+          ),
+          CursoSemanal(
+            "Otro curso\notro catedratico\n otra descripcion", // string que aparece en la celda
+            Colors.lightBlue, // color de la celda
+            12, 30, //hora inicio (12:30)
+            14, 30, //hora fin (14:40)
+            [
+              false, // Lunes
+              true,  // Martes
+              false, // Miercoles
+              true,  // Jueves
+              false, // Viernes
+              true,  // Sabado
+              false, // domingo
+            ]
+          )
+        ]
       ),
 
-      // Other (optional) parameters:
       initialTimeRange: InitialTimeRange.range(
         startTime: LocalTime(8, 0, 0),
         endTime: LocalTime(20, 0, 0),
