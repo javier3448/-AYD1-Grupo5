@@ -1,3 +1,5 @@
+import 'dart:io' as Io;
+import 'dart:io';
 import 'package:app_students/src/pages/cursos.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:app_students/src/pages/login.dart';
 
+import 'package:file_picker/file_picker.dart';
+
 class Profile_page extends StatefulWidget {
   // const Profile_page({Key key}) : super(key: key);
   //List DatosUsuario;
@@ -15,7 +19,6 @@ class Profile_page extends StatefulWidget {
 }
 
 class _Profile_pageState extends State<Profile_page> {
-  var DatosUsuario;
   bool esEditable = false;
   bool seIngresatxt = false;
   final nombreCompleto_Cntrl = TextEditingController();
@@ -29,6 +32,12 @@ class _Profile_pageState extends State<Profile_page> {
   String usuString = '';
   String cuiString = '';
   String carnetString = '';
+
+  String fotostring = '';
+  String filePath, img64;
+  File file;
+  String imagenPerfil =
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png";
 
   @override
   void initState() {
@@ -97,6 +106,87 @@ class _Profile_pageState extends State<Profile_page> {
         },
       );
     }
+  }
+
+  Future actualizarFotoPerfil(String imagenNueva, Map datos) async {
+    String cuerpo = '{ "image": "' + imagenNueva + '" }';
+
+    http.Response response = await http.post(
+      'http://13.58.126.153:4000/updateImage',
+      headers: {'Content-Type': 'application/json'},
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          setState(() {
+            esEditable = false;
+            seIngresatxt = false;
+            imagenPerfil = response.body.toString();
+          });
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Editar Perfil"),
+        content: Text("¡Imagen de perfil de " +
+            datos['nombre'] +
+            " actualizada exitosamente!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      // anuncio
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Editar Perfil"),
+        content:
+            Text("¡Error al actualizar imagen de " + datos['nombre'] + "!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
+
+  void ImagenConvertirB64(String imagen) async {
+    final bytes = Io.File(imagen).readAsBytesSync();
+
+    img64 = base64Encode(bytes);
+    print("Imagen en B64 " + img64);
+  }
+
+  void _openFileExplorer() async {
+    filePath = await FilePicker.getFilePath(
+        type: FileType
+            .any); // will let you pick one file path, from all extensions
+
+// Pick a single file directly
+    file = await FilePicker.getFile(type: FileType.any);
+    print("Path es: " + filePath);
+    ImagenConvertirB64(filePath);
   }
 
   Widget textfield(
@@ -183,7 +273,6 @@ class _Profile_pageState extends State<Profile_page> {
         builder: (context, snapshot) {
           // -------- SCAFFOLD
           return Scaffold(
-              //resizeToAvoidBottomPadding: false,
               resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
                   child: Stack(
@@ -210,6 +299,7 @@ class _Profile_pageState extends State<Profile_page> {
                           ),*/
                               Stack(children: [
                                 //crossAxisAlignment: CrossAxisAlignment.center,
+
                                 Container(
                                   padding: EdgeInsets.all(10.0),
                                   width: MediaQuery.of(context).size.width / 2,
@@ -222,12 +312,259 @@ class _Profile_pageState extends State<Profile_page> {
                                     color: Colors.white,
                                     image: DecorationImage(
                                         fit: BoxFit.contain,
-                                        image: NetworkImage(
-                                            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png")),
+                                        image: NetworkImage(imagenPerfil)),
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(top: 30, left: 140),
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.lightBlue[300],
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        _openFileExplorer();
+                                        //FOTO
+                                        Widget okButton = FlatButton(
+                                          child: Text("OK"),
+                                          onPressed: () {
+                                            setState(() {
+                                              //print('asd2' + fotostring);
+                                              esEditable = false;
+                                              seIngresatxt = false;
+                                              Map nombre_sesion = {
+                                                "nombre":
+                                                    nombreCompleto_Cntrl.text
+                                              };
+                                              actualizarFotoPerfil(
+                                                  fotostring, nombre_sesion);
+                                            });
+                                            Navigator.of(context)
+                                                .pop(); // dismiss dialog
+                                          },
+                                        );
+
+                                        AlertDialog alert = AlertDialog(
+                                          actions: [
+                                            okButton,
+                                          ],
+                                        );
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return alert;
+                                          },
+                                        );
+                                        print('asd1' + fotostring);
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ]),
+                              Stack(children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 2 +
+                                          100,
+                                  width: double.infinity,
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfield(
+                                          tipoDato: TextInputType.text,
+                                          contrl: nombreCompleto_Cntrl
+                                            ..text = snapshot.data['nombre'],
+                                          labelText: "Nombre",
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfield(
+                                          tipoDato: TextInputType.text,
+                                          contrl: apellido_Ctrl
+                                            ..text = snapshot.data['apellido'],
+                                          labelText: "Apellido",
+                                          //hintText: snapshot.data['apellido'],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfieldFalse(
+                                          tipoDato: TextInputType.text,
+                                          contrl: cui_Ctrl
+                                            ..text = snapshot.data['cui'],
+                                          labelText: "CUI",
+                                          //hintText: snapshot.data['password']
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfieldFalse(
+                                          tipoDato: TextInputType.text,
+                                          contrl: carnet_Ctrl
+                                            ..text = snapshot.data['carnet'],
+                                          labelText: "Carné",
+                                          //hintText: snapshot.data['password']
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfieldFalse(
+                                          tipoDato: TextInputType.emailAddress,
+                                          contrl: usuario_Ctrl
+                                            ..text = snapshot.data['username'],
+                                          labelText: "Correo Electrónico",
+                                          //hintText: snapshot.data['password']
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: textfield(
+                                          tipoDato: TextInputType.text,
+                                          contrl: contrasena_Ctrl
+                                            ..text = snapshot.data['password'],
+                                          labelText: "Contraseña",
+                                          //hintText: snapshot.data['password']
+                                        ),
+                                      ),
+                                      Visibility(
+                                          visible: esEditable,
+                                          child: Container(
+                                            child: Row(
+                                              children: [
+                                                OutlineButton(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 40),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        //nombreCString = '';
+                                                        usuString = '';
+                                                        cuiString = '';
+                                                        carnetString = '';
+                                                        esEditable = false;
+                                                        seIngresatxt = false;
+                                                      });
+                                                    },
+                                                    child: Text("CANCELAR",
+                                                        style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            letterSpacing: 2.2,
+                                                            color:
+                                                                Colors.black))),
+                                                RaisedButton(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 42),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20)),
+                                                    color:
+                                                        Colors.lightGreen[600],
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        //nombreCString =  nombreCompleto_Cntrl.text;
+                                                        //usuString = usu_Ctrl.text;
+                                                        cuiString =
+                                                            cui_Ctrl.text;
+                                                        carnetString =
+                                                            carnet_Ctrl.text;
+                                                        print(
+                                                            "Aca se enviarian los nuevos datos a la BD :D ");
+
+                                                        Map llaves = {
+                                                          "_id": snapshot
+                                                              .data['id'],
+                                                          "CUI": snapshot
+                                                              .data['cui'],
+                                                          "carne": snapshot
+                                                              .data['carnet'],
+                                                          "username": snapshot
+                                                              .data['username'],
+                                                          "nombre":
+                                                              nombreCompleto_Cntrl
+                                                                  .text,
+                                                          "apellido":
+                                                              apellido_Ctrl
+                                                                  .text,
+                                                          "password":
+                                                              contrasena_Ctrl
+                                                                  .text,
+                                                          "__v":
+                                                              snapshot.data['v']
+                                                        };
+
+                                                        List<Curso> cursos =
+                                                            new List<Curso>();
+
+                                                        List<dynamic> lista =
+                                                            snapshot.data[
+                                                                'cursosAsignados'];
+                                                        lista
+                                                            .forEach((element) {
+                                                          cursos.add(Curso(
+                                                              id: element['id'],
+                                                              nombre: element[
+                                                                  'nombre'],
+                                                              codigo: element[
+                                                                  'codigo'],
+                                                              seccion: element[
+                                                                  'seccion'],
+                                                              horaInicio: element[
+                                                                  'horaInicio'],
+                                                              horaFinal: element[
+                                                                  'horaFinal'],
+                                                              lunes: element[
+                                                                  'lunes'],
+                                                              martes: element[
+                                                                  'martes'],
+                                                              miercoles: element[
+                                                                  'miercoles'],
+                                                              jueves: element[
+                                                                  'jueves'],
+                                                              viernes: element[
+                                                                  'viernes'],
+                                                              sabado: element[
+                                                                  'sabado'],
+                                                              domingo: element[
+                                                                  'domingo'],
+                                                              catedratico: element[
+                                                                  'catedratico']));
+                                                        });
+                                                        print(cursos);
+
+                                                        actualizarPerfil(
+                                                            llaves, cursos);
+                                                      });
+                                                    },
+                                                    child: Text("GUARDAR",
+                                                        style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            letterSpacing: 2.2,
+                                                            color:
+                                                                Colors.black)))
+                                              ],
+                                            ),
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 13, left: 315),
                                   child: CircleAvatar(
                                     backgroundColor: Colors.lightBlue[300],
                                     child: IconButton(
@@ -244,195 +581,7 @@ class _Profile_pageState extends State<Profile_page> {
                                     ),
                                   ),
                                 )
-                              ]),
-                              Container(
-                                height: MediaQuery.of(context).size.height / 2 +
-                                    100,
-                                width: double.infinity,
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfield(
-                                        tipoDato: TextInputType.text,
-                                        contrl: nombreCompleto_Cntrl
-                                          ..text = snapshot.data['nombre'],
-                                        labelText: "Nombre",
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfield(
-                                        tipoDato: TextInputType.text,
-                                        contrl: apellido_Ctrl
-                                          ..text = snapshot.data['apellido'],
-                                        labelText: "Apellido",
-                                        //hintText: snapshot.data['apellido'],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfieldFalse(
-                                        tipoDato: TextInputType.text,
-                                        contrl: cui_Ctrl
-                                          ..text = snapshot.data['cui'],
-                                        labelText: "CUI",
-                                        //hintText: snapshot.data['password']
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfieldFalse(
-                                        tipoDato: TextInputType.text,
-                                        contrl: carnet_Ctrl
-                                          ..text = snapshot.data['carnet'],
-                                        labelText: "Carné",
-                                        //hintText: snapshot.data['password']
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfieldFalse(
-                                        tipoDato: TextInputType.emailAddress,
-                                        contrl: usuario_Ctrl
-                                          ..text = snapshot.data['username'],
-                                        labelText: "Correo Electrónico",
-                                        //hintText: snapshot.data['password']
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: textfield(
-                                        tipoDato: TextInputType.text,
-                                        contrl: contrasena_Ctrl
-                                          ..text = snapshot.data['password'],
-                                        labelText: "Contraseña",
-                                        //hintText: snapshot.data['password']
-                                      ),
-                                    ),
-                                    Visibility(
-                                        visible: esEditable,
-                                        child: Container(
-                                          child: Row(
-                                            children: [
-                                              OutlineButton(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 40),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      //nombreCString = '';
-                                                      usuString = '';
-                                                      cuiString = '';
-                                                      carnetString = '';
-                                                      esEditable = false;
-                                                      seIngresatxt = false;
-                                                    });
-                                                  },
-                                                  child: Text("CANCELAR",
-                                                      style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          letterSpacing: 2.2,
-                                                          color:
-                                                              Colors.black))),
-                                              RaisedButton(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 42),
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  color: Colors.lightGreen[600],
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      //nombreCString =  nombreCompleto_Cntrl.text;
-                                                      //usuString = usu_Ctrl.text;
-                                                      cuiString = cui_Ctrl.text;
-                                                      carnetString =
-                                                          carnet_Ctrl.text;
-                                                      print(
-                                                          "Aca se enviarian los nuevos datos a la BD :D ");
-
-                                                      //Se tendria que validar el guardado de datos en la BD
-                                                      Map llaves = {
-                                                        "_id":
-                                                            snapshot.data['id'],
-                                                        "CUI": snapshot
-                                                            .data['cui'],
-                                                        "carne": snapshot
-                                                            .data['carnet'],
-                                                        "username": snapshot
-                                                            .data['username'],
-                                                        "nombre":
-                                                            nombreCompleto_Cntrl
-                                                                .text,
-                                                        "apellido":
-                                                            apellido_Ctrl.text,
-                                                        "password":
-                                                            contrasena_Ctrl
-                                                                .text,
-                                                        "__v":
-                                                            snapshot.data['v']
-                                                      };
-
-                                                      List<Curso> cursos =
-                                                          new List<Curso>();
-
-                                                      List<dynamic> lista =
-                                                          snapshot.data[
-                                                              'cursosAsignados'];
-                                                      lista.forEach((element) {
-                                                        cursos.add(Curso(
-                                                            id: element['id'],
-                                                            nombre: element[
-                                                                'nombre'],
-                                                            codigo: element[
-                                                                'codigo'],
-                                                            seccion: element[
-                                                                'seccion'],
-                                                            horaInicio: element[
-                                                                'horaInicio'],
-                                                            horaFinal: element[
-                                                                'horaFinal'],
-                                                            lunes: element[
-                                                                'lunes'],
-                                                            martes: element[
-                                                                'martes'],
-                                                            miercoles: element[
-                                                                'miercoles'],
-                                                            jueves: element[
-                                                                'jueves'],
-                                                            viernes: element[
-                                                                'viernes'],
-                                                            sabado: element[
-                                                                'sabado'],
-                                                            domingo: element[
-                                                                'domingo'],
-                                                            catedratico: element[
-                                                                'catedratico']));
-                                                      });
-                                                      print(cursos);
-
-                                                      actualizarPerfil(
-                                                          llaves, cursos);
-                                                    });
-                                                  },
-                                                  child: Text("GUARDAR",
-                                                      style: TextStyle(
-                                                          fontSize: 14.0,
-                                                          letterSpacing: 2.2,
-                                                          color: Colors.black)))
-                                            ],
-                                          ),
-                                        ))
-                                  ],
-                                ),
-                              )
+                              ])
                             ])),
                         painter: HeaderCurvedContainer(),
                       ),

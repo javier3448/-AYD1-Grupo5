@@ -294,9 +294,6 @@ router.post("/updateImage", async (req, res) => {
     if (data.image.toString() != ""){
 
         var nombrei = uuid() + ".jpg";
-    
-        //se convierte la base64 a bytes
-        let buff = new Buffer.from(data.image, 'base64');
         
         
         var s3 = new AWS.S3(aws_keys.s3);
@@ -304,7 +301,7 @@ router.post("/updateImage", async (req, res) => {
         const params = {
             Bucket: "proyecto1-ayd1",
             Key: nombrei,
-            Body: buff,
+            Body: data.image.toString(),
             ContentType: "image",
             ACL: 'public-read'
         };
@@ -312,7 +309,8 @@ router.post("/updateImage", async (req, res) => {
         
         result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
         console.log(nombrei);
-        res.json({ message : 'Imagen guardada!'});
+        res.status(202);
+        res.send(result);
 
     }
 
