@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_students/src/pages/session.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_session/flutter_session.dart';
+
+import '../../main.dart';
 
 class Home_page extends StatefulWidget {
   Home_page({Key key}) : super(key: key);
@@ -191,6 +195,50 @@ class _Home_pageState extends State<Home_page> {
     await FlutterSession().set("user", nuevo);
   }
 
+  Widget _Horas(String hora) {
+    return Chip(
+      label: Text(hora),
+      backgroundColor: Colors.white,
+      shape: StadiumBorder(side: BorderSide(width: 1, color: Colors.redAccent)),
+    );
+  }
+
+  Widget _DiaClase(String dia, String respuesta) {
+    if (respuesta == "Y") {
+      return Padding(
+        padding: const EdgeInsets.all(2),
+        child: CircleAvatar(
+          radius: 15,
+          backgroundColor: Colors.redAccent,
+          child: CircleAvatar(
+            radius: 14,
+            backgroundColor: Colors.blue,
+            child: Text(
+              dia,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: CircleAvatar(
+          radius: 15,
+          backgroundColor: Colors.redAccent,
+          child: CircleAvatar(
+            radius: 14,
+            backgroundColor: Colors.white,
+            child: Text(dia,
+                style: TextStyle(
+                  color: Colors.black,
+                )),
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _BCurso(CursoPorAsignar cursoPorAsignar) {
     String codigo = cursoPorAsignar.curso.codigo.toString();
     String nombre = cursoPorAsignar.curso.nombre;
@@ -207,8 +255,15 @@ class _Home_pageState extends State<Home_page> {
       children: [
         Column(
           children: [
+            Divider(
+              height: 15,
+              thickness: 3,
+              indent: 30,
+              endIndent: 30,
+            ),
             Text(
               codigo + " - " + nombre,
+              textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 23.0,
                   fontWeight: FontWeight.bold,
@@ -226,32 +281,65 @@ class _Home_pageState extends State<Home_page> {
               "Inicio: " + hInicio + " Final: " + hFinal,
               style: TextStyle(fontSize: 17.0, color: Colors.white),
             ),
-            // @TODO: que siga mas el estilo de los otros botones
-            ElevatedButton(
-                onPressed: () {
-                  debugPrint("Detalles");
-                },
-                child: Text("Detalles")),
-            ElevatedButton(
-                onPressed: () {
-                  debugPrint("Asignar");
-                  setState(() {
-                    cursoPorAsignar.isAgregado = !cursoPorAsignar.isAgregado;
-                  });
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _DiaClase("L", cursoPorAsignar.curso.lunes),
+                  _DiaClase("M", cursoPorAsignar.curso.martes),
+                  _DiaClase("Mi", cursoPorAsignar.curso.miercoles),
+                  _DiaClase("J", cursoPorAsignar.curso.jueves),
+                  _DiaClase("V", cursoPorAsignar.curso.viernes),
+                  _DiaClase("S", cursoPorAsignar.curso.sabado),
+                  _DiaClase("D", cursoPorAsignar.curso.domingo),
+                ],
+              ),
+            ),
+            Divider(
+              height: 15,
+              thickness: 3,
+              indent: 80,
+              endIndent: 80,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+// @TODO: que siga mas el estilo de los otros botones
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        debugPrint("Detalles");
+                      },
+                      child: Text("Detalles")),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        debugPrint("Asignar");
+                        setState(() {
+                          cursoPorAsignar.isAgregado =
+                              !cursoPorAsignar.isAgregado;
+                        });
 
-                  if (cursoPorAsignar.isAgregado)
-                    listaAuxiliar.add(cursoPorAsignar);
-                  else {
-                    List<CursoPorAsignar> aux = new List<CursoPorAsignar>();
-                    listaAuxiliar.forEach((element) {
-                      if (element.curso.id != cursoPorAsignar.curso.id)
-                        aux.add(element);
-                    });
+                        if (cursoPorAsignar.isAgregado)
+                          listaAuxiliar.add(cursoPorAsignar);
+                        else {
+                          List<CursoPorAsignar> aux =
+                              new List<CursoPorAsignar>();
+                          listaAuxiliar.forEach((element) {
+                            if (element.curso.id != cursoPorAsignar.curso.id)
+                              aux.add(element);
+                          });
 
-                    listaAuxiliar = aux;
-                  }
-                },
-                child: Text(isAgregado ? "Quitar" : "Agregar")),
+                          listaAuxiliar = aux;
+                        }
+                      },
+                      child: Text(isAgregado ? "Quitar" : "Agregar")),
+                ),
+              ],
+            ),
           ],
         )
       ],
