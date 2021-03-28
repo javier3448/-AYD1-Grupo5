@@ -254,7 +254,36 @@ class _Calendar_pageState extends State<Calendar_page> {
                 eventBuilder: (event) {
                   return BasicEventWidget(
                     event,
-                    onTap: () => _showSnackBar('Part-day event $event tapped'),
+                    onTap: () {
+                      String eventoString = event.title.toString();
+                      var eventoInfo = eventoString.split('\n');
+                      Widget okButton = FlatButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // dismiss dialog
+                        },
+                      );
+                      AlertDialog alert = AlertDialog(
+                        title: Text(eventoInfo[0]),
+                        backgroundColor: event.color,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(15)),
+                        content: Text('\nCatedrático: ' +
+                            eventoInfo[1] +
+                            '\n\nSección: ' +
+                            eventoInfo[2]),
+                        actions: [
+                          okButton,
+                        ],
+                      );
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      );
+                      _showSnackBar('Part-day event $event tapped');
+                    },
                   );
                 },
                 allDayEventBuilder: (context, event, info) =>
