@@ -315,14 +315,14 @@ router.put("/setImage", async (req, res) => {
                 ACL: 'public-read'
             };
             s3.putObject(params).promise();
-            result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
+            var result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
             
             await Estudiante.findOneAndUpdate(
                 { carne: data.carne },
                 { image : result.toString() }
             );
             res.status(202);
-            res.json({ message : 'Imagen Actualizada :)'});
+            res.send(result);
          }
      });
     
