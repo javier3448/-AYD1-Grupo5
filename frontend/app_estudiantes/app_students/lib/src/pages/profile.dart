@@ -108,23 +108,25 @@ class _Profile_pageState extends State<Profile_page> {
     }
   }
 
-  Future actualizarFotoPerfil(String imagenNueva, Map datos) async {
-    String cuerpo = '{ "image": "' + imagenNueva + '" }';
+  Future actualizarFotoPerfil(Map datos, Usuario user) async {
+    String cuerpo = json.encode(datos);
 
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/updateImage',
+    http.Response response = await http.put(
+      'http://13.58.126.153:4000/setImage',
       headers: {'Content-Type': 'application/json'},
       body: cuerpo,
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      user.image = response.body.toString();
+      await FlutterSession().set("user", user);
+
       Widget okButton = FlatButton(
         child: Text("OK"),
         onPressed: () {
           setState(() {
             esEditable = false;
             seIngresatxt = false;
-            imagenPerfil = response.body.toString();
           });
           Navigator.of(context).pop(); // dismiss dialog
         },
@@ -133,7 +135,7 @@ class _Profile_pageState extends State<Profile_page> {
       AlertDialog alert = AlertDialog(
         title: Text("Editar Perfil"),
         content: Text("¡Imagen de perfil de " +
-            datos['nombre'] +
+            user.nombre +
             " actualizada exitosamente!"),
         actions: [
           okButton,
@@ -156,8 +158,7 @@ class _Profile_pageState extends State<Profile_page> {
 
       AlertDialog alert = AlertDialog(
         title: Text("Editar Perfil"),
-        content:
-            Text("¡Error al actualizar imagen de " + datos['nombre'] + "!"),
+        content: Text("¡Error al actualizar imagen de " + user.nombre + "!"),
         actions: [
           okButton,
         ],
@@ -171,22 +172,12 @@ class _Profile_pageState extends State<Profile_page> {
     }
   }
 
-  void ImagenConvertirB64(String imagen) async {
-    final bytes = Io.File(imagen).readAsBytesSync();
-
+  void _openFileExplorer(Usuario usuario) async {
+    filePath = await FilePicker.getFilePath(type: FileType.image);
+    final bytes = Io.File(filePath).readAsBytesSync();
     img64 = base64Encode(bytes);
-    print("Imagen en B64 " + img64);
-  }
-
-  void _openFileExplorer() async {
-    filePath = await FilePicker.getFilePath(
-        type: FileType
-            .any); // will let you pick one file path, from all extensions
-
-// Pick a single file directly
-    file = await FilePicker.getFile(type: FileType.any);
-    print("Path es: " + filePath);
-    ImagenConvertirB64(filePath);
+    Map datos = {"carne": usuario.carnet, "image": img64.toString()};
+    actualizarFotoPerfil(datos, usuario);
   }
 
   Widget textfield(
@@ -271,7 +262,6 @@ class _Profile_pageState extends State<Profile_page> {
       child: FutureBuilder(
         future: FlutterSession().get('user'),
         builder: (context, snapshot) {
-          // -------- SCAFFOLD
           return Scaffold(
               resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
@@ -286,17 +276,6 @@ class _Profile_pageState extends State<Profile_page> {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
                             child: Column(children: [
-                              /*Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                              "Perfil",
-                              style: TextStyle(
-                                  fontSize: 35,
-                                  letterSpacing: 1.5,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),*/
                               Stack(children: [
                                 //crossAxisAlignment: CrossAxisAlignment.center,
 
@@ -312,7 +291,12 @@ class _Profile_pageState extends State<Profile_page> {
                                     color: Colors.white,
                                     image: DecorationImage(
                                         fit: BoxFit.contain,
-                                        image: NetworkImage(imagenPerfil)),
+                                        image: NetworkImage(
+                                            snapshot.data['image'].toString() ==
+                                                    ""
+                                                ? imagenPerfil
+                                                : snapshot.data['image']
+                                                    .toString())),
                                   ),
                                 ),
                                 Padding(
@@ -325,39 +309,15 @@ class _Profile_pageState extends State<Profile_page> {
                                         color: Colors.white,
                                       ),
                                       onPressed: () {
-                                        _openFileExplorer();
-                                        //FOTO
-                                        Widget okButton = FlatButton(
-                                          child: Text("OK"),
-                                          onPressed: () {
-                                            setState(() {
-                                              //print('asd2' + fotostring);
-                                              esEditable = false;
-                                              seIngresatxt = false;
-                                              Map nombre_sesion = {
-                                                "nombre":
-                                                    nombreCompleto_Cntrl.text
-                                              };
-                                              actualizarFotoPerfil(
-                                                  fotostring, nombre_sesion);
-                                            });
-                                            Navigator.of(context)
-                                                .pop(); // dismiss dialog
-                                          },
-                                        );
+                                        List<Curso> cursos = new List<Curso>();
+                                        snapshot.data['cursosAsignados']
+                                            .forEach((element) {
+                                          cursos
+                                              .add(Curso.fromDynamic(element));
+                                        });
 
-                                        AlertDialog alert = AlertDialog(
-                                          actions: [
-                                            okButton,
-                                          ],
-                                        );
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return alert;
-                                          },
-                                        );
-                                        print('asd1' + fotostring);
+                                        _openFileExplorer(Usuario.fromDynamic(
+                                            snapshot.data, cursos));
                                       },
                                     ),
                                   ),

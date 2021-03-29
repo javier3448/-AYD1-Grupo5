@@ -247,10 +247,7 @@ class _Calendar_pageState extends State<Calendar_page> {
               ),
               body: Timetable<BasicEvent>(
                 controller: ctrlPlus,
-                onEventBackgroundTap: (start, isAllDay) {
-                  _showSnackBar(
-                      'Background tapped $start is all day event $isAllDay');
-                },
+                onEventBackgroundTap: (start, isAllDay) {},
                 eventBuilder: (event) {
                   return BasicEventWidget(
                     event,
@@ -265,7 +262,7 @@ class _Calendar_pageState extends State<Calendar_page> {
                       );
                       AlertDialog alert = AlertDialog(
                         title: Text(eventoInfo[0]),
-                        backgroundColor: event.color,
+                        backgroundColor: Colors.blue[50],
                         shape: RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(15)),
                         content: Text('\nCatedrático: ' +
@@ -282,7 +279,6 @@ class _Calendar_pageState extends State<Calendar_page> {
                           return alert;
                         },
                       );
-                      _showSnackBar('Part-day event $event tapped');
                     },
                   );
                 },
