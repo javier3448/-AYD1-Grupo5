@@ -55,6 +55,7 @@ class Usuario {
   final String username;
   final String password;
   final List<Curso> cursosAsignados;
+  String image;
   final int v;
 
   Usuario(
@@ -66,6 +67,7 @@ class Usuario {
       this.username,
       this.password,
       this.cursosAsignados,
+      this.image,
       this.v});
 
   Usuario.fromJson(Map<String, dynamic> json, List<Curso> cursos)
@@ -77,7 +79,20 @@ class Usuario {
         username = json['username'],
         password = json['password'],
         cursosAsignados = cursos,
+        image = json['image'],
         v = json['__v'];
+
+  Usuario.fromDynamic(dynamic d, List<Curso> cursos)
+      : id = d['id'],
+        nombre = d['nombre'],
+        apellido = d['apellido'],
+        cui = d['cui'],
+        carnet = d['carnet'],
+        username = d['username'],
+        password = d['password'],
+        cursosAsignados = cursos,
+        image = d['image'],
+        v = d['v'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -89,6 +104,7 @@ class Usuario {
     data["username"] = username;
     data["password"] = password;
     data['cursosAsignados'] = cursosAsignados;
+    data['image'] = image;
     data["v"] = v;
     return data;
   }
@@ -144,6 +160,23 @@ class Curso {
         sabado = json['sabado'],
         domingo = json['domingo'],
         v = json['__v'];
+
+  Curso.fromDynamic(dynamic d)
+      : id = d['id'],
+        nombre = d['nombre'],
+        codigo = d['codigo'],
+        seccion = d['seccion'],
+        horaInicio = d['horaInicio'],
+        horaFinal = d['horaFinal'],
+        lunes = d['lunes'],
+        martes = d['martes'],
+        miercoles = d['miercoles'],
+        jueves = d['jueves'],
+        viernes = d['viernes'],
+        sabado = d['sabado'],
+        domingo = d['domingo'],
+        catedratico = d['catedratico'],
+        v = 0;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
