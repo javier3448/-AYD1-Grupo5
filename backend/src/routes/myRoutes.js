@@ -368,5 +368,58 @@ router.post("/updateImage", async (req, res) => {
     }
 });
 
+router.get('/numeroCursos', async (req, res) => {
+    
+    try {
+
+        await Curso.find({}, function (err, courses) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("Error al obtener cursos :c");
+            } else{ 
+                res.status(202);
+                res.json({ cursos : courses.length});              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener cursos :c");
+    }
+
+});
+
+router.get('/numeroEstudiantes', async (req, res) => {
+    
+    try {
+
+        await Estudiante.find({}, function (err, estudiantes) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("Error al obtener estudiantes :c");
+            } else{ 
+                res.status(202);
+                res.json({ estudiantes : estudiantes.length});              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener estudiantes :c");
+    }
+
+});
 
 module.exports = router; 
