@@ -96,6 +96,7 @@ class _Home_pageState extends State<Home_page> {
         listadoCursos.add(CursoPorAsignar(Curso.fromJson(element), false));
       });
     }
+    setState(() {});
   }
 
   asignarCursos(Curso curso, String carnet) async {

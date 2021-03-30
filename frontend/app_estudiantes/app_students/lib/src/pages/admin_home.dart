@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:convert';
 
 class Admin_page extends StatefulWidget {
   Admin_page({Key key}) : super(key: key);
@@ -10,6 +13,9 @@ class Admin_page extends StatefulWidget {
 }
 
 class _Admin_pageState extends State<Admin_page> {
+  int cantidadCursos = 0;
+  int cantidadEstudiantes = 0;
+
   var imgE = Image.network(
     "https://i.ibb.co/12x67R8/estudiantes.png",
     height: 150.0,
@@ -23,6 +29,29 @@ class _Admin_pageState extends State<Admin_page> {
     height: 150.0,
   );
 
+  Future obtenerDatos() async {
+    http.Response response = await http.get(
+      'http://13.58.126.153:4000/numeroCursos',
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 202) {
+      Map respuesta = json.decode(response.body);
+      cantidadCursos = respuesta['cursos'];
+    }
+
+    http.Response response2 = await http.get(
+      'http://13.58.126.153:4000/numeroEstudiantes',
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response2.statusCode == 202) {
+      Map respuesta = json.decode(response2.body);
+      cantidadEstudiantes = respuesta['estudiantes'];
+    }
+    setState(() {});
+  }
+
   Widget cantidad(cantidad) {
     return Text(
       cantidad,
@@ -30,6 +59,13 @@ class _Admin_pageState extends State<Admin_page> {
       style: TextStyle(
           color: Colors.white, fontSize: 100, fontWeight: FontWeight.bold),
     );
+  }
+
+  @override
+  void initState() {
+    //super.initState();
+    obtenerDatos();
+    setState(() {});
   }
 
   @override
@@ -74,7 +110,8 @@ class _Admin_pageState extends State<Admin_page> {
                       )
                     ],
                   )),
-              Expanded(flex: 1, child: cantidad("000")),
+              Expanded(
+                  flex: 1, child: cantidad(cantidadEstudiantes.toString())),
             ],
           ),
           Divider(
@@ -85,7 +122,7 @@ class _Admin_pageState extends State<Admin_page> {
           ),
           Row(
             children: [
-              Expanded(flex: 1, child: cantidad("00")),
+              Expanded(flex: 1, child: cantidad(cantidadCursos.toString())),
               Expanded(
                   flex: 1,
                   child: Column(
