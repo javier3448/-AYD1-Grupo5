@@ -50,6 +50,7 @@ flutter:
   assets:
     - packages/time_machine/data/cultures/cultures.bin
     - packages/time_machine/data/tzdb/tzdb.bin
+    - assets/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
