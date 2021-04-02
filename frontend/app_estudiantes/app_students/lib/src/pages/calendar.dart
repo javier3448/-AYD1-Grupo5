@@ -235,16 +235,6 @@ class _Calendar_pageState extends State<Calendar_page> {
                     obtenerCursos(snapshot.data['cursosAsignados'])));
             return Scaffold(
               key: _scaffoldKey,
-              appBar: AppBar(
-                title: Text('Cursos Semanales'),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.today),
-                    onPressed: () => ctrlPlus.animateToToday(),
-                    tooltip: 'Jump to today',
-                  ),
-                ],
-              ),
               body: Timetable<BasicEvent>(
                 controller: ctrlPlus,
                 onEventBackgroundTap: (start, isAllDay) {},
