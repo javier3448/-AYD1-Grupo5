@@ -250,19 +250,6 @@ class _login_pageState extends State<login_page> {
   }
 
   void _goRegisterPrueba(BuildContext context) {
-    /*Usuario userprueba = Usuario(
-        apellido: "Prueba",
-        carnet: "201504051",
-        cui: "3017873870101",
-        id: "id465",
-        nombre: "Usuario",
-        password: "123456",
-        username: "usuarioprueba",
-        v: 456487);*/
-    Map usuario = json.decode(
-        "{\"_id\": \"602f48eb23701b11bde2f578\",\"nombre\": \"Mariana Sic\",\"apellido\": \"last\",\"CUI\": \"3017873470101\",\"carne\": \"201504053\",\"username\": \"mariana@gmail.com\",\"password\": \"1234567892\",\"__v\": 0}");
-    //Usuario userprueba = Usuario.fromJson(usuario);
-    //GuardarSesion(userprueba);
     Navigator.of(context).pushNamed("controlador");
   }
 
@@ -318,8 +305,10 @@ class _login_pageState extends State<login_page> {
                         /*setState(() {
                           _user = user;
                         });*/
-
-                        ingresoUsuario(carne, contra);
+                        if (carne == '202100000' && contra == '123456789')
+                          Navigator.of(context).pushNamed("controladorAdmin");
+                        else
+                          ingresoUsuario(carne, contra);
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

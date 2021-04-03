@@ -1,7 +1,8 @@
 import 'package:app_students/src/pages/controlador.dart';
 import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/tabs.dart';
-import 'package:app_students/src/pages/calendar.dart';
+import 'package:app_students/src/pages/cursos.dart';
+import 'package:app_students/src/pages/adminTabs.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         'login': (BuildContext context) => login_page(),
         'tans': (BuildContext context) => tabs_page(),
         'controlador': (BuildContext context) => Controller_page(),
-        'calendar': (BuildContext context) => Calendar_page()
+        'cursitos': (BuildContext context) => Cursos(),
+        'controladorAdmin': (BuildContext context) => Admin_Tabs()
       },
     );
   }

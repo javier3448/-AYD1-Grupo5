@@ -6,7 +6,8 @@ const Curso = require('../models/curso');
 var uuid = require('uuid');
 var AWS = require('aws-sdk');
 const aws_keys = require('../keys');
-
+//instanciamos los servicios a utilizar con sus respectivos accesos.
+const s3 = new AWS.S3(aws_keys.s3);
 
 router.get('/', (req, res) => {
     res.json({'Resultado': 'API AYD1: Grupo 5! :D'});
@@ -284,23 +285,65 @@ router.put("/assign", async (req, res) => {
      res.send({ message : error });
     }
  });
+
+router.put("/setImage", async (req, res) => {
+
+    try {
+ 
+     const data = req.body;
+     await Estudiante.findOne({carne: data.carne}, async function (err, docs){
+ 
+         if (err){ 
+             console.log(err)
+             res.status(404);
+             res.send({ message : err }); 
+         } else if (docs == null) {
+             res.status(404);
+             res.send({ message : "Usuario no existe" }); 
+             console.log("Usuario no existe :c");
+         } else {
+
+            var nombrei = uuid() + ".jpg";
+            //se convierte la base64 a bytes
+            let buff = new Buffer.from(data.image, 'base64');
+
+            const params = {
+                Bucket: "proyecto1-ayd1",
+                Key: nombrei,
+                Body: buff,
+                ContentType: "image",
+                ACL: 'public-read'
+            };
+            s3.putObject(params).promise();
+            var result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
+            
+            await Estudiante.findOneAndUpdate(
+                { carne: data.carne },
+                { image : result.toString() }
+            );
+            res.status(202);
+            res.send(result);
+         }
+     });
+    
+    } catch (error) {
+     console.log(error)
+     res.status(404);
+     res.send({ message : error });
+    }
+ });
  
 router.post("/updateImage", async (req, res) => {
 
     const data = req.body;
     try {
-    console.log(data.image.toString());
         
     if (data.image.toString() != ""){
 
         var nombrei = uuid() + ".jpg";
-    
-        //se convierte la base64 a bytes
+        
         let buff = new Buffer.from(data.image, 'base64');
-        
-        
-        var s3 = new AWS.S3(aws_keys.s3);
-        
+
         const params = {
             Bucket: "proyecto1-ayd1",
             Key: nombrei,
@@ -308,21 +351,75 @@ router.post("/updateImage", async (req, res) => {
             ContentType: "image",
             ACL: 'public-read'
         };
-        var resultado = s3.putObject(params).promise();
+
+        s3.putObject(params).promise();
         
         result = `https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/` + nombrei;
         console.log(nombrei);
-        res.json({ message : 'Imagen guardada!'});
+        res.status(202);
+        res.send(result);
 
     }
 
     } catch (error) {
-        console.log(data.image.toString());
         console.log(error);
         res.status(404);
         res.send({ message : error });
     }
 });
 
+router.get('/numeroCursos', async (req, res) => {
+    
+    try {
+
+        await Curso.find({}, function (err, courses) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("Error al obtener cursos :c");
+            } else{ 
+                res.status(202);
+                res.json({ cursos : courses.length});              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener cursos :c");
+    }
+
+});
+
+router.get('/numeroEstudiantes', async (req, res) => {
+    
+    try {
+
+        await Estudiante.find({}, function (err, estudiantes) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("Error al obtener estudiantes :c");
+            } else{ 
+                res.status(202);
+                res.json({ estudiantes : estudiantes.length});              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener estudiantes :c");
+    }
+
+});
 
 module.exports = router; 
