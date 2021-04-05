@@ -46,6 +46,34 @@ router.get('/getcourses', async (req, res) => {
 
 });
 
+router.get('/getStudents', async (req, res) => {
+    
+    try {
+
+        await Estudiante.find({}, function (err, students) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err });
+                console.log("Error al obtener estudiantes :c");
+            } else{ 
+                res.status(202);
+                console.log("Estudiantes obtenidos correctamente :D")
+                res.json(students);              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener estudiantes :c");
+    }
+
+});
+
 router.post('/login', async (req, res) => {
 
     try {
