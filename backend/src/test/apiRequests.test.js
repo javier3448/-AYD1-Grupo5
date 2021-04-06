@@ -40,6 +40,22 @@ describe('Testing API REST', function(){
     });
     });
 
+    describe('get all students: ',()=>{
+        it('should get all students', (done) => {
+        chai.request(app)
+        .get('/getStudents')
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(202);
+                done();
+            }
+        });
+        });
+        });
+
     describe('login as a student: ',()=>{
         it('should login ', (done) => {
         chai.request(app)
