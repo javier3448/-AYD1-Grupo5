@@ -54,7 +54,39 @@ describe('Testing API REST', function(){
             }
         });
         });
+    });
+
+    describe('get the number of students: ',()=>{
+        it('should get the number of students', (done) => {
+        chai.request(app)
+        .get('/numeroEstudiantes')
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(202);
+                done();
+            }
         });
+        });
+    });
+
+    describe('get the number of courses: ',()=>{
+        it('should get the number of courses', (done) => {
+        chai.request(app)
+        .get('/numeroCursos')
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(202);
+                done();
+            }
+        });
+        });
+    });
 
     describe('login as a student: ',()=>{
         it('should login ', (done) => {
@@ -71,7 +103,7 @@ describe('Testing API REST', function(){
             }
         });
         });
-        });
+    });
 
     describe('login as a student: ',()=>{
         it('should login ', (done) => {
@@ -88,6 +120,6 @@ describe('Testing API REST', function(){
             }
         });
         });
-        });
+    });
 
 });
