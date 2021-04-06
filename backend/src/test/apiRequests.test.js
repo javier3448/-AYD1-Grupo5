@@ -105,8 +105,56 @@ describe('Testing API REST', function(){
         });
     });
 
+    describe('register new student: ',()=>{
+        it('should register new student ', (done) => {
+        chai.request(app)
+        .post('/new')
+        .send({ 
+            CUI: "3448912660007",
+            carne: "201602728",       
+            nombre: "Nuevo",
+            apellido: "Usuario",
+            username: "newuser2021@gmail.com",
+            password: "123456789"
+         })
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(202);
+                done();
+            }
+        });
+        });
+    });
+
+    describe('register new student: ',()=>{
+        it('shouldn’t register new student ', (done) => {
+        chai.request(app)
+        .post('/new')
+        .send({ 
+            CUI: "3448912660007",
+            carne: "201602625",       
+            nombre: "Nuevo",
+            apellido: "Usuario",
+            username: "newuser2021@gmail.com",
+            password: "123456789"
+         })
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(404);
+                done();
+            }
+        });
+        });
+    });
+
     describe('login as a student: ',()=>{
-        it('should login ', (done) => {
+        it('shouldn’t login ', (done) => {
         chai.request(app)
         .post('/login')
         .send({ nombre: "201504055", contrasena: "123456789"})
