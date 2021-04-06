@@ -170,4 +170,29 @@ describe('Testing API REST', function(){
         });
     });
 
+    describe('update new student: ',()=>{
+        it('should update new student ', (done) => {
+        chai.request(app)
+        .post('/update')
+        .send({ 
+            CUI: "3448688000101",
+            carne: "201602625",       
+            nombre: "Alfredoooooooo",
+            apellido: "Lemus",
+            username: "oscarllamasusa@gmail.com",
+            password: "nuevapassword2021"
+         })
+        .end( function(err,res){
+            if (err){
+                console.log(err);
+            } else {
+                console.log(res.body)
+                expect(res).to.have.status(202);
+                done();
+            }
+        });
+        });
+    });
+
+
 });
