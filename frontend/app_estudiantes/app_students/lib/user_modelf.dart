@@ -5,6 +5,7 @@ class Estudiante {
   final String carne;
   final String username;
   final String password;
+  final String image;
 
   Estudiante(
       {this.nombre,
@@ -12,7 +13,8 @@ class Estudiante {
       this.CUI,
       this.carne,
       this.username,
-      this.password});
+      this.password,
+      this.image});
 
   factory Estudiante.fromJson(Map<String, dynamic> json) {
     return Estudiante(
@@ -21,6 +23,7 @@ class Estudiante {
         CUI: json['CUI'],
         carne: json['carne'],
         username: json['username'],
-        password: json['password']);
+        password: json['password'],
+        image: json['image']);
   }
 }

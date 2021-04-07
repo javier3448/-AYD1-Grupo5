@@ -19,9 +19,25 @@ class _EstudiantesState extends State<Estudiantes> {
     return ExpansionTile(
       title: Text(estudiante.carne),
       subtitle: Text(estudiante.nombre + " " + estudiante.apellido),
-      leading: CircleAvatar(
-        child: Text("img"),
-        backgroundColor: Color.fromRGBO(15, 40, 80, 1),
+      leading: FutureBuilder(
+        future: loadImageEstudiante(estudiante.image),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if(snapshot.hasData){
+            return CircleAvatar(
+              backgroundImage: snapshot.data,
+              backgroundColor: Color.fromRGBO(15, 40, 80, 1),
+            );
+          }
+          else if(snapshot.hasError){
+            return ErrorWidget('Error al obtener imagen:\n\n' + snapshot.error.toString());
+          }
+          else{
+            // TODO: poner una animacion o algo asi para que se vea que esta cargando
+            // BUG: Estos tres puntos se deberian de ver mientras se carga la imagen
+            // pero no se ven
+            return Text('...');
+          }
+        },
       ),
       trailing: Icon(Icons.expand_more_rounded),
       children: [
@@ -39,13 +55,34 @@ class _EstudiantesState extends State<Estudiantes> {
               estudiante.CUI,
               style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
-            Divider(height: 20.0)
+            Divider(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                debugPrint("Editar");
+              },
+              child: Text("Editar")
+            ),
+            ElevatedButton(
+              onPressed: () {
+                debugPrint("Eliminar");
+              },
+              child: Text("Eliminar")
+            ),
           ],
         )
       ],
       backgroundColor: Color.fromRGBO(15, 40, 80, 1),
       initiallyExpanded: false,
     );
+  }
+
+  Future<ImageProvider<Object>> loadImageEstudiante(String url){
+    if(url == null){
+      return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+    }
+    else{
+      return Future.value(NetworkImage(url));
+    }
   }
 
   Widget retornarTitulo() {
@@ -145,8 +182,8 @@ class _EstudiantesState extends State<Estudiantes> {
             else{ //todavia estamos esperando al future
             // TODO: poner una animacion o algo asi para que se vea que esta cargando
               return Text(
-                '\n\nCargando...',
-                style: Theme.of(context).textTheme.headline2
+                '\n\n   Cargando...',
+                style: Theme.of(context).textTheme.headline4
               );
             }
 
