@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_session/flutter_session.dart';
@@ -22,16 +23,15 @@ class _EstudiantesState extends State<Estudiantes> {
       leading: FutureBuilder(
         future: loadImageEstudiante(estudiante.image),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if(snapshot.hasData){
+          if (snapshot.hasData) {
             return CircleAvatar(
               backgroundImage: snapshot.data,
               backgroundColor: Color.fromRGBO(15, 40, 80, 1),
             );
-          }
-          else if(snapshot.hasError){
-            return ErrorWidget('Error al obtener imagen:\n\n' + snapshot.error.toString());
-          }
-          else{
+          } else if (snapshot.hasError) {
+            return ErrorWidget(
+                'Error al obtener imagen:\n\n' + snapshot.error.toString());
+          } else {
             // TODO: poner una animacion o algo asi para que se vea que esta cargando
             // BUG: Estos tres puntos se deberian de ver mientras se carga la imagen
             // pero no se ven
@@ -57,17 +57,17 @@ class _EstudiantesState extends State<Estudiantes> {
             ),
             Divider(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                debugPrint("Editar");
-              },
-              child: Text("Editar")
-            ),
+                onPressed: () {
+                  debugPrint("Editar");
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Profile_page_admin(estudiante)));
+                },
+                child: Text("Editar")),
             ElevatedButton(
-              onPressed: () {
-                debugPrint("Eliminar");
-              },
-              child: Text("Eliminar")
-            ),
+                onPressed: () {
+                  debugPrint("Eliminar");
+                },
+                child: Text("Eliminar")),
           ],
         )
       ],
@@ -76,11 +76,10 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
-  Future<ImageProvider<Object>> loadImageEstudiante(String url){
-    if(url == null){
+  Future<ImageProvider<Object>> loadImageEstudiante(String url) {
+    if (url == null) {
       return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    }
-    else{
+    } else {
       return Future.value(NetworkImage(url));
     }
   }
@@ -126,9 +125,8 @@ class _EstudiantesState extends State<Estudiantes> {
       });
 
       return Future.value(result);
-    }
-    else{
-      // TODO: No se si esta es una manera correcta de manejar el error usando un 
+    } else {
+      // TODO: No se si esta es una manera correcta de manejar el error usando un
       // Future
       return Future.error(response.body);
 
@@ -158,8 +156,7 @@ class _EstudiantesState extends State<Estudiantes> {
       child: FutureBuilder(
           future: apiEstudiantes(),
           builder: (context, snapshot) {
-
-            if(snapshot.hasData){
+            if (snapshot.hasData) {
               return Scaffold(
                 resizeToAvoidBottomInset: true,
                 appBar: null,
@@ -173,20 +170,17 @@ class _EstudiantesState extends State<Estudiantes> {
                   ),
                 ),
               );
-            }
-            else if(snapshot.hasError){
+            } else if (snapshot.hasError) {
               // TODO: poner un 'textTheme' especial o algo asi para que se sepa
               // que hubo error o al menos que este en rojo o algo asi
-              return ErrorWidget('Error al hacer la peticion:\n\n' + snapshot.error.toString());
+              return ErrorWidget('Error al hacer la peticion:\n\n' +
+                  snapshot.error.toString());
+            } else {
+              //todavia estamos esperando al future
+              // TODO: poner una animacion o algo asi para que se vea que esta cargando
+              return Text('\n\n   Cargando...',
+                  style: Theme.of(context).textTheme.headline4);
             }
-            else{ //todavia estamos esperando al future
-            // TODO: poner una animacion o algo asi para que se vea que esta cargando
-              return Text(
-                '\n\n   Cargando...',
-                style: Theme.of(context).textTheme.headline4
-              );
-            }
-
           }),
     );
   }
