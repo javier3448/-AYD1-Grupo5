@@ -79,7 +79,13 @@ class _EstudiantesState extends State<Estudiantes> {
   Future<ImageProvider<Object>> loadImageEstudiante(String url) {
     if (url == null) {
       return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    } else {
+    } 
+    // @chapuz: porque el nuevo usuario que registre tiene una image "" por default,
+    // no una null
+    else if(url == ""){ 
+      return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+    }
+      else {
       return Future.value(NetworkImage(url));
     }
   }
