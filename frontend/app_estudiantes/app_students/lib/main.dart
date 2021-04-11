@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Students App',
-      initialRoute: 'estudiantes',
+      initialRoute: 'login',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Color.fromRGBO(15, 45, 80, 1),

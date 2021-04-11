@@ -66,6 +66,39 @@ class _EstudiantesState extends State<Estudiantes> {
             ElevatedButton(
                 onPressed: () {
                   debugPrint("Eliminar");
+                  Widget okButton = FlatButton(
+                    child: Text("Sí"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      eliminarUsuario(estudiante.carne, estudiante.nombre);
+                    },
+                  );
+
+                  Widget cancelButton = FlatButton(
+                    child: Text("Cancelar"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Eliminar Estudiante"),
+                    content: Text("¿Desea eliminar a " +
+                        estudiante.nombre +
+                        " " +
+                        estudiante.apellido +
+                        "?"),
+                    actions: [
+                      cancelButton,
+                      okButton,
+                    ],
+                  );
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
                 },
                 child: Text("Eliminar")),
           ],
@@ -76,16 +109,74 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
+  Future eliminarUsuario(String carnet, String nombre) async {
+    //ACA SE MANDA LA PETICION A LA BD
+    Map datos = {"carne": carnet};
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.post(
+      'http://13.58.126.153:4000/deleteStudent',
+      headers: {'Content-Type': 'application/json'},
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Eliminar Estudiante"),
+        content: Text("Estudiante '" + nombre + "' eliminado!"),
+        actions: [
+          okButton,
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+
+      setState(() {});
+    } else {
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop(); // dismiss dialog
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: Text("Eliminar Estudiante"),
+        content: Text("Estudiante '" + nombre + "' no se ha podido eliminar!"),
+        actions: [
+          okButton,
+        ],
+      );
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+  }
+
   Future<ImageProvider<Object>> loadImageEstudiante(String url) {
     if (url == null) {
       return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    } 
+    }
     // @chapuz: porque el nuevo usuario que registre tiene una image "" por default,
     // no una null
-    else if(url == ""){ 
+    else if (url == "") {
       return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    }
-      else {
+    } else {
       return Future.value(NetworkImage(url));
     }
   }

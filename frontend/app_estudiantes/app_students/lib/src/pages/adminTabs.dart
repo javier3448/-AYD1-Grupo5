@@ -1,9 +1,7 @@
 import 'package:app_students/src/pages/admin_create.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
 import 'package:app_students/src/pages/admin_home.dart';
-import 'package:app_students/src/pages/calendar.dart';
-import 'package:app_students/src/pages/home.dart';
-import 'package:app_students/src/pages/profile.dart';
+import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 
@@ -94,7 +92,7 @@ class _Admin_TabsState extends State<Admin_Tabs> {
         onPageChanged: (index) {
           setState(() => _index = index);
         },
-        children: [Admin_page(), Create_page(), Delete_page()],
+        children: [Admin_page(), Estudiantes(), Delete_page()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         //para cambiar de paginas usando el navbar
@@ -110,11 +108,12 @@ class _Admin_TabsState extends State<Admin_Tabs> {
         selectedItemColor: Theme.of(context).accentColor,
         unselectedItemColor: Color.fromRGBO(183, 188, 201, 1),
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person_pin), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined), label: "Crear cursos"),
+              icon: Icon(Icons.admin_panel_settings), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.all_inbox_sharp), label: "Eliminar cursos"),
+              icon: Icon(Icons.person_outline), label: "Estudiantes"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.library_books_outlined), label: "Cursos"),
         ],
       ),
     );
