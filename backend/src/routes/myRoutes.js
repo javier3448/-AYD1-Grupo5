@@ -105,7 +105,7 @@ router.post('/login', async (req, res) => {
 
 });
 
-router.delete('/deleteStudent', async (req, res) => {
+router.post('/deleteStudent', async (req, res) => {
     
     try {
 
