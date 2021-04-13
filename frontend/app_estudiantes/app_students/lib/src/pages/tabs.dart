@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:app_students/src/pages/metodos.dart';
 import 'package:app_students/user_modelf.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -48,11 +48,6 @@ Future<Estudiante> createUser(String nombre, String apellido, String cui,
 class _tabs_pageState extends State<tabs_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  //INGRESE ESTE METODO PARA PODER MANEJAR EL FORMULARIO, SI SE ENCUENTRA OTRA
-  //MANERA DE NO HACERLO TAN FEO xd estaria mejor
-  //lo que faltaria para login seria manejar la SESION DE USUARIO
-  // Y SI FUERA UN GET MEJOR BASARSE EN LO QUE ESTA EN LOGIN Y NO LO DE ACA YA QUE LO VEO
-  // DE UNA MANERA MAS CORRECTA EL COMO MANEJA LOS DATOS.
   void convertirDatos(nombre, apellido, cui, carne, username, pass) {
     Map data = {
       "nombre": nombre,
@@ -62,32 +57,40 @@ class _tabs_pageState extends State<tabs_page> {
       "username": username,
       "password": pass
     };
-    print("aqui");
 
-    postRegister() async {
-      String body = json.encode(data);
-
-      http.Response response = await http.post(
-        'http://13.58.126.153:4000/new',
-        headers: {"Content-Type": "application/json"},
-        body: body,
-      );
-
-      debugPrint(response.body);
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        //SI ES CORRECTO QUE BORRE EL FORM
-        _processData();
-      } else {
-        print("ninguna alerta");
-        // set up the button
+    Metodos().registrarUsuario(data).then((value) async {
+      if (value) {
+        _formKey.currentState?.reset();
         Widget okButton = FlatButton(
           child: Text("OK"),
           onPressed: () {
-            Navigator.of(context).pop(); // dismiss dialog
+            Navigator.of(context).pop();
+            Navigator.of(context).pushNamed("login");
           },
         );
 
-        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+          title: Text("Registro Estudiante"),
+          content: Text("Registro realizado!"),
+          actions: [
+            okButton,
+          ],
+        );
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else {
+        Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        );
+
         AlertDialog alert = AlertDialog(
           title: Text("Registro Estudiante"),
           content: Text("No se ha podido realizar registro!"),
@@ -96,7 +99,6 @@ class _tabs_pageState extends State<tabs_page> {
           ],
         );
 
-        // show the dialog
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -104,46 +106,8 @@ class _tabs_pageState extends State<tabs_page> {
           },
         );
       }
-    }
-
-    postRegister();
+    });
   }
-
-  //REINICIA EL FORMULARIO Y MUESTRA EL MENSAJE
-  void _processData() {
-    _formKey.currentState?.reset();
-    registroRealizado(context);
-  }
-
-  //CON ESTE MUESTRO EL ALERTDIALOG DE QUE SE REGISTRO.... Faltaria otro si el registro no se realiza.
-  void registroRealizado(BuildContext context) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop(); // dismiss dialog
-        Navigator.of(context).pushNamed("login");
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Registro Estudiante"),
-      content: Text("Registro realizado!"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-  //UserModelF _user;
 
   //Variables
   String _number;
