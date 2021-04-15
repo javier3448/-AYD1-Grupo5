@@ -7,6 +7,7 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:app_students/src/pages/session.dart';
 
 import '../../user_modelf.dart';
+import 'admin_create_student.dart';
 
 class Estudiantes extends StatefulWidget {
   Estudiantes({Key key}) : super(key: key);
@@ -255,6 +256,19 @@ class _EstudiantesState extends State<Estudiantes> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Scaffold(
+                floatingActionButton: FloatingActionButton(
+                  elevation: 0,
+                  highlightElevation: 0,
+                  child: Icon(Icons.person_add),
+                  onPressed: () {
+                    debugPrint("Editar");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                admin_student()));
+                  },
+                ),
                 resizeToAvoidBottomInset: true,
                 appBar: null,
                 body: Container(
@@ -275,8 +289,11 @@ class _EstudiantesState extends State<Estudiantes> {
             } else {
               //todavia estamos esperando al future
               // TODO: poner una animacion o algo asi para que se vea que esta cargando
-              return Text('\n\n   Cargando...',
-                  style: Theme.of(context).textTheme.headline4);
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                ),
+              );
             }
           }),
     );
