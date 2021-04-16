@@ -1,145 +1,24 @@
-import 'package:app_students/src/pages/session.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_session/flutter_session.dart';
-import 'dart:async';
-import 'dart:convert';
 
 class login_page extends StatefulWidget {
   login_page({Key key}) : super(key: key);
 
   @override
-  _login_pageState createState() => _login_pageState();
+  loginpageState createState() => loginpageState();
 }
 
-//prueba POST login EN TEORIA ESTA SERIA LA MENERA CORRECTA DE HACER UN POST
-// YA QUE SE PUEDEN MANEJAR LAS ESTRUCUTAS COMO TAL Y PODER USAR LOS DATOS DE RESPUESTA.
-// ESTE LO HICE CON UNA API DE EJEMPLO
-Future<UserModel> createUser(String carne, String contra) async {
-  final String myApi = "https://reqres.in/api/users";
+class loginpageState extends State<login_page> {
+  loginpageState();
 
-  final response = await http.post(myApi, body: {"name": carne, "job": contra});
-
-  if (response.statusCode == 201) {
-    final String responseString = response.body;
-
-    //AQUI CONSTRUYO EL OBJETO DE USERMODEL
-    return userModelFromJson(responseString);
-  } else {
-    return null;
-  }
-}
-
-class _login_pageState extends State<login_page> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  //API REST
-
-  //user
   UserModel _user;
-
-  Future ingresoUsuario(String nombre, String pass) async {
-    //ACA SE MANDA LA PETICION A LA BD
-    Map datos = {"nombre": nombre, "contrasena": pass};
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/login',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      Map respuesta = json.decode(response.body);
-      List<Curso> cursosAsignados = new List<Curso>();
-      Iterable cursos = respuesta['cursos'];
-      cursos.forEach((element) {
-        cursosAsignados.add(Curso(
-            id: element['cursoid'],
-            nombre: element['nombre'],
-            codigo: element['codigo'],
-            seccion: element['seccion'],
-            horaInicio: element['horainicio'],
-            horaFinal: element['horafinal'],
-            lunes: element['lunes'],
-            martes: element['martes'],
-            miercoles: element['miercoles'],
-            jueves: element['jueves'],
-            viernes: element['viernes'],
-            sabado: element['sabado'],
-            domingo: element['domingo'],
-            catedratico: element['catedratico']));
-      });
-      Usuario usuarioRes = Usuario.fromJson(respuesta, cursosAsignados);
-      await FlutterSession().set("user", usuarioRes);
-      //GuardarSesion(usuarioRes);
-      _formKey.currentState?.reset();
-      //LO QUE DEVUELVE: EL TOKEN DE SESION -> esto va dentro del if si la petición fue correcta
-      //await FlutterSession().set("token", usuarioRes.id);
-      //await FlutterSession().set("user", usuarioRes);
-
-      //LUEGO PARA RECUPERAR EL TOKEN -> dynamic token = await FlutterSession().get("token");
-
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Ingreso Estudiante"),
-        content: Text("Bienvenido " + usuarioRes.nombre + "!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-
-      // ACA SE VA A LA PAG DE BIENVENIDO
-
-      Navigator.of(context).pushNamed("controlador");
-    } else {
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Ingreso Estudiante"),
-        content: Text("Credenciales Incorrectas!"),
-        actions: [
-          okButton,
-        ],
-      );
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-
-  //prueba GET
-  getUser() async {
-    http.Response response =
-        await http.get('http://13.58.126.153:4000/api/login');
-    debugPrint(response.body);
-  }
 
   @override
   void initState() {
@@ -307,8 +186,59 @@ class _login_pageState extends State<login_page> {
                         });*/
                         if (carne == '202100000' && contra == '123456789')
                           Navigator.of(context).pushNamed("controladorAdmin");
-                        else
-                          ingresoUsuario(carne, contra);
+                        else {
+                          Metodos
+                              .ingresoUsuario(carne, contra)
+                              .then((value) async {
+                            if (value != null) {
+                              await FlutterSession().set("user", value);
+                              _formKey.currentState?.reset();
+                              Widget okButton = FlatButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // dismiss dialog
+                                },
+                              );
+
+                              AlertDialog alert = AlertDialog(
+                                title: Text("Ingreso Estudiante"),
+                                content: Text("Bienvenido!"),
+                                actions: [
+                                  okButton,
+                                ],
+                              );
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+                              Navigator.of(context).pushNamed("controlador");
+                            } else {
+                              Widget okButton = FlatButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // dismiss dialog
+                                },
+                              );
+
+                              AlertDialog alert = AlertDialog(
+                                title: Text("Ingreso Estudiante"),
+                                content: Text("Credenciales Incorrectas!"),
+                                actions: [
+                                  okButton,
+                                ],
+                              );
+
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+                            }
+                          });
+                        }
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

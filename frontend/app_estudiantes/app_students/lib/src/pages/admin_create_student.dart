@@ -1,16 +1,17 @@
-import 'package:app_students/src/pages/metodos.dart' as Metodos;
-import 'package:app_students/user_modelf.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'dart:convert';
 
-class tabs_page extends StatefulWidget {
-  tabs_page({Key key}) : super(key: key);
+import '../../user_modelf.dart';
+import 'metodos.dart' as Metodos;
+
+class admin_student extends StatefulWidget {
+  admin_student({Key key}) : super(key: key);
 
   @override
-  _tabs_pageState createState() => _tabs_pageState();
+  _admin_studentState createState() => _admin_studentState();
 }
 
 //prueba POST REGISTRO el future lleva un modelo aun se puede manejar. https://flutter.dev/docs/cookbook/networking/send-data
@@ -45,7 +46,7 @@ Future<Estudiante> createUser(String nombre, String apellido, String cui,
   }
 }
 
-class _tabs_pageState extends State<tabs_page> {
+class _admin_studentState extends State<admin_student> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void convertirDatos(nombre, apellido, cui, carne, username, pass) {
@@ -65,7 +66,6 @@ class _tabs_pageState extends State<tabs_page> {
           child: Text("OK"),
           onPressed: () {
             Navigator.of(context).pop();
-            Navigator.of(context).pushNamed("login");
           },
         );
 
@@ -120,8 +120,8 @@ class _tabs_pageState extends State<tabs_page> {
   // Widgets
   Widget myTittle() {
     return Text(
-      "Registro Estudiante",
-      style: TextStyle(color: Colors.white, fontSize: 25),
+      "Registrar Nuevo Estudiante",
+      style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 25),
     );
   }
 
@@ -132,14 +132,12 @@ class _tabs_pageState extends State<tabs_page> {
         decoration: InputDecoration(
           icon: Icon(
             Icons.accessibility_new,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           labelText: 'Nombres',
           labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
+            color: Theme.of(context).primaryColor,
           ),
-          fillColor: Colors.white,
-          filled: true,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.redAccent),
           ),
@@ -166,14 +164,12 @@ class _tabs_pageState extends State<tabs_page> {
         decoration: InputDecoration(
           icon: Icon(
             Icons.accessibility_new,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           labelText: 'Apellidos',
           labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
+            color: Theme.of(context).primaryColor,
           ),
-          fillColor: Colors.white,
-          filled: true,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.redAccent),
           ),
@@ -202,14 +198,12 @@ class _tabs_pageState extends State<tabs_page> {
         decoration: InputDecoration(
           icon: Icon(
             Icons.badge,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           labelText: 'Código Único de Identificación ',
           labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
+            color: Theme.of(context).primaryColor,
           ),
-          fillColor: Colors.white,
-          filled: true,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.redAccent),
           ),
@@ -231,14 +225,12 @@ class _tabs_pageState extends State<tabs_page> {
           decoration: InputDecoration(
             icon: Icon(
               Icons.account_circle_rounded,
-              color: Colors.white,
+              color: Theme.of(context).primaryColor,
             ),
             labelText: 'Carné',
             labelStyle: TextStyle(
-              color: Color(0xFF6200EE),
+              color: Theme.of(context).primaryColor,
             ),
-            fillColor: Colors.white,
-            filled: true,
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.redAccent),
             ),
@@ -258,14 +250,12 @@ class _tabs_pageState extends State<tabs_page> {
         decoration: InputDecoration(
           icon: Icon(
             Icons.alternate_email_rounded,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           labelText: 'Correo Electrónico',
           labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
+            color: Theme.of(context).primaryColor,
           ),
-          fillColor: Colors.white,
-          filled: true,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.redAccent),
           ),
@@ -288,14 +278,12 @@ class _tabs_pageState extends State<tabs_page> {
         decoration: InputDecoration(
           icon: Icon(
             Icons.admin_panel_settings,
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           labelText: 'Contraseña',
           labelStyle: TextStyle(
-            color: Color(0xFF6200EE),
+            color: Theme.of(context).primaryColor,
           ),
-          fillColor: Colors.white,
-          filled: true,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.redAccent),
           ),
@@ -313,12 +301,7 @@ class _tabs_pageState extends State<tabs_page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        title: Text(
-          "Registro Estudiante",
-        ),
-      ),
+      appBar: AppBar(),
       body: Container(
         child: Center(
           child: Form(
@@ -363,6 +346,8 @@ class _tabs_pageState extends State<tabs_page> {
                       setState(() {
                         _user = user;
                       });*/
+
+                      // @BUG: despues de crear el usuario nos manda a la pantalla de login
                     },
                     child: Text(
                       "Registrar",

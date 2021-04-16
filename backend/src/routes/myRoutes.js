@@ -46,6 +46,34 @@ router.get('/getcourses', async (req, res) => {
 
 });
 
+router.get('/getStudents', async (req, res) => {
+    
+    try {
+
+        await Estudiante.find({}, function (err, students) {
+            
+            if (err){ 
+                console.log(err)
+                res.status(404);
+                res.send({ message : err });
+                console.log("Error al obtener estudiantes :c");
+            } else{ 
+                res.status(202);
+                console.log("Estudiantes obtenidos correctamente :D")
+                res.json(students);              
+            } 
+
+        });
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+        console.log("Error al obtener estudiantes :c");
+    }
+
+});
+
 router.post('/login', async (req, res) => {
 
     try {
@@ -76,6 +104,38 @@ router.post('/login', async (req, res) => {
     }
 
 });
+
+router.post('/deleteStudent', async (req, res) => {
+    
+    try {
+
+        const data = req.body; 
+
+        await Estudiante.findOneAndDelete({carne: data.carne}, function (err, docs) {
+            if (err){
+                console.log(err)
+                res.status(404);
+                res.send({ message : err }); 
+                console.log("crendenciales incorrectas o usuario no existe");
+            } else if (docs == null) {
+                res.status(404);
+                res.send({ message : "crendenciales incorrectas o usuario no existe" }); 
+                console.log("crendenciales incorrectas o usuario no existe :c");
+            } else{
+                res.status(202);
+                console.log("Estudiante eliminado correctamente")
+                res.send({ message : "Estudiante eliminado correctamente" }); 
+            }
+        });
+        
+        
+    } catch (error) {
+        console.log(error)
+        res.status(404);
+        res.send({ message : error });
+    }
+
+  })
 
 
 router.post("/new", async (req, res) => {
