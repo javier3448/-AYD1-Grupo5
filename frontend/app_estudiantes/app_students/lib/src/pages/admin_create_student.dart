@@ -5,7 +5,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:http/http.dart' as http;
 
 import '../../user_modelf.dart';
-import 'metodos.dart';
+import 'metodos.dart' as Metodos;
 
 class admin_student extends StatefulWidget {
   admin_student({Key key}) : super(key: key);
@@ -59,7 +59,7 @@ class _admin_studentState extends State<admin_student> {
       "password": pass
     };
 
-    Metodos().registrarUsuario(data).then((value) async {
+    Metodos.registrarUsuario(data).then((value) async {
       if (value) {
         _formKey.currentState?.reset();
         Widget okButton = FlatButton(
@@ -347,6 +347,8 @@ class _admin_studentState extends State<admin_student> {
                       setState(() {
                         _user = user;
                       });*/
+
+                      // @BUG: despues de crear el usuario nos manda a la pantalla de login
                     },
                     child: Text(
                       "Registrar",

@@ -1,16 +1,14 @@
 import 'package:app_students/src/pages/session.dart';
 import 'package:test/test.dart';
-import 'package:app_students/src/pages/metodos.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 
 //flutter test --reporter expanded --coverage test/src/dart/dart_test.dart
 //genhtml coverage/lcov.info -o coverage/html
 
 void main() {
-  Metodos metodos = new Metodos();
-
   //PRUEBAS UNITARIAS PARA EL INGRESO A LA PLATAFORMA
   test('Ingreso de usuario a la aplicación', () {
-    metodos.ingresoUsuario("201504051", "123456789").then((value) => () {
+    Metodos.ingresoUsuario("201504051", "123456789").then((value) => () {
           expect(value, TypeMatcher<Usuario>());
         });
   });
@@ -52,7 +50,7 @@ void main() {
         }
       ]
     };
-    var lista = metodos.mapeoCurso(cuerpo);
+    var lista = Metodos.mapeoCurso(cuerpo);
     expect(lista, TypeMatcher<List<Curso>>());
   });
 
@@ -67,6 +65,6 @@ void main() {
       "password": "123456789"
     };
 
-    metodos.registrarUsuario(datos).then((value) => expect(value, true));
+    Metodos.registrarUsuario(datos).then((value) => expect(value, true));
   });
 }

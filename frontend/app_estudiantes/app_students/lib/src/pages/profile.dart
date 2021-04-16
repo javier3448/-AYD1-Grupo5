@@ -1,7 +1,7 @@
 import 'dart:io' as Io;
 import 'dart:io';
 import 'package:app_students/src/pages/session.dart';
-import 'package:app_students/src/pages/metodos.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'dart:convert';
@@ -46,7 +46,7 @@ class _Profile_pageState extends State<Profile_page> {
     final bytes = Io.File(filePath).readAsBytesSync();
     img64 = base64Encode(bytes);
     Map datos = {"carne": usuario.carnet, "image": img64.toString()};
-    Metodos().actualizarFotoPerfil(datos, usuario).then((value) async {
+    Metodos.actualizarFotoPerfil(datos, usuario).then((value) async {
       if (value != null) {
         await FlutterSession().set("user", value);
 
@@ -435,7 +435,7 @@ class _Profile_pageState extends State<Profile_page> {
                                                                   'catedratico']));
                                                         });
 
-                                                        Metodos()
+                                                        Metodos
                                                             .actualizarPerfil(
                                                                 llaves, cursos)
                                                             .then(

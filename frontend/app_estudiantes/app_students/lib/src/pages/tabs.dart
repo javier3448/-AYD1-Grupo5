@@ -1,4 +1,4 @@
-import 'package:app_students/src/pages/metodos.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/user_modelf.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -58,7 +58,7 @@ class _tabs_pageState extends State<tabs_page> {
       "password": pass
     };
 
-    Metodos().registrarUsuario(data).then((value) async {
+    Metodos.registrarUsuario(data).then((value) async {
       if (value) {
         _formKey.currentState?.reset();
         Widget okButton = FlatButton(

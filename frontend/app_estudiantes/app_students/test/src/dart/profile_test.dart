@@ -1,11 +1,10 @@
-import 'package:app_students/src/pages/metodos.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/src/pages/session.dart';
 import 'package:test/test.dart';
 import 'dart:convert';
 import 'dart:io' as Io;
 
 void main() {
-  Metodos metodos = new Metodos();
   // PRUEBAS UNITARIAS PARA ACTUALIZAR DE PERFIL A LA PLATAFORMA
   test('Editar datos de un estudiante', () {
     Map nuevo = {
@@ -20,7 +19,7 @@ void main() {
       "image":
           "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
     };
-    metodos.actualizarPerfil(
+    Metodos.actualizarPerfil(
         nuevo, []).then((value) => expect(value, TypeMatcher<Usuario>()));
   });
 
@@ -36,12 +35,13 @@ void main() {
       "__v": 0,
     };
     final bytes = Io.File(
-            '/home/marianasic/Documents/Analisis1/-AYD1-Grupo5/frontend/app_estudiantes/app_students/test/src/dart/img/marlo.png')
+        'test/src/dart/img/marlo.png')
         .readAsBytesSync();
+
+    print(Io.Directory.current.path);
     String img64 = base64Encode(bytes);
     Map datos = {"carne": "202230456", "image": img64.toString()};
-    metodos
-        .actualizarFotoPerfil(
+    Metodos.actualizarFotoPerfil(
             datos, Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
         .then((value) => expect(value, TypeMatcher<Usuario>()));
   });

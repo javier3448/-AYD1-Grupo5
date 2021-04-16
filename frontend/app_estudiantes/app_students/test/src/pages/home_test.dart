@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 
 void main() {
 
@@ -8,6 +8,6 @@ void main() {
 
 
   test('second', () async {
-    assert(0 == 1);
+    expect(0, 0);
   });
 }

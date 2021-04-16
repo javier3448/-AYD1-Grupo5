@@ -1,4 +1,4 @@
-import 'package:app_students/src/pages/metodos.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +187,7 @@ class loginpageState extends State<login_page> {
                         if (carne == '202100000' && contra == '123456789')
                           Navigator.of(context).pushNamed("controladorAdmin");
                         else {
-                          Metodos()
+                          Metodos
                               .ingresoUsuario(carne, contra)
                               .then((value) async {
                             if (value != null) {
