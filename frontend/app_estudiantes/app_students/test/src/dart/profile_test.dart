@@ -36,8 +36,10 @@ void main() {
       "__v": 0,
     };
     final bytes = Io.File(
-            '/home/marianasic/Documents/Analisis1/-AYD1-Grupo5/frontend/app_estudiantes/app_students/test/src/dart/img/marlo.png')
+        'test/src/dart/img/marlo.png')
         .readAsBytesSync();
+
+    print(Io.Directory.current.path);
     String img64 = base64Encode(bytes);
     Map datos = {"carne": "202230456", "image": img64.toString()};
     metodos
