@@ -195,7 +195,7 @@ class _Profile_pageState extends State<Profile_page> {
                       CustomPaint(
                         child: Container(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            height: MediaQuery.of(context).size.height + 100,
                             child: Column(children: [
                               Stack(children: [
                                 //crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,8 +203,7 @@ class _Profile_pageState extends State<Profile_page> {
                                 Container(
                                   padding: EdgeInsets.all(10.0),
                                   width: MediaQuery.of(context).size.width / 2,
-                                  height:
-                                      MediaQuery.of(context).size.height / 4,
+                                  height: 220,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                         color: Colors.white, width: 5),
@@ -247,11 +246,7 @@ class _Profile_pageState extends State<Profile_page> {
                               ]),
                               Stack(children: [
                                 Container(
-                                  height: MediaQuery.of(context).size.height >
-                                          650
-                                      ? MediaQuery.of(context).size.height / 2 +
-                                          120
-                                      : MediaQuery.of(context).size.height / 3,
+                                  height: 550,
                                   width: double.infinity,
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   child: Column(
@@ -435,8 +430,7 @@ class _Profile_pageState extends State<Profile_page> {
                                                                   'catedratico']));
                                                         });
 
-                                                        Metodos
-                                                            .actualizarPerfil(
+                                                        Metodos.actualizarPerfil(
                                                                 llaves, cursos)
                                                             .then(
                                                                 (value) async {
