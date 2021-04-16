@@ -61,10 +61,11 @@ class _EstudiantesState extends State<Estudiantes> {
                 onPressed: () {
                   debugPrint("Editar");
                   Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => Profile_page_admin(estudiante)))
-                    .whenComplete(() {
-                      setState(() {});
-                    });
+                      .push(MaterialPageRoute(
+                          builder: (context) => Profile_page_admin(estudiante)))
+                      .whenComplete(() {
+                    setState(() {});
+                  });
                 },
                 child: Text("Editar")),
             ElevatedButton(
@@ -264,7 +265,7 @@ class _EstudiantesState extends State<Estudiantes> {
                   highlightElevation: 0,
                   child: Icon(Icons.person_add),
                   onPressed: () {
-                    debugPrint("Editar");
+                    debugPrint("agregar estudiante");
                     Navigator.push(
                         context,
                         MaterialPageRoute(

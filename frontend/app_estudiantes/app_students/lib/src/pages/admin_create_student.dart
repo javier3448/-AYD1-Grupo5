@@ -66,7 +66,6 @@ class _admin_studentState extends State<admin_student> {
           child: Text("OK"),
           onPressed: () {
             Navigator.of(context).pop();
-            Navigator.of(context).pushNamed("login");
           },
         );
 
