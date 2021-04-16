@@ -1,13 +1,9 @@
 import 'dart:io' as Io;
 import 'dart:io';
-import 'package:app_students/src/pages/cursos.dart';
-import 'package:app_students/src/pages/session.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:app_students/src/pages/login.dart';
 
 import 'package:file_picker/file_picker.dart';
 

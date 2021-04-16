@@ -1,13 +1,10 @@
 import 'dart:io' as Io;
 import 'dart:io';
-import 'package:app_students/src/pages/cursos.dart';
 import 'package:app_students/src/pages/session.dart';
+import 'package:app_students/src/pages/metodos.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
-import 'package:app_students/src/pages/login.dart';
 
 import 'package:file_picker/file_picker.dart';
 
@@ -44,140 +41,64 @@ class _Profile_pageState extends State<Profile_page> {
     //super.initState();
   }
 
-  Future actualizarPerfil(Map datos, List<Curso> listado) async {
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/update',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      // anuncio
-      Usuario nuevo = Usuario.fromJson(datos.cast<String, dynamic>(), listado);
-      await FlutterSession().set("user", nuevo);
-
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          setState(() {
-            esEditable = false;
-            seIngresatxt = false;
-          });
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text(
-            "Datos para " + datos['nombre'] + " actualizados éxitosamente!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    } else {
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("Error al actualizar datos de " + datos['nombre'] + "!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-
-  Future actualizarFotoPerfil(Map datos, Usuario user) async {
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.put(
-      'http://13.58.126.153:4000/setImage',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      user.image = response.body.toString();
-      await FlutterSession().set("user", user);
-
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          setState(() {
-            esEditable = false;
-            seIngresatxt = false;
-          });
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("¡Imagen de perfil de " +
-            user.nombre +
-            " actualizada exitosamente!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    } else {
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("¡Error al actualizar imagen de " + user.nombre + "!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-
   void _openFileExplorer(Usuario usuario) async {
     filePath = await FilePicker.getFilePath(type: FileType.image);
     final bytes = Io.File(filePath).readAsBytesSync();
     img64 = base64Encode(bytes);
     Map datos = {"carne": usuario.carnet, "image": img64.toString()};
-    actualizarFotoPerfil(datos, usuario);
+    Metodos().actualizarFotoPerfil(datos, usuario).then((value) async {
+      if (value != null) {
+        await FlutterSession().set("user", value);
+
+        Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            setState(() {
+              esEditable = false;
+              seIngresatxt = false;
+            });
+            Navigator.of(context).pop(); // dismiss dialog
+          },
+        );
+
+        AlertDialog alert = AlertDialog(
+          title: Text("Editar Perfil"),
+          content: Text("¡Imagen de perfil de " +
+              value.nombre +
+              " actualizada exitosamente!"),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else {
+        Widget okButton = FlatButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop(); // dismiss dialog
+          },
+        );
+
+        AlertDialog alert = AlertDialog(
+          title: Text("Editar Perfil"),
+          content: Text("¡Error al actualizar imagen!"),
+          actions: [
+            okButton,
+          ],
+        );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      }
+    });
   }
 
   Widget textfield(
@@ -292,8 +213,9 @@ class _Profile_pageState extends State<Profile_page> {
                                     image: DecorationImage(
                                         fit: BoxFit.contain,
                                         image: NetworkImage(
-                                            snapshot.data['image'].toString() ==
-                                                    ""
+                                            snapshot.data['image'] == "" ||
+                                                    snapshot.data['image'] ==
+                                                        null
                                                 ? imagenPerfil
                                                 : snapshot.data['image']
                                                     .toString())),
@@ -325,9 +247,11 @@ class _Profile_pageState extends State<Profile_page> {
                               ]),
                               Stack(children: [
                                 Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 2 +
-                                          100,
+                                  height: MediaQuery.of(context).size.height >
+                                          650
+                                      ? MediaQuery.of(context).size.height / 2 +
+                                          120
+                                      : MediaQuery.of(context).size.height / 3,
                                   width: double.infinity,
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   child: Column(
@@ -437,14 +361,10 @@ class _Profile_pageState extends State<Profile_page> {
                                                         Colors.lightGreen[600],
                                                     onPressed: () {
                                                       setState(() {
-                                                        //nombreCString =  nombreCompleto_Cntrl.text;
-                                                        //usuString = usu_Ctrl.text;
                                                         cuiString =
                                                             cui_Ctrl.text;
                                                         carnetString =
                                                             carnet_Ctrl.text;
-                                                        print(
-                                                            "Aca se enviarian los nuevos datos a la BD :D ");
 
                                                         Map llaves = {
                                                           "_id": snapshot
@@ -464,8 +384,17 @@ class _Profile_pageState extends State<Profile_page> {
                                                           "password":
                                                               contrasena_Ctrl
                                                                   .text,
-                                                          "__v":
-                                                              snapshot.data['v']
+                                                          "__v": snapshot
+                                                              .data['v'],
+                                                          "image": snapshot
+                                                                      .data[
+                                                                          'image']
+                                                                      .toString() ==
+                                                                  ""
+                                                              ? imagenPerfil
+                                                              : snapshot
+                                                                  .data['image']
+                                                                  .toString()
                                                         };
 
                                                         List<Curso> cursos =
@@ -505,10 +434,88 @@ class _Profile_pageState extends State<Profile_page> {
                                                               catedratico: element[
                                                                   'catedratico']));
                                                         });
-                                                        print(cursos);
 
-                                                        actualizarPerfil(
-                                                            llaves, cursos);
+                                                        Metodos()
+                                                            .actualizarPerfil(
+                                                                llaves, cursos)
+                                                            .then(
+                                                                (value) async {
+                                                          if (value != null) {
+                                                            await FlutterSession()
+                                                                .set("user",
+                                                                    value);
+
+                                                            Widget okButton =
+                                                                FlatButton(
+                                                              child: Text("OK"),
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  esEditable =
+                                                                      false;
+                                                                  seIngresatxt =
+                                                                      false;
+                                                                });
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); // dismiss dialog
+                                                              },
+                                                            );
+
+                                                            AlertDialog alert =
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  "Editar Perfil"),
+                                                              content: Text(
+                                                                  "Datos para " +
+                                                                      value
+                                                                          .nombre +
+                                                                      " actualizados éxitosamente!"),
+                                                              actions: [
+                                                                okButton,
+                                                              ],
+                                                            );
+                                                            showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return alert;
+                                                              },
+                                                            );
+                                                          } else {
+                                                            Widget okButton =
+                                                                FlatButton(
+                                                              child: Text("OK"),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); // dismiss dialog
+                                                              },
+                                                            );
+
+                                                            AlertDialog alert =
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  "Editar Perfil"),
+                                                              content: Text(
+                                                                  "Error al actualizar datos de " +
+                                                                      snapshot.data[
+                                                                          'nombre'] +
+                                                                      "!"),
+                                                              actions: [
+                                                                okButton,
+                                                              ],
+                                                            );
+                                                            showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return alert;
+                                                              },
+                                                            );
+                                                          }
+                                                        });
                                                       });
                                                     },
                                                     child: Text("GUARDAR",

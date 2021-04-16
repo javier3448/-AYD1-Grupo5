@@ -64,4 +64,34 @@ class Metodos {
     if (response.statusCode >= 200 && response.statusCode < 300) return true;
     return false;
   }
+
+  Future<Usuario> actualizarPerfil(Map datos, List<Curso> listado) async {
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.post(
+      URL_API + 'update',
+      headers: HEADERS,
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300)
+      return Usuario.fromJson(datos.cast<String, dynamic>(), listado);
+    return null;
+  }
+
+  Future<Usuario> actualizarFotoPerfil(Map datos, Usuario user) async {
+    String cuerpo = json.encode(datos);
+
+    http.Response response = await http.put(
+      URL_API + 'setImage',
+      headers: HEADERS,
+      body: cuerpo,
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      user.image = response.body.toString();
+      return user;
+    }
+    return null;
+  }
 }

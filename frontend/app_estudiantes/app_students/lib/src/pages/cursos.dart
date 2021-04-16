@@ -59,8 +59,7 @@ class _CursosState extends State<Cursos> {
 
   List<Widget> obtenerCursos(List<dynamic> cursosAsignados) {
     List<Widget> lista = new List<Widget>();
-    Widget tituloContainer = retornarTitulo();
-    lista.add(tituloContainer);
+    lista.add(retornarTitulo());
 
     List<Curso> cursos = new List<Curso>();
     cursosAsignados.forEach((element) {
