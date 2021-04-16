@@ -347,6 +347,8 @@ class _admin_studentState extends State<admin_student> {
                       setState(() {
                         _user = user;
                       });*/
+
+                      // @BUG: despues de crear el usuario nos manda a la pantalla de login
                     },
                     child: Text(
                       "Registrar",

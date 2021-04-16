@@ -60,8 +60,11 @@ class _EstudiantesState extends State<Estudiantes> {
             ElevatedButton(
                 onPressed: () {
                   debugPrint("Editar");
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Profile_page_admin(estudiante)));
+                  Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => Profile_page_admin(estudiante)))
+                    .whenComplete(() {
+                      setState(() {});
+                    });
                 },
                 child: Text("Editar")),
             ElevatedButton(
@@ -288,7 +291,6 @@ class _EstudiantesState extends State<Estudiantes> {
                   snapshot.error.toString());
             } else {
               //todavia estamos esperando al future
-              // TODO: poner una animacion o algo asi para que se vea que esta cargando
               return Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 8,
