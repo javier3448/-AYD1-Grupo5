@@ -19,8 +19,8 @@ void main() {
       "image":
           "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
     };
-    Metodos.actualizarPerfil(
-        nuevo, []).then((value) => expect(value, TypeMatcher<Usuario>()));
+    Metodos.actualizarPerfil(nuevo, [])
+        .then((value) => expect(value, TypeMatcher<Usuario>()));
   });
 
   test('Actualizar foto de perfil de un estudiante', () {
@@ -34,9 +34,7 @@ void main() {
       "password": "123456789",
       "__v": 0,
     };
-    final bytes = Io.File(
-        'test/src/dart/img/marlo.png')
-        .readAsBytesSync();
+    final bytes = Io.File('test/img/marlo.png').readAsBytesSync();
 
     print(Io.Directory.current.path);
     String img64 = base64Encode(bytes);

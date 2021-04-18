@@ -1,5 +1,5 @@
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
-import 'package:app_students/user_model.dart';
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,15 +18,11 @@ class loginpageState extends State<login_page> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  UserModel _user;
-
   @override
   void initState() {
     super.initState();
-    //getUser();
   }
 
-  //Variables
   String _number;
   String _pass;
 
@@ -41,6 +37,7 @@ class loginpageState extends State<login_page> {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
         child: TextFormField(
+          key: new Key('carnet-field'),
           inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
           validator: MinLengthValidator(9, errorText: "Carné Invalido."),
           keyboardType: TextInputType.number,
@@ -70,6 +67,7 @@ class loginpageState extends State<login_page> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       child: TextFormField(
+        key: new Key('pass-field'),
         obscureText: true,
         maxLength: 15,
         decoration: InputDecoration(
@@ -107,7 +105,7 @@ class loginpageState extends State<login_page> {
   Widget buttonGoRegister(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        _goRegisterPage(context);
+        Navigator.of(context).pushNamed("tans");
       },
       child: Text(
         "Regístrate Ahora",
@@ -119,50 +117,28 @@ class loginpageState extends State<login_page> {
     );
   }
 
-  Widget buttonGoPrueba(BuildContext context) {
-    return RaisedButton(
-      onPressed: () {
-        _goRegisterPrueba(context);
-      },
-      child: Text("Iniciar"),
-    );
-  }
-
-  void _goRegisterPrueba(BuildContext context) {
-    Navigator.of(context).pushNamed("controlador");
-  }
-
-  void _goRegisterPage(BuildContext context) {
-    Navigator.of(context).pushNamed("tans");
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Theme.of(context).primaryColor,
       appBar: null,
-      body: Container(
-        child: Column(
+      body: new Container(
+        child: new Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Center(
-                child: Form(
+            new Center(
+                child: new Form(
               key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
+              child: new SingleChildScrollView(
+                child: new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    //buttonGoPrueba(context),
                     imageCenter(),
                     SizedBox(height: 20),
                     myTittle(),
-                    _user == null
-                        ? Container()
-                        : Text("El usuario ${_user.name} fue creado."),
                     fieldNumber(),
                     fieldPassword(),
-//BotonIniciar Sesion**********************************************************
                     RaisedButton(
                       onPressed: () async {
                         if (!_formKey.currentState.validate()) {
@@ -170,70 +146,36 @@ class loginpageState extends State<login_page> {
                         } else {
                           _formKey.currentState.save();
                         }
-
-                        //print(_number);
                         String carne = _number;
                         String contra = _pass;
-                        //print(_pass);
-
-                        // AQUI ES DONDE DIGO QUE LA MANERA CORRECTA ES CREAR EL OBJETO
-                        // Y LOS DATOS DEL RESPONSE LOS TENDIRA user de tipo UserModel
-                        //final UserModel user = await createUser(_number, _pass);
-
-                        //entonces ahora el state tiene como valor predefinido el user.
-                        /*setState(() {
-                          _user = user;
-                        });*/
                         if (carne == '202100000' && contra == '123456789')
                           Navigator.of(context).pushNamed("controladorAdmin");
                         else {
-                          Metodos
-                              .ingresoUsuario(carne, contra)
+                          Metodos.ingresoUsuario(carne, contra)
                               .then((value) async {
                             if (value != null) {
                               await FlutterSession().set("user", value);
                               _formKey.currentState?.reset();
-                              Widget okButton = FlatButton(
-                                child: Text("OK"),
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // dismiss dialog
-                                },
-                              );
-
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Ingreso Estudiante"),
-                                content: Text("Bienvenido!"),
-                                actions: [
-                                  okButton,
-                                ],
-                              );
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return alert;
+                                  return Alerta(
+                                          titulo: "Ingreso Estudiante",
+                                          mensaje: "Bienvenido/a " +
+                                              value.nombre +
+                                              "!",
+                                          nav: "controlador")
+                                      .build(context);
                                 },
                               );
-                              Navigator.of(context).pushNamed("controlador");
                             } else {
-                              Widget okButton = FlatButton(
-                                child: Text("OK"),
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // dismiss dialog
-                                },
-                              );
-
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Ingreso Estudiante"),
-                                content: Text("Credenciales Incorrectas!"),
-                                actions: [
-                                  okButton,
-                                ],
-                              );
-
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return alert;
+                                  return Alerta(
+                                          titulo: "Ingreso Estudiante",
+                                          mensaje: "Credenciales Incorrectas!")
+                                      .build(context);
                                 },
                               );
                             }
