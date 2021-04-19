@@ -268,7 +268,6 @@ class _Profile_pageState extends State<Profile_page> {
                                           contrl: apellido_Ctrl
                                             ..text = snapshot.data['apellido'],
                                           labelText: "Apellido",
-                                          //hintText: snapshot.data['apellido'],
                                         ),
                                       ),
                                       Padding(
@@ -385,7 +384,7 @@ class _Profile_pageState extends State<Profile_page> {
                                                                       .data[
                                                                           'image']
                                                                       .toString() ==
-                                                                  ""
+                                                                  null
                                                               ? imagenPerfil
                                                               : snapshot
                                                                   .data['image']

@@ -1,7 +1,8 @@
 import 'package:app_students/src/pages/login.dart';
+import 'package:app_students/src/pages/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:app_students/src/pages/alert_dialog.dart' as Alerta;
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'dart:io';
 
 void main() {
@@ -14,7 +15,6 @@ void main() {
   setUpAll(() => HttpOverrides.global = null);
 
   testWidgets('Login page has a form widget', (WidgetTester tester) async {
-    // Create the widget by telling the tester to build it.
     await tester.pumpWidget(createWidgetForTesting(child: new login_page()));
 
     expect(find.byType(Form), findsOneWidget);
@@ -35,7 +35,7 @@ void main() {
   testWidgets('Check if AlertDialog displays correct messages',
       (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetForTesting(
-        child: new Alerta.Alerta(
+        child: new Alerta(
             titulo: "Prueba", mensaje: "Mensaje para prueba unitaria!")));
     expect(find.text("Prueba"), findsOneWidget);
     expect(find.text("Mensaje para prueba unitaria!"), findsOneWidget);
@@ -43,10 +43,46 @@ void main() {
 
   testWidgets('Press okButton on AlertDialog', (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetForTesting(
-        child: new Alerta.Alerta(
+        child: new Alerta(
             titulo: "Prueba", mensaje: "Mensaje para prueba unitaria!")));
     expect(find.byType(FlatButton), findsOneWidget);
     await tester.tap(find.byType(FlatButton));
     await tester.pump();
+  });
+
+  testWidgets('Register page has a form widget', (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetForTesting(child: new tabs_page()));
+
+    expect(find.byType(Form), findsOneWidget);
+  });
+
+  testWidgets('Register new student with the form',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(createWidgetForTesting(child: new tabs_page()));
+
+    expect(find.byKey(new Key('carnet-field')), findsOneWidget);
+    await tester.enterText(find.byKey(new Key('carnet-field')), "201602526");
+
+    expect(find.byKey(new Key('cui-field')), findsOneWidget);
+    await tester.enterText(find.byKey(new Key('cui-field')), "3017972550101");
+
+    expect(find.byKey(new Key('name-field')), findsOneWidget);
+    await tester.enterText(find.byKey(new Key('name-field')), "Test");
+
+    expect(find.byKey(new Key('last-field')), findsOneWidget);
+    await tester.enterText(find.byKey(new Key('last-field')), "Widget");
+
+    expect(find.byKey(new Key('email-field')), findsOneWidget);
+    await tester.enterText(
+        find.byKey(new Key('email-field')), "testwidget@gmail.com");
+
+    expect(find.byKey(new Key('pass-field')), findsOneWidget);
+    await tester.enterText(find.byKey(new Key('pass-field')), "123456789");
+
+    expect(find.byKey(new Key('register-btn')), findsOneWidget);
+    await tester.pump(new Duration(milliseconds: 300));
+    await tester.tap(find.byKey(new Key('register-btn')));
+    await tester.pump(new Duration(seconds: 2));
+    await tester.pumpAndSettle();
   });
 }
