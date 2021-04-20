@@ -1,11 +1,7 @@
-import 'package:app_students/src/pages/admin_create.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
 import 'package:app_students/src/pages/admin_home.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
-
-import 'cursos.dart';
 
 class Admin_Tabs extends StatefulWidget {
   Admin_Tabs({Key key}) : super(key: key);
@@ -30,8 +26,7 @@ class _Admin_TabsState extends State<Admin_Tabs> {
     _controller.dispose();
   }
 
-  Future SalirSesion(BuildContext context) async {
-    await FlutterSession().set("user", "");
+  void SalirSesion(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 

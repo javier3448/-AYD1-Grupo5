@@ -1,26 +1,20 @@
 import 'dart:io' as Io;
 import 'dart:io';
-import 'package:app_students/src/pages/cursos.dart';
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:app_students/src/pages/session.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:app_students/src/pages/login.dart';
 
 import 'package:file_picker/file_picker.dart';
-
-import '../../user_modelf.dart';
 
 class Profile_page_admin extends StatefulWidget {
   // const Profile_page({Key key}) : super(key: key);
   //List DatosUsuario;
-  Estudiante estudiante;
-  Profile_page_admin(this.estudiante) {
-    print(estudiante.nombre);
-    print(estudiante.CUI);
-  }
+  Usuario estudiante;
+  Profile_page_admin(this.estudiante);
 
   @override
   _Profile_page_adminState createState() =>
@@ -28,7 +22,7 @@ class Profile_page_admin extends StatefulWidget {
 }
 
 class _Profile_page_adminState extends State<Profile_page_admin> {
-  Estudiante estudiante;
+  Usuario estudiante;
   _Profile_page_adminState(this.estudiante);
   bool esEditable = false;
   bool seIngresatxt = false;
@@ -51,9 +45,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png";
 
   @override
-  void initState() {
-    //super.initState();
-  }
+  void initState() {}
 
   Future actualizarPerfil(Map datos) async {
     String cuerpo = json.encode(datos);
@@ -66,7 +58,6 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       // anuncio
-
       Widget okButton = FlatButton(
         child: Text("OK"),
         onPressed: () {
@@ -118,73 +109,36 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
     }
   }
 
-  Future actualizarFotoPerfil(Map datos, Estudiante user) async {
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.put(
-      'http://13.58.126.153:4000/setImage',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          setState(() {
-            esEditable = false;
-            seIngresatxt = false;
-          });
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("¡Imagen de perfil de " +
-            user.nombre +
-            " actualizada exitosamente!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    } else {
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("¡Error al actualizar imagen de " + user.nombre + "!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-
-  void _openFileExplorer(Estudiante usuario) async {
+  void _openFileExplorer(Usuario usuario) async {
     filePath = await FilePicker.getFilePath(type: FileType.image);
     final bytes = Io.File(filePath).readAsBytesSync();
     img64 = base64Encode(bytes);
-    Map datos = {"carne": usuario.carne, "image": img64.toString()};
-    actualizarFotoPerfil(datos, usuario);
+    Map datos = {"carne": usuario.carnet, "image": img64.toString()};
+    Metodos.actualizarFotoPerfil(datos, usuario).then((value) async {
+      if (value != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+                    titulo: "Editar Perfil",
+                    mensaje: "¡Imagen de perfil de " +
+                        value.nombre +
+                        " actualizada exitosamente!")
+                .build(context);
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+                    titulo: "Editar Perfil",
+                    mensaje: "¡Error al actualizar imagen!")
+                .build(context);
+          },
+        );
+      }
+    });
   }
 
   Widget textfield(
@@ -321,12 +275,11 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                               ]),
                               Stack(children: [
                                 Container(
-                                  height: 550,
-                                  // MediaQuery.of(context).size.height >
-                                  //         650
-                                  //     ? MediaQuery.of(context).size.height / 2 +
-                                  //         120
-                                  //     : MediaQuery.of(context).size.height / 3,
+                                  height: MediaQuery.of(context).size.height >
+                                          650
+                                      ? MediaQuery.of(context).size.height / 2 +
+                                          120
+                                      : MediaQuery.of(context).size.height / 3,
                                   width: double.infinity,
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   child: Column(
@@ -361,7 +314,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                         child: textfieldFalse(
                                           tipoDato: TextInputType.text,
                                           contrl: cui_Ctrl
-                                            ..text = estudiante.CUI,
+                                            ..text = estudiante.cui,
                                           labelText: "CUI",
                                           //hintText: snapshot.data['password']
                                         ),
@@ -371,7 +324,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                         child: textfieldFalse(
                                           tipoDato: TextInputType.text,
                                           contrl: carnet_Ctrl
-                                            ..text = estudiante.carne,
+                                            ..text = estudiante.carnet,
                                           labelText: "Carné",
                                           //hintText: snapshot.data['password']
                                         ),
@@ -460,9 +413,9 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                                             "Aca se enviarian los nuevos datos a la BD :D ");
 
                                                         Map llaves = {
-                                                          "CUI": estudiante.CUI,
+                                                          "CUI": estudiante.cui,
                                                           "carne":
-                                                              estudiante.carne,
+                                                              estudiante.carnet,
                                                           "username": estudiante
                                                               .username,
                                                           "nombre":

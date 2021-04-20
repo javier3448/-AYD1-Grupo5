@@ -60,29 +60,26 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetForTesting(child: new tabs_page()));
 
-    expect(find.byKey(new Key('carnet-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('carnet-field')));
     await tester.enterText(find.byKey(new Key('carnet-field')), "201602526");
 
-    expect(find.byKey(new Key('cui-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('cui-field')));
     await tester.enterText(find.byKey(new Key('cui-field')), "3017972550101");
 
-    expect(find.byKey(new Key('name-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('name-field')));
     await tester.enterText(find.byKey(new Key('name-field')), "Test");
 
-    expect(find.byKey(new Key('last-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('last-field')));
     await tester.enterText(find.byKey(new Key('last-field')), "Widget");
 
-    expect(find.byKey(new Key('email-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('email-field')));
     await tester.enterText(
         find.byKey(new Key('email-field')), "testwidget@gmail.com");
 
-    expect(find.byKey(new Key('pass-field')), findsOneWidget);
+    await tester.tap(find.byKey(new Key('pass-field')));
     await tester.enterText(find.byKey(new Key('pass-field')), "123456789");
 
-    expect(find.byKey(new Key('register-btn')), findsOneWidget);
-    await tester.pump(new Duration(milliseconds: 300));
     await tester.tap(find.byKey(new Key('register-btn')));
-    await tester.pump(new Duration(seconds: 2));
-    await tester.pumpAndSettle();
+    await tester.pumpAndSettle(new Duration(seconds: 2));
   });
 }

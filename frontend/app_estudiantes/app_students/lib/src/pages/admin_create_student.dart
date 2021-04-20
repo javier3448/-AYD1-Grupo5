@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:http/http.dart' as http;
-
-import '../../user_modelf.dart';
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'metodos.dart' as Metodos;
 
 class admin_student extends StatefulWidget {
@@ -14,102 +10,9 @@ class admin_student extends StatefulWidget {
   _admin_studentState createState() => _admin_studentState();
 }
 
-//prueba POST REGISTRO el future lleva un modelo aun se puede manejar. https://flutter.dev/docs/cookbook/networking/send-data
-Future<Estudiante> createUser(String nombre, String apellido, String cui,
-    String carne, String username, String pass) async {
-  Map data = {
-    "nombre": nombre,
-    "apellido": apellido,
-    "CUI": cui,
-    "carne": carne,
-    "username": username,
-    "password": pass
-  };
-
-  postRegister() async {
-    String body = json.encode(data);
-
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/create',
-      headers: {"Content-Type": "application/json"},
-      body: body,
-    );
-
-    debugPrint(response.body);
-
-    if (response.statusCode == 201) {
-      final String responseString = response.body;
-      return responseString;
-    } else {
-      return null;
-    }
-  }
-}
-
 class _admin_studentState extends State<admin_student> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void convertirDatos(nombre, apellido, cui, carne, username, pass) {
-    Map data = {
-      "nombre": nombre,
-      "apellido": apellido,
-      "CUI": cui,
-      "carne": carne,
-      "username": username,
-      "password": pass
-    };
-
-    Metodos.registrarUsuario(data).then((value) async {
-      if (value) {
-        _formKey.currentState?.reset();
-        Widget okButton = FlatButton(
-          child: Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        );
-
-        AlertDialog alert = AlertDialog(
-          title: Text("Registro Estudiante"),
-          content: Text("Registro realizado!"),
-          actions: [
-            okButton,
-          ],
-        );
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
-      } else {
-        Widget okButton = FlatButton(
-          child: Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        );
-
-        AlertDialog alert = AlertDialog(
-          title: Text("Registro Estudiante"),
-          content: Text("No se ha podido realizar registro!"),
-          actions: [
-            okButton,
-          ],
-        );
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return alert;
-          },
-        );
-      }
-    });
-  }
-
-  //Variables
   String _number;
   String _cui;
   String _name;
@@ -117,7 +20,6 @@ class _admin_studentState extends State<admin_student> {
   String _email;
   String _pass;
 
-  // Widgets
   Widget myTittle() {
     return Text(
       "Registrar Nuevo Estudiante",
@@ -311,18 +213,12 @@ class _admin_studentState extends State<admin_student> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   myTittle(),
-                  //*_user == null
-                  //    ? Container(
-                  //        child: Text("NEL"),
-                  //      )
-                  //    : Text("El usuario ${_user.carne} fue creado."),
                   fieldNumber(),
                   fieldCUI(),
                   fieldName(),
                   fieldLastN(),
                   fieldEmail(),
                   fieldPassword(),
-//Button Register**************************************************************
                   SizedBox(height: 15),
                   RaisedButton(
                     onPressed: () async {
@@ -331,23 +227,40 @@ class _admin_studentState extends State<admin_student> {
                       } else {
                         _formKey.currentState.save();
                       }
+                      Map data = {
+                        "nombre": _name,
+                        "apellido": _last,
+                        "CUI": _cui,
+                        "carne": _number,
+                        "username": _email,
+                        "password": _pass
+                      };
 
-                      //imprimimos los datos.
-                      print(_number);
-                      print(_cui);
-                      print(_name);
-                      print(_email);
-                      print(_pass);
-
-                      //metodo el cual lleva a registrar.
-                      convertirDatos(
-                          _name, _last, _cui, _number, _email, _pass);
-/*
-                      setState(() {
-                        _user = user;
-                      });*/
-
-                      // @BUG: despues de crear el usuario nos manda a la pantalla de login
+                      Metodos.registrarUsuario(data).then((value) async {
+                        if (value) {
+                          _formKey.currentState?.reset();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Alerta(
+                                      titulo: "Registro Estudiante",
+                                      mensaje: "Registro Realizado!",
+                                      nav: "login")
+                                  .build(context);
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Alerta(
+                                titulo: "Registro Estudiante",
+                                mensaje: "No se ha podido realizar registro!",
+                              ).build(context);
+                            },
+                          );
+                        }
+                      });
                     },
                     child: Text(
                       "Registrar",

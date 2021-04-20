@@ -91,3 +91,32 @@ Future<Usuario> actualizarFotoPerfil(Map datos, Usuario user) async {
   }
   return null;
 }
+
+Future<List> obtenerDatos() async {
+  List<int> datos = [];
+  http.Response response = await http.get(
+    URL_API + 'numeroCursos',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode == 202) {
+    Map respuesta = json.decode(response.body);
+    datos.add(respuesta['cursos']);
+  }
+  await obtenerEstudiantes().then((value) => datos.add(value));
+
+  return datos;
+}
+
+Future<int> obtenerEstudiantes() async {
+  http.Response response2 = await http.get(
+    URL_API + 'numeroEstudiantes',
+    headers: HEADERS,
+  );
+
+  if (response2.statusCode == 202) {
+    Map respuesta = json.decode(response2.body);
+    return respuesta['estudiantes'];
+  }
+  return 0;
+}

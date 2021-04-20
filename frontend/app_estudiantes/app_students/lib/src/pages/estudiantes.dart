@@ -3,10 +3,7 @@ import 'dart:convert';
 import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_session/flutter_session.dart';
 import 'package:app_students/src/pages/session.dart';
-
-import '../../user_modelf.dart';
 import 'admin_create_student.dart';
 
 class Estudiantes extends StatefulWidget {
@@ -17,9 +14,9 @@ class Estudiantes extends StatefulWidget {
 }
 
 class _EstudiantesState extends State<Estudiantes> {
-  Widget WidgetEstudiante(Estudiante estudiante) {
+  Widget WidgetEstudiante(Usuario estudiante) {
     return ExpansionTile(
-      title: Text(estudiante.carne),
+      title: Text(estudiante.carnet),
       subtitle: Text(estudiante.nombre + " " + estudiante.apellido),
       leading: FutureBuilder(
         future: loadImageEstudiante(estudiante.image),
@@ -53,7 +50,7 @@ class _EstudiantesState extends State<Estudiantes> {
                   color: Colors.white),
             ),
             Text(
-              estudiante.CUI,
+              estudiante.cui,
               style: TextStyle(fontSize: 20.0, color: Colors.white),
             ),
             Divider(height: 20.0),
@@ -75,7 +72,7 @@ class _EstudiantesState extends State<Estudiantes> {
                     child: Text("Sí"),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      eliminarUsuario(estudiante.carne, estudiante.nombre);
+                      eliminarUsuario(estudiante.carnet, estudiante.nombre);
                     },
                   );
 
@@ -201,7 +198,7 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
-  List<Widget> widgetsEstudiantes(List<Estudiante> estudiantes) {
+  List<Widget> widgetsEstudiantes(List<Usuario> estudiantes) {
     List<Widget> lista = new List<Widget>();
     Widget tituloContainer = retornarTitulo();
     lista.add(tituloContainer);
@@ -212,7 +209,7 @@ class _EstudiantesState extends State<Estudiantes> {
     return lista;
   }
 
-  Future<List<Estudiante>> apiEstudiantes() async {
+  Future<List<Usuario>> apiEstudiantes() async {
     http.Response response = await http.get(
       'http://13.58.126.153:4000/getStudents',
       headers: {'Content-Type': 'application/json'},
@@ -221,9 +218,9 @@ class _EstudiantesState extends State<Estudiantes> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       Iterable lista = json.decode(response.body);
       //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
-      List<Estudiante> result = [];
+      List<Usuario> result = [];
       lista.forEach((estudianteApi) {
-        result.add(Estudiante.fromJson(estudianteApi));
+        result.add(Usuario.fromJson(estudianteApi, []));
       });
 
       return Future.value(result);
