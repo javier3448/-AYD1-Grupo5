@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
+import 'alert_dialog.dart';
 
 class add_curse extends StatefulWidget {
   add_curse({Key key}) : super(key: key);
@@ -113,7 +115,7 @@ class _add_curseState extends State<add_curse> {
             Icons.accessibility_new,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Nombre profesor',
+          labelText: 'Nombre catedrático',
           labelStyle: TextStyle(
             color: Theme.of(context).primaryColor,
           ),
@@ -216,6 +218,7 @@ class _add_curseState extends State<add_curse> {
     if (picked != null && picked != _timeI) {
       setState(() {
         _timeI = picked;
+        _horaI = _timeI.hour.toString() + ":" + _timeI.minute.toString();
         print("Hora seleccionada: " +
             _timeI.hour.toString() +
             _timeI.minute.toString());
@@ -230,6 +233,7 @@ class _add_curseState extends State<add_curse> {
     if (picked != null && picked != _timeF) {
       setState(() {
         _timeF = picked;
+        _horaF = _timeF.hour.toString() + ":" + _timeF.minute.toString();
         print("Hora seleccionada: " +
             _timeF.hour.toString() +
             _timeF.minute.toString());
@@ -371,6 +375,49 @@ class _add_curseState extends State<add_curse> {
                       } else {
                         _formKey.currentState.save();
                       }
+
+                      Map datosCurso = {
+                        "nombre": _nombre,
+                        "codigo": _codigo,
+                        "seccion": _seccion,
+                        "horainicio": _horaI,
+                        "horafinal": _horaF,
+                        "catedratico": _profesor,
+                        "lunes": _Lunes,
+                        "martes": _Martes,
+                        "miercoles": _Miercoles,
+                        "jueves": _Jueves,
+                        "viernes": _Viernes,
+                        "sabado": _Sabado,
+                        "domingo": _Domingo
+                      };
+
+                      Metodos.crearCursoAdmin(datosCurso).then((value) async {
+                        if (value) {
+                          _formKey.currentState?.reset();
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Alerta(
+                                      titulo: "Creación de Cursos",
+                                      mensaje: "Curso creado!",
+                                      nav: "controladorAdmin")
+                                  .build(context);
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Alerta(
+                                titulo: "Creación de Cursos",
+                                mensaje:
+                                    "No se ha podido realizar la creación del curso nuevo!",
+                              ).build(context);
+                            },
+                          );
+                        }
+                      });
                     },
                     child: Text(
                       "Crear curso",

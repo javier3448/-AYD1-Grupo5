@@ -120,3 +120,18 @@ Future<int> obtenerEstudiantes() async {
   }
   return 0;
 }
+
+Future<bool> crearCursoAdmin(Map datos) async {
+  String body = json.encode(datos);
+  http.Response response = await http.post(
+    URL_API + 'newcourse',
+    headers: HEADERS,
+    body: body,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return true;
+  } else {
+    return false;
+  }
+}
