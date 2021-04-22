@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/about.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
 import 'package:app_students/src/pages/admin_home.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
@@ -30,6 +31,11 @@ class _Admin_TabsState extends State<Admin_Tabs> {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 
+  void AboutPage(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext context) => about()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +50,14 @@ class _Admin_TabsState extends State<Admin_Tabs> {
                 onSelected: (result) {
                   if (result == 0) {
                     SalirSesion(context);
+                  } else if (result == 1) {
+                    AboutPage(context);
                   }
                 },
                 icon: Icon(Icons.more_vert),
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    value: 1,
                     child: Row(
                       children: [
                         Icon(

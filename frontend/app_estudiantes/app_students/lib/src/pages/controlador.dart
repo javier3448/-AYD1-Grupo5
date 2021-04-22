@@ -1,3 +1,4 @@
+import 'package:app_students/src/pages/about.dart';
 import 'package:app_students/src/pages/calendar.dart';
 import 'package:app_students/src/pages/home.dart';
 import 'package:app_students/src/pages/profile.dart';
@@ -40,6 +41,11 @@ class _Controller_pageState extends State<Controller_page> {
     //Navigator.of(context).pushNamed("login");
   }
 
+  void AboutPage(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext context) => about()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,11 +60,14 @@ class _Controller_pageState extends State<Controller_page> {
                 onSelected: (result) {
                   if (result == 0) {
                     SalirSesion(context);
+                  } else if (result == 1) {
+                    AboutPage(context);
                   }
                 },
                 icon: Icon(Icons.more_vert),
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    value: 1,
                     child: Row(
                       children: [
                         Icon(
