@@ -47,6 +47,7 @@ class _Admin_TabsState extends State<Admin_Tabs> {
           Padding(
               padding: EdgeInsets.all(5.0),
               child: PopupMenuButton(
+                key: new Key('pop-btn'),
                 onSelected: (result) {
                   if (result == 0) {
                     SalirSesion(context);

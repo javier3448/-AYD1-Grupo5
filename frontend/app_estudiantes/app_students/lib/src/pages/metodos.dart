@@ -1,7 +1,9 @@
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:app_students/src/pages/session.dart';
+import 'package:flutter/material.dart';
 
 const URL_API = 'http://13.58.126.153:4000/';
 const HEADERS = {'Content-Type': 'application/json'};
@@ -129,9 +131,89 @@ Future<bool> crearCursoAdmin(Map datos) async {
     body: body,
   );
 
-  if (response.statusCode >= 200 && response.statusCode < 300) {
+  if (response.statusCode >= 200 && response.statusCode < 300)
     return true;
-  } else {
+  else
     return false;
+}
+
+Widget retornarTitulo() {
+  return Container(
+    child: Text(
+      "ESTUDIANTES",
+      style: TextStyle(
+          color: Colors.white, fontSize: 25.0, fontStyle: FontStyle.italic),
+    ),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+        shape: BoxShape.rectangle, color: Color.fromRGBO(15, 40, 80, 1)),
+    margin: EdgeInsets.all(25.0),
+    padding: EdgeInsets.all(40.0),
+  );
+}
+
+Future<List<Usuario>> apiEstudiantes() async {
+  http.Response response = await http.get(
+    URL_API + 'getStudents',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    Iterable lista = json.decode(response.body);
+    //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+    List<Usuario> result = [];
+    lista.forEach((estudianteApi) {
+      result.add(Usuario.fromJson(estudianteApi, []));
+    });
+
+    return Future.value(result);
   }
+  return Future.error(response.body);
+}
+
+Future<ImageProvider<Object>> loadImageEstudiante(String url) {
+  if (url == null) {
+    return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+  } else if (url == "") {
+    return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+  } else {
+    return Future.value(NetworkImage(url));
+  }
+}
+
+Future<bool> eliminarUsuario(
+    String carnet, String nombre, BuildContext context) async {
+  //ACA SE MANDA LA PETICION A LA BD
+  Map datos = {"carne": carnet};
+  String cuerpo = json.encode(datos);
+
+  http.Response response = await http.post(
+    URL_API + 'deleteStudent',
+    headers: HEADERS,
+    body: cuerpo,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Alerta(
+          mensaje: "Estudiante '" + nombre + "' eliminado!",
+          titulo: 'Eliminar Estudiante!',
+        ).build(context);
+      },
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Alerta(
+                mensaje:
+                    "Estudiante '" + nombre + "' no se ha podido eliminar!",
+                titulo: 'Eliminar Estudiante!')
+            .build(context);
+      },
+    );
+  }
+  return true;
 }

@@ -1,9 +1,8 @@
-import 'dart:convert';
-
+import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:app_students/src/pages/session.dart';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'admin_create_student.dart';
 
 class Estudiantes extends StatefulWidget {
@@ -19,7 +18,7 @@ class _EstudiantesState extends State<Estudiantes> {
       title: Text(estudiante.carnet),
       subtitle: Text(estudiante.nombre + " " + estudiante.apellido),
       leading: FutureBuilder(
-        future: loadImageEstudiante(estudiante.image),
+        future: Metodos.loadImageEstudiante(estudiante.image),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return CircleAvatar(
@@ -68,37 +67,11 @@ class _EstudiantesState extends State<Estudiantes> {
             ElevatedButton(
                 onPressed: () {
                   debugPrint("Eliminar");
-                  Widget okButton = FlatButton(
-                    child: Text("Sí"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      eliminarUsuario(estudiante.carnet, estudiante.nombre);
-                    },
-                  );
 
-                  Widget cancelButton = FlatButton(
-                    child: Text("Cancelar"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  );
-
-                  AlertDialog alert = AlertDialog(
-                    title: Text("Eliminar Estudiante"),
-                    content: Text("¿Desea eliminar a " +
-                        estudiante.nombre +
-                        " " +
-                        estudiante.apellido +
-                        "?"),
-                    actions: [
-                      cancelButton,
-                      okButton,
-                    ],
-                  );
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return alert;
+                      return confirmacion(estudiante);
                     },
                   );
                 },
@@ -111,96 +84,9 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
-  Future eliminarUsuario(String carnet, String nombre) async {
-    //ACA SE MANDA LA PETICION A LA BD
-    Map datos = {"carne": carnet};
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/deleteStudent',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Eliminar Estudiante"),
-        content: Text("Estudiante '" + nombre + "' eliminado!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-
-      setState(() {});
-    } else {
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Eliminar Estudiante"),
-        content: Text("Estudiante '" + nombre + "' no se ha podido eliminar!"),
-        actions: [
-          okButton,
-        ],
-      );
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-
-  Future<ImageProvider<Object>> loadImageEstudiante(String url) {
-    if (url == null) {
-      return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    }
-    // @chapuz: porque el nuevo usuario que registre tiene una image "" por default,
-    // no una null
-    else if (url == "") {
-      return Future.value(AssetImage("assets/defaultProfilePicture.png"));
-    } else {
-      return Future.value(NetworkImage(url));
-    }
-  }
-
-  Widget retornarTitulo() {
-    return Container(
-      child: Text(
-        "ESTUDIANTES",
-        style: TextStyle(
-            color: Colors.white, fontSize: 25.0, fontStyle: FontStyle.italic),
-      ),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          shape: BoxShape.rectangle, color: Color.fromRGBO(15, 40, 80, 1)),
-      margin: EdgeInsets.all(25.0),
-      padding: EdgeInsets.all(40.0),
-    );
-  }
-
   List<Widget> widgetsEstudiantes(List<Usuario> estudiantes) {
     List<Widget> lista = new List<Widget>();
-    Widget tituloContainer = retornarTitulo();
+    Widget tituloContainer = Metodos.retornarTitulo();
     lista.add(tituloContainer);
 
     estudiantes.forEach((estudiante) {
@@ -209,51 +95,42 @@ class _EstudiantesState extends State<Estudiantes> {
     return lista;
   }
 
-  Future<List<Usuario>> apiEstudiantes() async {
-    http.Response response = await http.get(
-      'http://13.58.126.153:4000/getStudents',
-      headers: {'Content-Type': 'application/json'},
+  AlertDialog confirmacion(Usuario estudiante) {
+    Widget okButton = FlatButton(
+      child: Text("Sí"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        Metodos.eliminarUsuario(estudiante.carnet, estudiante.nombre, context);
+        setState(() {});
+      },
     );
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      Iterable lista = json.decode(response.body);
-      //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
-      List<Usuario> result = [];
-      lista.forEach((estudianteApi) {
-        result.add(Usuario.fromJson(estudianteApi, []));
-      });
+    Widget cancelButton = FlatButton(
+      child: Text("Cancelar"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
 
-      return Future.value(result);
-    } else {
-      // TODO: No se si esta es una manera correcta de manejar el error usando un
-      // Future
-      return Future.error(response.body);
-
-      // @Debug
-      // Estudiantes dummy solo para probar la pantalla
-      // {
-      //   List<Estudiante> result = [];
-      //   for (var i = 0; i < 10; i++) {
-      //     Estudiante dummy = Estudiante(
-      //       nombre: "Javier" + i.toString(),
-      //       apellido: "Alvarez" + i.toString(),
-      //       CUI: "123456789012" + i.toString(),
-      //       carne: "200012345" + i.toString(),
-      //       username: "javier@gmail.com" + i.toString(),
-      //       password: "12345678" + i.toString()
-      //     );
-      //     result.add(dummy);
-      //   }
-      //   return Future.value(result);
-      // }
-    }
+    return AlertDialog(
+      title: Text("Eliminar Estudiante"),
+      content: Text("¿Desea eliminar a " +
+          estudiante.nombre +
+          " " +
+          estudiante.apellido +
+          "?"),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: FutureBuilder(
-          future: apiEstudiantes(),
+          future: Metodos.apiEstudiantes(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Scaffold(

@@ -52,6 +52,7 @@ class _add_curseState extends State<add_curse> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50, vertical: 5),
       child: TextFormField(
+        key: new Key('code-txt'),
         keyboardType: TextInputType.number,
         maxLength: 4,
         decoration: InputDecoration(
@@ -219,9 +220,6 @@ class _add_curseState extends State<add_curse> {
       setState(() {
         _timeI = picked;
         _horaI = _timeI.hour.toString() + ":" + _timeI.minute.toString();
-        print("Hora seleccionada: " +
-            _timeI.hour.toString() +
-            _timeI.minute.toString());
       });
     }
   }
@@ -234,9 +232,6 @@ class _add_curseState extends State<add_curse> {
       setState(() {
         _timeF = picked;
         _horaF = _timeF.hour.toString() + ":" + _timeF.minute.toString();
-        print("Hora seleccionada: " +
-            _timeF.hour.toString() +
-            _timeF.minute.toString());
       });
     }
   }
@@ -271,6 +266,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Lu"),
                           Checkbox(
+                              key: new Key('D1'),
                               value: _Lunes,
                               onChanged: (bool value) {
                                 setState(() {
@@ -285,6 +281,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Ma"),
                           Checkbox(
+                              key: new Key('D2'),
                               value: _Martes,
                               onChanged: (bool value) {
                                 setState(() {
@@ -299,6 +296,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Mi"),
                           Checkbox(
+                              key: new Key('D3'),
                               value: _Miercoles,
                               onChanged: (bool value) {
                                 setState(() {
@@ -313,6 +311,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Jue"),
                           Checkbox(
+                              key: new Key('D4'),
                               value: _Jueves,
                               onChanged: (bool value) {
                                 setState(() {
@@ -327,6 +326,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Vi"),
                           Checkbox(
+                              key: new Key('D5'),
                               value: _Viernes,
                               onChanged: (bool value) {
                                 setState(() {
@@ -341,6 +341,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Sa"),
                           Checkbox(
+                              key: new Key('D6'),
                               value: _Sabado,
                               onChanged: (bool value) {
                                 setState(() {
@@ -355,6 +356,7 @@ class _add_curseState extends State<add_curse> {
                         children: [
                           Text("Do"),
                           Checkbox(
+                              key: new Key('D7'),
                               value: _Domingo,
                               onChanged: (bool value) {
                                 setState(() {
@@ -369,6 +371,7 @@ class _add_curseState extends State<add_curse> {
 //Button Register**************************************************************
                   SizedBox(height: 15),
                   RaisedButton(
+                    key: new Key('press-btn'),
                     onPressed: () async {
                       if (!_formKey.currentState.validate()) {
                         return;
@@ -383,13 +386,13 @@ class _add_curseState extends State<add_curse> {
                         "horainicio": _horaI,
                         "horafinal": _horaF,
                         "catedratico": _profesor,
-                        "lunes": _Lunes,
-                        "martes": _Martes,
-                        "miercoles": _Miercoles,
-                        "jueves": _Jueves,
-                        "viernes": _Viernes,
-                        "sabado": _Sabado,
-                        "domingo": _Domingo
+                        "lunes": _Lunes ? "Y" : "N",
+                        "martes": _Martes ? "Y" : "N",
+                        "miercoles": _Miercoles ? "Y" : "N",
+                        "jueves": _Jueves ? "Y" : "N",
+                        "viernes": _Viernes ? "Y" : "N",
+                        "sabado": _Sabado ? "Y" : "N",
+                        "domingo": _Domingo ? "Y" : "N"
                       };
 
                       Metodos.crearCursoAdmin(datosCurso).then((value) async {
@@ -400,7 +403,7 @@ class _add_curseState extends State<add_curse> {
                             builder: (BuildContext context) {
                               return Alerta(
                                       titulo: "Creación de Cursos",
-                                      mensaje: "Curso creado!",
+                                      mensaje: "Curso " + _nombre + " creado!",
                                       nav: "controladorAdmin")
                                   .build(context);
                             },
@@ -412,7 +415,9 @@ class _add_curseState extends State<add_curse> {
                               return Alerta(
                                 titulo: "Creación de Cursos",
                                 mensaje:
-                                    "No se ha podido realizar la creación del curso nuevo!",
+                                    "No se ha podido realizar la creación del curso '" +
+                                        _nombre +
+                                        "'!",
                               ).build(context);
                             },
                           );
