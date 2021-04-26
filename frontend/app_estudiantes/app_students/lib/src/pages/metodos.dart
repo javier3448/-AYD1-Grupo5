@@ -1,4 +1,5 @@
 import 'package:app_students/src/pages/alert_dialog.dart';
+import 'package:app_students/user_modelf.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -216,4 +217,30 @@ Future<bool> eliminarUsuario(
     );
   }
   return true;
+}
+
+// @TODO: hacerle una prueba unitaria
+Future<List<Curso>> apiCursos() async{
+  http.Response response = await http.get(
+    URL_API + 'getcourses',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    Iterable lista = json.decode(response.body);
+    //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+    List<Curso> result = [];
+    lista.forEach((cursoApi) {
+      result.add(Curso.fromJson(cursoApi));
+    });
+
+    return Future.value(result);
+  }
+  return Future.error(response.body);
+}
+
+void toast (BuildContext context, String msg){
+  Scaffold.of(context).showSnackBar(SnackBar(
+    content: Text(msg),
+  ));
 }
