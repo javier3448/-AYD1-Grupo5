@@ -75,54 +75,55 @@ class _CursosAdminState extends State<CursosAdmin> {
   Widget build(BuildContext context) {
     return Material(
       child: FutureBuilder(
-          future: Metodos.apiCursos(),
-          builder: (context, snapshot) {
+        future: Metodos.apiCursos(),
+        builder: (context, snapshot) {
           if (snapshot.hasData) {
-              return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  elevation: 0,
-                  highlightElevation: 0,
-                  child: Icon(Icons.add_box),
-                  onPressed: () {
-                    debugPrint("Agregar curso no implementado todavia!");
+            return Scaffold(
+              floatingActionButton: FloatingActionButton(
+                elevation: 0,
+                highlightElevation: 0,
+                child: Icon(Icons.add_box),
+                onPressed: () {
+                  debugPrint("Agregar curso no implementado todavia!");
 
-                    // @TODO! : Aqui irse a la pagina para agregar curso
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (BuildContext context) => CrearCursoAdmin()
-                    //   )
-                    // );
+                  // @TODO! : Aqui irse a la pagina para agregar curso
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (BuildContext context) => CrearCursoAdmin()
+                  //   )
+                  // );
 
 
-                  },
-                ),
-                resizeToAvoidBottomInset: true,
-                appBar: null,
-                body: Container(
-                  child: Center(
-                    child: Container(
-                      child: ListView(
-                        children: obtenerWidgetsCursos(snapshot.data),
-                      ),
+                },
+              ),
+              resizeToAvoidBottomInset: true,
+              appBar: null,
+              body: Container(
+                child: Center(
+                  child: Container(
+                    child: ListView(
+                      children: obtenerWidgetsCursos(snapshot.data),
                     ),
                   ),
                 ),
-              );
-            } else if (snapshot.hasError) {
-              // TODO: poner un 'textTheme' especial o algo asi para que se sepa
-              // que hubo error o al menos que este en rojo o algo asi
-              return ErrorWidget('Error al hacer la peticion:\n\n' +
-                  snapshot.error.toString());
-            } else {
-              //todavia estamos esperando al future
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 8,
-                ),
-              );
-            }
-          }),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            // TODO: poner un 'textTheme' especial o algo asi para que se sepa
+            // que hubo error o al menos que este en rojo o algo asi
+            return ErrorWidget('Error al hacer la peticion:\n\n' +
+                snapshot.error.toString());
+          } else {
+            //todavia estamos esperando al future
+            return Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 8,
+              ),
+            );
+          }
+        }
+      ),
     );
   }
 }

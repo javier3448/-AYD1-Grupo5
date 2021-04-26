@@ -183,372 +183,388 @@ class _Profile_pageState extends State<Profile_page> {
       child: FutureBuilder(
         future: FlutterSession().get('user'),
         builder: (context, snapshot) {
-          return Scaffold(
-              resizeToAvoidBottomInset: false,
-              body: SingleChildScrollView(
-                  child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CustomPaint(
-                        child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height + 100,
-                            child: Column(children: [
-                              Stack(children: [
-                                //crossAxisAlignment: CrossAxisAlignment.center,
+          if (snapshot.hasData) {
+            return Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: SingleChildScrollView(
+                    child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomPaint(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height + 100,
+                              child: Column(children: [
+                                Stack(children: [
+                                  //crossAxisAlignment: CrossAxisAlignment.center,
 
-                                Container(
-                                  padding: EdgeInsets.all(10.0),
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  height: 220,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.white, width: 5),
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                    image: DecorationImage(
-                                        fit: BoxFit.contain,
-                                        image: NetworkImage(
-                                            snapshot.data['image'] == "" ||
-                                                    snapshot.data['image'] ==
-                                                        null
-                                                ? imagenPerfil
-                                                : snapshot.data['image']
-                                                    .toString())),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 30, left: 140),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.lightBlue[300],
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        List<Curso> cursos = new List<Curso>();
-                                        snapshot.data['cursosAsignados']
-                                            .forEach((element) {
-                                          cursos
-                                              .add(Curso.fromDynamic(element));
-                                        });
-
-                                        _openFileExplorer(Usuario.fromDynamic(
-                                            snapshot.data, cursos));
-                                      },
+                                  Container(
+                                    padding: EdgeInsets.all(10.0),
+                                    width: MediaQuery.of(context).size.width / 2,
+                                    height: 220,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.white, width: 5),
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      image: DecorationImage(
+                                          fit: BoxFit.contain,
+                                          image: NetworkImage(
+                                              snapshot.data['image'] == "" ||
+                                                      snapshot.data['image'] ==
+                                                          null
+                                                  ? imagenPerfil
+                                                  : snapshot.data['image']
+                                                      .toString())),
                                     ),
                                   ),
-                                )
-                              ]),
-                              Stack(children: [
-                                Container(
-                                  height: 550,
-                                  width: double.infinity,
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfield(
-                                          tipoDato: TextInputType.text,
-                                          contrl: nombreCompleto_Cntrl
-                                            ..text = snapshot.data['nombre'],
-                                          labelText: "Nombre",
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 30, left: 140),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.lightBlue[300],
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfield(
-                                          tipoDato: TextInputType.text,
-                                          contrl: apellido_Ctrl
-                                            ..text = snapshot.data['apellido'],
-                                          labelText: "Apellido",
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfieldFalse(
-                                          tipoDato: TextInputType.text,
-                                          contrl: cui_Ctrl
-                                            ..text = snapshot.data['cui'],
-                                          labelText: "CUI",
-                                          //hintText: snapshot.data['password']
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfieldFalse(
-                                          tipoDato: TextInputType.text,
-                                          contrl: carnet_Ctrl
-                                            ..text = snapshot.data['carnet'],
-                                          labelText: "Carné",
-                                          //hintText: snapshot.data['password']
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfieldFalse(
-                                          tipoDato: TextInputType.emailAddress,
-                                          contrl: usuario_Ctrl
-                                            ..text = snapshot.data['username'],
-                                          labelText: "Correo Electrónico",
-                                          //hintText: snapshot.data['password']
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: textfield(
-                                          tipoDato: TextInputType.text,
-                                          contrl: contrasena_Ctrl
-                                            ..text = snapshot.data['password'],
-                                          labelText: "Contraseña",
-                                          //hintText: snapshot.data['password']
-                                        ),
-                                      ),
-                                      Visibility(
-                                          visible: esEditable,
-                                          child: Container(
-                                            child: Row(
-                                              children: [
-                                                OutlineButton(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 40),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        //nombreCString = '';
-                                                        usuString = '';
-                                                        cuiString = '';
-                                                        carnetString = '';
-                                                        esEditable = false;
-                                                        seIngresatxt = false;
-                                                      });
-                                                    },
-                                                    child: Text("CANCELAR",
-                                                        style: TextStyle(
-                                                            fontSize: 14.0,
-                                                            letterSpacing: 2.2,
-                                                            color:
-                                                                Colors.black))),
-                                                RaisedButton(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 42),
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                    color:
-                                                        Colors.lightGreen[600],
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        cuiString =
-                                                            cui_Ctrl.text;
-                                                        carnetString =
-                                                            carnet_Ctrl.text;
+                                        onPressed: () {
+                                          List<Curso> cursos = new List<Curso>();
+                                          snapshot.data['cursosAsignados']
+                                              .forEach((element) {
+                                            cursos
+                                                .add(Curso.fromDynamic(element));
+                                          });
 
-                                                        Map llaves = {
-                                                          "_id": snapshot
-                                                              .data['id'],
-                                                          "CUI": snapshot
-                                                              .data['cui'],
-                                                          "carne": snapshot
-                                                              .data['carnet'],
-                                                          "username": snapshot
-                                                              .data['username'],
-                                                          "nombre":
-                                                              nombreCompleto_Cntrl
-                                                                  .text,
-                                                          "apellido":
-                                                              apellido_Ctrl
-                                                                  .text,
-                                                          "password":
-                                                              contrasena_Ctrl
-                                                                  .text,
-                                                          "__v": snapshot
-                                                              .data['v'],
-                                                          "image": snapshot
-                                                                      .data[
-                                                                          'image']
-                                                                      .toString() ==
-                                                                  null
-                                                              ? imagenPerfil
-                                                              : snapshot
-                                                                  .data['image']
-                                                                  .toString()
-                                                        };
-
-                                                        List<Curso> cursos =
-                                                            new List<Curso>();
-
-                                                        List<dynamic> lista =
-                                                            snapshot.data[
-                                                                'cursosAsignados'];
-                                                        lista
-                                                            .forEach((element) {
-                                                          cursos.add(Curso(
-                                                              id: element['id'],
-                                                              nombre: element[
-                                                                  'nombre'],
-                                                              codigo: element[
-                                                                  'codigo'],
-                                                              seccion: element[
-                                                                  'seccion'],
-                                                              horaInicio: element[
-                                                                  'horaInicio'],
-                                                              horaFinal: element[
-                                                                  'horaFinal'],
-                                                              lunes: element[
-                                                                  'lunes'],
-                                                              martes: element[
-                                                                  'martes'],
-                                                              miercoles: element[
-                                                                  'miercoles'],
-                                                              jueves: element[
-                                                                  'jueves'],
-                                                              viernes: element[
-                                                                  'viernes'],
-                                                              sabado: element[
-                                                                  'sabado'],
-                                                              domingo: element[
-                                                                  'domingo'],
-                                                              catedratico: element[
-                                                                  'catedratico']));
+                                          _openFileExplorer(Usuario.fromDynamic(
+                                              snapshot.data, cursos));
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ]),
+                                Stack(children: [
+                                  Container(
+                                    height: 550,
+                                    width: double.infinity,
+                                    margin: EdgeInsets.symmetric(horizontal: 10),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfield(
+                                            tipoDato: TextInputType.text,
+                                            contrl: nombreCompleto_Cntrl
+                                              ..text = snapshot.data['nombre'],
+                                            labelText: "Nombre",
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfield(
+                                            tipoDato: TextInputType.text,
+                                            contrl: apellido_Ctrl
+                                              ..text = snapshot.data['apellido'],
+                                            labelText: "Apellido",
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfieldFalse(
+                                            tipoDato: TextInputType.text,
+                                            contrl: cui_Ctrl
+                                              ..text = snapshot.data['cui'],
+                                            labelText: "CUI",
+                                            //hintText: snapshot.data['password']
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfieldFalse(
+                                            tipoDato: TextInputType.text,
+                                            contrl: carnet_Ctrl
+                                              ..text = snapshot.data['carnet'],
+                                            labelText: "Carné",
+                                            //hintText: snapshot.data['password']
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfieldFalse(
+                                            tipoDato: TextInputType.emailAddress,
+                                            contrl: usuario_Ctrl
+                                              ..text = snapshot.data['username'],
+                                            labelText: "Correo Electrónico",
+                                            //hintText: snapshot.data['password']
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: textfield(
+                                            tipoDato: TextInputType.text,
+                                            contrl: contrasena_Ctrl
+                                              ..text = snapshot.data['password'],
+                                            labelText: "Contraseña",
+                                            //hintText: snapshot.data['password']
+                                          ),
+                                        ),
+                                        Visibility(
+                                            visible: esEditable,
+                                            child: Container(
+                                              child: Row(
+                                                children: [
+                                                  OutlineButton(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 40),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          //nombreCString = '';
+                                                          usuString = '';
+                                                          cuiString = '';
+                                                          carnetString = '';
+                                                          esEditable = false;
+                                                          seIngresatxt = false;
                                                         });
+                                                      },
+                                                      child: Text("CANCELAR",
+                                                          style: TextStyle(
+                                                              fontSize: 14.0,
+                                                              letterSpacing: 2.2,
+                                                              color:
+                                                                  Colors.black))),
+                                                  RaisedButton(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 42),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                      color:
+                                                          Colors.lightGreen[600],
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          cuiString =
+                                                              cui_Ctrl.text;
+                                                          carnetString =
+                                                              carnet_Ctrl.text;
 
-                                                        Metodos.actualizarPerfil(
-                                                                llaves, cursos)
-                                                            .then(
-                                                                (value) async {
-                                                          if (value != null) {
-                                                            await FlutterSession()
-                                                                .set("user",
-                                                                    value);
+                                                          Map llaves = {
+                                                            "_id": snapshot
+                                                                .data['id'],
+                                                            "CUI": snapshot
+                                                                .data['cui'],
+                                                            "carne": snapshot
+                                                                .data['carnet'],
+                                                            "username": snapshot
+                                                                .data['username'],
+                                                            "nombre":
+                                                                nombreCompleto_Cntrl
+                                                                    .text,
+                                                            "apellido":
+                                                                apellido_Ctrl
+                                                                    .text,
+                                                            "password":
+                                                                contrasena_Ctrl
+                                                                    .text,
+                                                            "__v": snapshot
+                                                                .data['v'],
+                                                            "image": snapshot
+                                                                        .data[
+                                                                            'image']
+                                                                        .toString() ==
+                                                                    null
+                                                                ? imagenPerfil
+                                                                : snapshot
+                                                                    .data['image']
+                                                                    .toString()
+                                                          };
 
-                                                            Widget okButton =
-                                                                FlatButton(
-                                                              child: Text("OK"),
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  esEditable =
-                                                                      false;
-                                                                  seIngresatxt =
-                                                                      false;
-                                                                });
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(); // dismiss dialog
-                                                              },
-                                                            );
+                                                          List<Curso> cursos =
+                                                              new List<Curso>();
 
-                                                            AlertDialog alert =
-                                                                AlertDialog(
-                                                              title: Text(
-                                                                  "Editar Perfil"),
-                                                              content: Text(
-                                                                  "Datos para " +
-                                                                      value
-                                                                          .nombre +
-                                                                      " actualizados éxitosamente!"),
-                                                              actions: [
-                                                                okButton,
-                                                              ],
-                                                            );
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return alert;
-                                                              },
-                                                            );
-                                                          } else {
-                                                            Widget okButton =
-                                                                FlatButton(
-                                                              child: Text("OK"),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop(); // dismiss dialog
-                                                              },
-                                                            );
+                                                          List<dynamic> lista =
+                                                              snapshot.data[
+                                                                  'cursosAsignados'];
+                                                          lista
+                                                              .forEach((element) {
+                                                            cursos.add(Curso(
+                                                                id: element['id'],
+                                                                nombre: element[
+                                                                    'nombre'],
+                                                                codigo: element[
+                                                                    'codigo'],
+                                                                seccion: element[
+                                                                    'seccion'],
+                                                                horaInicio: element[
+                                                                    'horaInicio'],
+                                                                horaFinal: element[
+                                                                    'horaFinal'],
+                                                                lunes: element[
+                                                                    'lunes'],
+                                                                martes: element[
+                                                                    'martes'],
+                                                                miercoles: element[
+                                                                    'miercoles'],
+                                                                jueves: element[
+                                                                    'jueves'],
+                                                                viernes: element[
+                                                                    'viernes'],
+                                                                sabado: element[
+                                                                    'sabado'],
+                                                                domingo: element[
+                                                                    'domingo'],
+                                                                catedratico: element[
+                                                                    'catedratico']));
+                                                          });
 
-                                                            AlertDialog alert =
-                                                                AlertDialog(
-                                                              title: Text(
-                                                                  "Editar Perfil"),
-                                                              content: Text(
-                                                                  "Error al actualizar datos de " +
-                                                                      snapshot.data[
-                                                                          'nombre'] +
-                                                                      "!"),
-                                                              actions: [
-                                                                okButton,
-                                                              ],
-                                                            );
-                                                            showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return alert;
-                                                              },
-                                                            );
-                                                          }
+                                                          Metodos.actualizarPerfil(
+                                                                  llaves, cursos)
+                                                              .then(
+                                                                  (value) async {
+                                                            if (value != null) {
+                                                              await FlutterSession()
+                                                                  .set("user",
+                                                                      value);
+
+                                                              Widget okButton =
+                                                                  FlatButton(
+                                                                child: Text("OK"),
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    esEditable =
+                                                                        false;
+                                                                    seIngresatxt =
+                                                                        false;
+                                                                  });
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(); // dismiss dialog
+                                                                },
+                                                              );
+
+                                                              AlertDialog alert =
+                                                                  AlertDialog(
+                                                                title: Text(
+                                                                    "Editar Perfil"),
+                                                                content: Text(
+                                                                    "Datos para " +
+                                                                        value
+                                                                            .nombre +
+                                                                        " actualizados éxitosamente!"),
+                                                                actions: [
+                                                                  okButton,
+                                                                ],
+                                                              );
+                                                              showDialog(
+                                                                context: context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return alert;
+                                                                },
+                                                              );
+                                                            } else {
+                                                              Widget okButton =
+                                                                  FlatButton(
+                                                                child: Text("OK"),
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(); // dismiss dialog
+                                                                },
+                                                              );
+
+                                                              AlertDialog alert =
+                                                                  AlertDialog(
+                                                                title: Text(
+                                                                    "Editar Perfil"),
+                                                                content: Text(
+                                                                    "Error al actualizar datos de " +
+                                                                        snapshot.data[
+                                                                            'nombre'] +
+                                                                        "!"),
+                                                                actions: [
+                                                                  okButton,
+                                                                ],
+                                                              );
+                                                              showDialog(
+                                                                context: context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return alert;
+                                                                },
+                                                              );
+                                                            }
+                                                          });
                                                         });
-                                                      });
-                                                    },
-                                                    child: Text("GUARDAR",
-                                                        style: TextStyle(
-                                                            fontSize: 14.0,
-                                                            letterSpacing: 2.2,
-                                                            color:
-                                                                Colors.black)))
-                                              ],
-                                            ),
-                                          ))
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 13, left: 315),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.lightBlue[300],
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          esEditable = true;
-                                          seIngresatxt = true;
-                                        });
-                                      },
+                                                      },
+                                                      child: Text("GUARDAR",
+                                                          style: TextStyle(
+                                                              fontSize: 14.0,
+                                                              letterSpacing: 2.2,
+                                                              color:
+                                                                  Colors.black)))
+                                                ],
+                                              ),
+                                            ))
+                                      ],
                                     ),
                                   ),
-                                )
-                              ])
-                            ])),
-                        painter: HeaderCurvedContainer(),
-                      ),
-                    ],
-                  )
-                ],
-              )));
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 13, left: 315),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.lightBlue[300],
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            esEditable = true;
+                                            seIngresatxt = true;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ])
+                              ])),
+                          painter: HeaderCurvedContainer(),
+                        ),
+                      ],
+                    )
+                  ],
+                )));
+          }
+          else if(snapshot.hasError){
+            // TODO: poner un 'textTheme' especial o algo asi para que se sepa
+            // que hubo error o al menos que este en rojo o algo asi
+            return ErrorWidget('Error al hacer la peticion:\n\n' +
+                snapshot.error.toString());
+          }
+          else{
+            //todavia estamos esperando al future
+            return Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 8,
+              ),
+            );
+          }
         },
       ),
     );
