@@ -238,9 +238,3 @@ Future<List<Curso>> apiCursos() async{
   }
   return Future.error(response.body);
 }
-
-void toast (BuildContext context, String msg){
-  Scaffold.of(context).showSnackBar(SnackBar(
-    content: Text(msg),
-  ));
-}

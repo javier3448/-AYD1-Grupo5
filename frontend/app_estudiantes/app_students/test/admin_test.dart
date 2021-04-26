@@ -18,6 +18,11 @@ void main() {
         .then((value) => expect(value, TypeMatcher<List<Usuario>>()));
   });
 
+  test('Obtener el listado de cursos', () {
+    Metodos.apiCursos()
+        .then((value) => expect(value, TypeMatcher<List<Usuario>>()));
+  });
+
   test('metodo para cargar imagen de perfil en el listado de estudiantes', () {
     Metodos.loadImageEstudiante(null).then((value) =>
         expect(value, Material.AssetImage("assets/defaultProfilePicture.png")));
