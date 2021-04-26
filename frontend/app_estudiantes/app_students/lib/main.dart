@@ -25,8 +25,6 @@ class MyApp extends StatelessWidget {
         'controlador': (BuildContext context) => Controller_page(),
         'cursitos': (BuildContext context) => Cursos(),
         'controladorAdmin': (BuildContext context) => Admin_Tabs(),
-        'cursosAdmin': (BuildContext context) => CursosAdmin(),
-        'estudiantes': (BuildContext context) => Estudiantes()
       },
     );
   }
