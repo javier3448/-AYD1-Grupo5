@@ -1,5 +1,6 @@
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/src/pages/alert_dialog.dart';
+import 'package:app_students/src/pages/session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,29 +157,21 @@ class loginpageState extends State<login_page> {
                             if (value != null) {
                               await FlutterSession().set("user", value);
                               _formKey.currentState?.reset();
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Alerta(
-                                          titulo: "Ingreso Estudiante",
-                                          mensaje: "Bienvenido/a " +
-                                              value.nombre +
-                                              "!",
-                                          nav: "controlador")
-                                      .build(context);
-                                },
-                              );
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Alerta(
-                                          titulo: "Ingreso Estudiante",
-                                          mensaje: "Credenciales Incorrectas!")
-                                      .build(context);
-                                },
-                              );
                             }
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Alerta(
+                                        titulo: "Ingreso Estudiante",
+                                        mensaje: value == null
+                                            ? "Credenciales Incorrectas!"
+                                            : "Bienvenido/a " +
+                                                value.nombre +
+                                                "!",
+                                        nav: value != null ? "controlador" : "")
+                                    .build(context);
+                              },
+                            );
                           });
                         }
                       },

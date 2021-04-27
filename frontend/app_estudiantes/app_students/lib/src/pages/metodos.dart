@@ -1,5 +1,4 @@
 import 'package:app_students/src/pages/alert_dialog.dart';
-import 'package:app_students/user_modelf.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -182,8 +181,7 @@ Future<ImageProvider<Object>> loadImageEstudiante(String url) {
   }
 }
 
-Future<bool> eliminarUsuario(
-    String carnet, String nombre, BuildContext context) async {
+Future<bool> eliminarUsuario(String carnet, String nombre) async {
   //ACA SE MANDA LA PETICION A LA BD
   Map datos = {"carne": carnet};
   String cuerpo = json.encode(datos);
@@ -194,33 +192,12 @@ Future<bool> eliminarUsuario(
     body: cuerpo,
   );
 
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Alerta(
-          mensaje: "Estudiante '" + nombre + "' eliminado!",
-          titulo: 'Eliminar Estudiante!',
-        ).build(context);
-      },
-    );
-  } else {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Alerta(
-                mensaje:
-                    "Estudiante '" + nombre + "' no se ha podido eliminar!",
-                titulo: 'Eliminar Estudiante!')
-            .build(context);
-      },
-    );
-  }
-  return true;
+  if (response.statusCode >= 200 && response.statusCode < 300) return true;
+  return false;
 }
 
 // @TODO: hacerle una prueba unitaria
-Future<List<Curso>> apiCursos() async{
+Future<List<Curso>> apiCursos() async {
   http.Response response = await http.get(
     URL_API + 'getcourses',
     headers: HEADERS,

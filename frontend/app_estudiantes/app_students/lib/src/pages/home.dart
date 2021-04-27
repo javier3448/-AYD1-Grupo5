@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_students/src/pages/session.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_session/flutter_session.dart';
-
-import '../../main.dart';
 
 class Home_page extends StatefulWidget {
   Home_page({Key key}) : super(key: key);
@@ -363,7 +359,8 @@ class _Home_pageState extends State<Home_page> {
                   child: Center(
                     child: Container(
                       child: ListView(
-                        children: obtenerCursos(snapshot.data['cursosAsignados']),
+                        children:
+                            obtenerCursos(snapshot.data['cursosAsignados']),
                       ),
                     ),
                   ),
@@ -438,14 +435,12 @@ class _Home_pageState extends State<Home_page> {
                       }
                     }),
               );
-            }
-            else if(snapshot.hasError){
+            } else if (snapshot.hasError) {
               // TODO: poner un 'textTheme' especial o algo asi para que se sepa
               // que hubo error o al menos que este en rojo o algo asi
               return ErrorWidget('Error al hacer la peticion:\n\n' +
                   snapshot.error.toString());
-            }
-            else{
+            } else {
               //todavia estamos esperando al future
               return Center(
                 child: CircularProgressIndicator(
@@ -453,7 +448,6 @@ class _Home_pageState extends State<Home_page> {
                 ),
               );
             }
-
           }),
     );
   }

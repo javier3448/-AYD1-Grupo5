@@ -1,9 +1,9 @@
-import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'admin_create_student.dart';
+import 'package:app_students/src/pages/alert_dialog.dart';
 
 class Estudiantes extends StatefulWidget {
   Estudiantes({Key key}) : super(key: key);
@@ -55,7 +55,6 @@ class _EstudiantesState extends State<Estudiantes> {
             Divider(height: 20.0),
             ElevatedButton(
                 onPressed: () {
-                  debugPrint("Editar");
                   Navigator.of(context)
                       .push(MaterialPageRoute(
                           builder: (context) => Profile_page_admin(estudiante)))
@@ -66,8 +65,6 @@ class _EstudiantesState extends State<Estudiantes> {
                 child: Text("Editar")),
             ElevatedButton(
                 onPressed: () {
-                  debugPrint("Eliminar");
-
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -100,7 +97,20 @@ class _EstudiantesState extends State<Estudiantes> {
       child: Text("Sí"),
       onPressed: () {
         Navigator.of(context).pop();
-        Metodos.eliminarUsuario(estudiante.carnet, estudiante.nombre, context);
+        Metodos.eliminarUsuario(estudiante.carnet, estudiante.nombre)
+            .then((value) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Alerta(
+                mensaje: value
+                    ? "Estudiante '" + estudiante.nombre + "' eliminado!"
+                    : "No se ha podido eliminar el estudiante!",
+                titulo: 'Eliminar Estudiante!',
+              ).build(context);
+            },
+          );
+        });
         setState(() {});
       },
     );
@@ -126,6 +136,20 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
+  FloatingActionButton floatButton() {
+    return FloatingActionButton(
+      elevation: 0,
+      highlightElevation: 0,
+      child: Icon(Icons.person_add),
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => admin_student()));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -134,19 +158,7 @@ class _EstudiantesState extends State<Estudiantes> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                  elevation: 0,
-                  highlightElevation: 0,
-                  child: Icon(Icons.person_add),
-                  onPressed: () {
-                    debugPrint("agregar estudiante");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                admin_student()));
-                  },
-                ),
+                floatingActionButton: floatButton(),
                 resizeToAvoidBottomInset: true,
                 appBar: null,
                 body: Container(

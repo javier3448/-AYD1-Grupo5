@@ -1,4 +1,6 @@
 import 'package:app_students/src/pages/about.dart';
+import 'package:app_students/src/pages/admin_delete.dart';
+import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:app_students/src/pages/add_curse.dart';
 import 'package:app_students/src/pages/admin_create_student.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
@@ -23,7 +25,17 @@ void main() {
     );
   }
 
+  Widget makeTestableWidget({Widget child, Size size}) {
+    return MaterialApp(
+      home: MediaQuery(
+        data: MediaQueryData(size: size),
+        child: child,
+      ),
+    );
+  }
+
   setUpAll(() => HttpOverrides.global = null);
+
   final TestWidgetsFlutterBinding binding =
       TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -88,7 +100,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  /*testWidgets('Edit profile student has four containers',
+  testWidgets('Edit profile student has four containers',
       (WidgetTester tester) async {
     Usuario test = Usuario(
         apellido: 'Test',
@@ -101,10 +113,44 @@ void main() {
         password: '123456789',
         username: 'user-test@gmail.com',
         v: 0);
-    await binding.setSurfaceSize(Size(800, 800));
-    await tester.pumpWidget(widgetTest(child: Profile_page_admin(test)));
-    expect(find.byType(SingleChildScrollView), findsNWidgets(2));
-  });*/
+
+    final testableWidget = makeTestableWidget(
+      child: Profile_page_admin(test),
+      size: Size(1024, 768),
+    );
+
+    await tester.pumpWidget(testableWidget);
+    //expect(find.byType(SingleChildScrollView), findsNWidgets(2));
+  });
+
+  testWidgets('press edit student button', (WidgetTester tester) async {
+    Usuario test = Usuario(
+        apellido: 'Test',
+        carnet: '201504051',
+        cui: '3017873870101',
+        cursosAsignados: [],
+        id: 'id1',
+        image: "",
+        nombre: 'Usuario',
+        password: '123456789',
+        username: 'user-test@gmail.com',
+        v: 0);
+
+    final testableWidget = makeTestableWidget(
+      child: Profile_page_admin(test),
+      size: Size(1024, 768),
+    );
+
+    await tester.pumpWidget(testableWidget);
+    await tester.pumpAndSettle();
+    //expect(find.byType(SingleChildScrollView), findsNWidgets(2));
+    find.descendant(
+        of: find.byKey(new Key('edit-btn')),
+        matching: find.byType(OutlineButton));
+    //await tester.longPress(boton);
+    //await tester.tap();
+  });
+
   testWidgets('test estudiantes.dart ', (WidgetTester tester) async {
     await tester.pumpWidget(Estudiantes());
     await tester.pump(Duration.zero);
@@ -128,4 +174,17 @@ void main() {
         child: Estudiantes().createState().WidgetEstudiante(
             Usuario.fromJson(objetoJSON.cast<String, dynamic>(), []))));
   });
+
+  testWidgets('test course list page admin ', (WidgetTester tester) async {
+    await tester.pumpWidget(Delete_page());
+    await tester.pump(Duration.zero);
+    //expect(find.byType(FutureBuilder), findsOneWidget);
+  });
+
+  /*testWidgets('float button test', (WidgetTester tester) async {
+    await tester.pumpWidget(
+        widgetTest2(child: Estudiantes().createState().floatButton()));
+    await tester.longPress(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+  });*/
 }

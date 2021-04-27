@@ -1,5 +1,10 @@
+import 'package:app_students/src/pages/add_curse.dart';
+import 'package:app_students/src/pages/admin_create_student.dart';
+import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
+import 'package:app_students/src/pages/admin_delete.dart';
+import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:flutter/material.dart' as Material;
 import 'package:test/test.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
@@ -20,7 +25,7 @@ void main() {
 
   test('Obtener el listado de cursos', () {
     Metodos.apiCursos()
-        .then((value) => expect(value, TypeMatcher<List<Usuario>>()));
+        .then((value) => expect(value, TypeMatcher<List<Curso>>()));
   });
 
   test('metodo para cargar imagen de perfil en el listado de estudiantes', () {
@@ -65,8 +70,7 @@ void main() {
   });
 
   test('eliminar un estudiante como admin', () {
-    Material.BuildContext context;
-    Metodos.eliminarUsuario('201602470', 'Test', context)
+    Metodos.eliminarUsuario('201602470', 'Test')
         .then((value) => expect(value, TypeMatcher<bool>()));
   });
 
@@ -123,5 +127,64 @@ void main() {
         .createState()
         .confirmacion(Usuario.fromJson(objetoJSON.cast<String, dynamic>(), []));
     expect(lista, TypeMatcher<Material.AlertDialog>());
+  });
+
+  test('actualizar perfil estudiante admin', () {
+    Map user = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Mariana",
+      "apellido": "Sic",
+      "CUI": "3017873870101",
+      "carne": "201504051",
+      "username": "sicmariana8@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+      "image":
+          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
+    };
+    Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
+        .createState()
+        .actualizarPerfil(user)
+        .then((value) => expect(value, TypeMatcher<bool>()));
+  });
+
+  test('retornar titulo en cursos admin', () {
+    var titulo = Delete_page().createState().retornarTitulo();
+    expect(titulo, TypeMatcher<Material.Widget>());
+  });
+
+  test('obtener widget en cursos admin', () {
+    Map datos = {
+      "nombre": "Analisis y diseño 1",
+      "codigo": 774,
+      "seccion": "A-",
+      "horainicio": "7:00",
+      "horafinal": "8:50",
+      "catedratico": "Ivonne Aldana",
+      "lunes": "N",
+      "martes": "Y",
+      "miercoles": "N",
+      "jueves": "Y",
+      "viernes": "N",
+      "sabado": "N",
+      "domingo": "N"
+    };
+    var titulo = Delete_page()
+        .createState()
+        .obtenerWidgetsCursos([Curso.fromJson(datos.cast<String, dynamic>())]);
+    expect(titulo, TypeMatcher<List<Material.Widget>>());
+  });
+
+  test('agregar curso nuevo', () {
+    add_curse().createState().agregarCurso();
+  });
+
+  test('agregar estudiante nuevo', () {
+    admin_student().createState().agregarEstudiante();
+  });
+
+  test('retornar boton flotante', () {
+    var boton = Estudiantes().createState().floatButton();
+    expect(boton, TypeMatcher<Material.FloatingActionButton>());
   });
 }

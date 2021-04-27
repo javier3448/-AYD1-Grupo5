@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'alert_dialog.dart';
 
@@ -236,6 +235,52 @@ class _add_curseState extends State<add_curse> {
     }
   }
 
+  void agregarCurso() {
+    Map datosCurso = {
+      "nombre": _nombre,
+      "codigo": _codigo,
+      "seccion": _seccion,
+      "horainicio": _horaI,
+      "horafinal": _horaF,
+      "catedratico": _profesor,
+      "lunes": _Lunes ? "Y" : "N",
+      "martes": _Martes ? "Y" : "N",
+      "miercoles": _Miercoles ? "Y" : "N",
+      "jueves": _Jueves ? "Y" : "N",
+      "viernes": _Viernes ? "Y" : "N",
+      "sabado": _Sabado ? "Y" : "N",
+      "domingo": _Domingo ? "Y" : "N"
+    };
+
+    Metodos.crearCursoAdmin(datosCurso).then((value) async {
+      if (value) {
+        _formKey.currentState?.reset();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+                    titulo: "Creación de Cursos",
+                    mensaje: "Curso " + _nombre + " creado!",
+                    nav: "controladorAdmin")
+                .build(context);
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+              titulo: "Creación de Cursos",
+              mensaje: "No se ha podido realizar la creación del curso '" +
+                  _nombre +
+                  "'!",
+            ).build(context);
+          },
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -379,50 +424,7 @@ class _add_curseState extends State<add_curse> {
                         _formKey.currentState.save();
                       }
 
-                      Map datosCurso = {
-                        "nombre": _nombre,
-                        "codigo": _codigo,
-                        "seccion": _seccion,
-                        "horainicio": _horaI,
-                        "horafinal": _horaF,
-                        "catedratico": _profesor,
-                        "lunes": _Lunes ? "Y" : "N",
-                        "martes": _Martes ? "Y" : "N",
-                        "miercoles": _Miercoles ? "Y" : "N",
-                        "jueves": _Jueves ? "Y" : "N",
-                        "viernes": _Viernes ? "Y" : "N",
-                        "sabado": _Sabado ? "Y" : "N",
-                        "domingo": _Domingo ? "Y" : "N"
-                      };
-
-                      Metodos.crearCursoAdmin(datosCurso).then((value) async {
-                        if (value) {
-                          _formKey.currentState?.reset();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Alerta(
-                                      titulo: "Creación de Cursos",
-                                      mensaje: "Curso " + _nombre + " creado!",
-                                      nav: "controladorAdmin")
-                                  .build(context);
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Alerta(
-                                titulo: "Creación de Cursos",
-                                mensaje:
-                                    "No se ha podido realizar la creación del curso '" +
-                                        _nombre +
-                                        "'!",
-                              ).build(context);
-                            },
-                          );
-                        }
-                      });
+                      agregarCurso();
                     },
                     child: Text(
                       "Crear curso",

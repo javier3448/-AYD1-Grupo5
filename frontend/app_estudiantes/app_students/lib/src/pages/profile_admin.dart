@@ -4,7 +4,6 @@ import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
@@ -44,69 +43,38 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
   String imagenPerfil =
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png";
 
-  @override
-  void initState() {}
+  Future<bool> actualizarPerfil(Map datos) async {
+    Metodos.actualizarPerfil(datos, []).then((value) {
+      if (value != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+              titulo: "Editar Perfil",
+              mensaje: "Datos para " +
+                  datos['nombre'] +
+                  " actualizados exitosamente!",
+              nav: 'estudiantes',
+            ).build(context);
+          },
+        );
+        return true;
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Alerta(
+                    titulo: 'Editar Perfil',
+                    mensaje:
+                        "Error al actualizar datos de " + datos['nombre'] + "!")
+                .build(context);
+          },
+        );
+        return false;
+      }
+    });
 
-  Future actualizarPerfil(Map datos) async {
-    String cuerpo = json.encode(datos);
-
-    http.Response response = await http.post(
-      'http://13.58.126.153:4000/update',
-      headers: {'Content-Type': 'application/json'},
-      body: cuerpo,
-    );
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          setState(() {
-            esEditable = false;
-            seIngresatxt = false;
-          });
-          Navigator.of(context).pop(); // dismiss dialog
-          Navigator.of(context).pushNamed("estudiantes");
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text(
-            "Datos para " + datos['nombre'] + " actualizados exitosamente!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    } else {
-      // anuncio
-      Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop(); // dismiss dialog
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: Text("Editar Perfil"),
-        content: Text("Error al actualizar datos de " + datos['nombre'] + "!"),
-        actions: [
-          okButton,
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
+    return false;
   }
 
   void _openFileExplorer(Usuario usuario) async {
@@ -220,7 +188,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
   Widget build(BuildContext context) {
     return Material(
         child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
                 child: Center(
                     child: Stack(
@@ -241,8 +209,8 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                 Container(
                                   padding: EdgeInsets.all(10.0),
                                   width: MediaQuery.of(context).size.width / 2,
-                                  height: 220,
-                                  // MediaQuery.of(context).size.height / 3,
+                                  height: /*220,*/
+                                      MediaQuery.of(context).size.height / 3,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                         color: Colors.white, width: 5),
@@ -358,6 +326,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                             child: Row(
                                               children: [
                                                 OutlineButton(
+                                                    key: new Key('edit-btn'),
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 40),

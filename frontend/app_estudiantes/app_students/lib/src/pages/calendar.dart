@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:time_machine/time_machine.dart';
 import 'package:timetable/timetable.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'cursos.dart';
 import 'dart:math' show Random;
 
 class CursoSemanal {
@@ -281,14 +280,12 @@ class _Calendar_pageState extends State<Calendar_page> {
                   ),
                 ),
               );
-            }
-            else if(snapshot.hasError){
+            } else if (snapshot.hasError) {
               // TODO: poner un 'textTheme' especial o algo asi para que se sepa
               // que hubo error o al menos que este en rojo o algo asi
               return ErrorWidget('Error al hacer la peticion:\n\n' +
                   snapshot.error.toString());
-            }
-            else{
+            } else {
               //todavia estamos esperando al future
               return Center(
                 child: CircularProgressIndicator(
