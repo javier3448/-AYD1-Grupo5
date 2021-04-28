@@ -43,35 +43,32 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
   String imagenPerfil =
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png";
 
-  Future<bool> actualizarPerfil(Map datos) async {
+  Future<bool> actualizarPerfil() async {
+    cuiString = cui_Ctrl.text;
+    carnetString = carnet_Ctrl.text;
+    Map datos = {
+      "CUI": estudiante.cui,
+      "carne": estudiante.carnet,
+      "username": estudiante.username,
+      "nombre": nombreCompleto_Cntrl.text,
+      "apellido": apellido_Ctrl.text,
+      "password": contrasena_Ctrl.text
+    };
     Metodos.actualizarPerfil(datos, []).then((value) {
-      if (value != null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-              titulo: "Editar Perfil",
-              mensaje: "Datos para " +
-                  datos['nombre'] +
-                  " actualizados exitosamente!",
-              nav: 'estudiantes',
-            ).build(context);
-          },
-        );
-        return true;
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-                    titulo: 'Editar Perfil',
-                    mensaje:
-                        "Error al actualizar datos de " + datos['nombre'] + "!")
-                .build(context);
-          },
-        );
-        return false;
-      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alerta(
+            titulo: "Editar Perfil",
+            mensaje: value != null
+                ? "Datos para " +
+                    datos['nombre'] +
+                    " actualizados exitosamente!"
+                : "Error al actualizar datos de " + datos['nombre'] + "!",
+            nav: 'estudiantes',
+          ).build(context);
+        },
+      );
     });
 
     return false;
@@ -83,30 +80,31 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
     img64 = base64Encode(bytes);
     Map datos = {"carne": usuario.carnet, "image": img64.toString()};
     Metodos.actualizarFotoPerfil(datos, usuario).then((value) async {
-      if (value != null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-                    titulo: "Editar Perfil",
-                    mensaje: "¡Imagen de perfil de " +
-                        value.nombre +
-                        " actualizada exitosamente!")
-                .build(context);
-          },
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-                    titulo: "Editar Perfil",
-                    mensaje: "¡Error al actualizar imagen!")
-                .build(context);
-          },
-        );
-      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alerta(
+                  titulo: "Editar Perfil",
+                  mensaje: value != null
+                      ? "¡Imagen de perfil de " +
+                          value.nombre +
+                          " actualizada exitosamente!"
+                      : "¡Error al actualizar imagen!")
+              .build(context);
+        },
+      );
     });
+  }
+
+  void editBtn() {
+    nombreCompleto_Cntrl.text = estudiante.nombre;
+    apellido_Ctrl.text = estudiante.apellido;
+    contrasena_Ctrl.text = estudiante.password;
+    usuString = '';
+    cuiString = '';
+    carnetString = '';
+    esEditable = false;
+    seIngresatxt = false;
   }
 
   Widget textfield(
@@ -326,7 +324,6 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                             child: Row(
                                               children: [
                                                 OutlineButton(
-                                                    key: new Key('edit-btn'),
                                                     padding:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 40),
@@ -338,18 +335,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                                                         20)),
                                                     onPressed: () {
                                                       setState(() {
-                                                        nombreCompleto_Cntrl
-                                                                .text =
-                                                            estudiante.nombre;
-                                                        apellido_Ctrl.text =
-                                                            estudiante.apellido;
-                                                        contrasena_Ctrl.text =
-                                                            estudiante.password;
-                                                        usuString = '';
-                                                        cuiString = '';
-                                                        carnetString = '';
-                                                        esEditable = false;
-                                                        seIngresatxt = false;
+                                                        editBtn();
                                                       });
                                                     },
                                                     child: Text("CANCELAR",
@@ -374,32 +360,8 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                                       setState(() {
                                                         //nombreCString =  nombreCompleto_Cntrl.text;
                                                         //usuString = usu_Ctrl.text;
-                                                        cuiString =
-                                                            cui_Ctrl.text;
-                                                        carnetString =
-                                                            carnet_Ctrl.text;
-                                                        print(
-                                                            "Aca se enviarian los nuevos datos a la BD :D ");
 
-                                                        Map llaves = {
-                                                          "CUI": estudiante.cui,
-                                                          "carne":
-                                                              estudiante.carnet,
-                                                          "username": estudiante
-                                                              .username,
-                                                          "nombre":
-                                                              nombreCompleto_Cntrl
-                                                                  .text,
-                                                          "apellido":
-                                                              apellido_Ctrl
-                                                                  .text,
-                                                          "password":
-                                                              contrasena_Ctrl
-                                                                  .text
-                                                        };
-
-                                                        actualizarPerfil(
-                                                            llaves);
+                                                        actualizarPerfil();
                                                       });
                                                     },
                                                     child: Text("GUARDAR",

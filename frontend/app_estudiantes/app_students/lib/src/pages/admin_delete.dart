@@ -11,8 +11,8 @@ class Delete_page extends StatefulWidget {
 }
 
 class _Delete_pageState extends State<Delete_page> {
-
-  Widget MiCursoAdmin(String codigo, String nombre, String seccion, String hInicio, String hFinal) {
+  Widget MiCursoAdmin(String codigo, String nombre, String seccion,
+      String hInicio, String hFinal) {
     return ExpansionTile(
       title: Text(nombre),
       subtitle: Text("Inicia: " + hInicio + "  -  Finaliza: " + hFinal),
@@ -83,7 +83,6 @@ class _Delete_pageState extends State<Delete_page> {
                 highlightElevation: 0,
                 child: Icon(Icons.my_library_add),
                 onPressed: () {
-                  debugPrint("agregar curso");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -105,8 +104,8 @@ class _Delete_pageState extends State<Delete_page> {
           } else if (snapshot.hasError) {
             // TODO: poner un 'textTheme' especial o algo asi para que se sepa
             // que hubo error o al menos que este en rojo o algo asi
-            return ErrorWidget('Error al hacer la peticion:\n\n' +
-                snapshot.error.toString());
+            return ErrorWidget(
+                'Error al hacer la peticion:\n\n' + snapshot.error.toString());
           } else {
             //todavia estamos esperando al future
             return Center(
@@ -115,7 +114,6 @@ class _Delete_pageState extends State<Delete_page> {
               ),
             );
           }
-        }
-      );
+        });
   }
 }

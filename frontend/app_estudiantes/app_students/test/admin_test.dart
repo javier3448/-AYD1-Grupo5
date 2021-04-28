@@ -1,6 +1,5 @@
 import 'package:app_students/src/pages/add_curse.dart';
 import 'package:app_students/src/pages/admin_create_student.dart';
-import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
@@ -144,8 +143,26 @@ void main() {
     };
     Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
         .createState()
-        .actualizarPerfil(user)
+        .actualizarPerfil()
         .then((value) => expect(value, TypeMatcher<bool>()));
+  });
+
+  test('test a edit button', () {
+    Map user = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Mariana",
+      "apellido": "Sic",
+      "CUI": "3017873870101",
+      "carne": "201504051",
+      "username": "sicmariana8@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+      "image":
+          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
+    };
+    Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
+        .createState()
+        .editBtn();
   });
 
   test('retornar titulo en cursos admin', () {

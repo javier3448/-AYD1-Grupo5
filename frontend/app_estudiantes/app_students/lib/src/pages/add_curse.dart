@@ -253,31 +253,21 @@ class _add_curseState extends State<add_curse> {
     };
 
     Metodos.crearCursoAdmin(datosCurso).then((value) async {
-      if (value) {
-        _formKey.currentState?.reset();
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-                    titulo: "Creación de Cursos",
-                    mensaje: "Curso " + _nombre + " creado!",
-                    nav: "controladorAdmin")
-                .build(context);
-          },
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-              titulo: "Creación de Cursos",
-              mensaje: "No se ha podido realizar la creación del curso '" +
-                  _nombre +
-                  "'!",
-            ).build(context);
-          },
-        );
-      }
+      _formKey.currentState?.reset();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alerta(
+                  titulo: "Creación de Cursos",
+                  mensaje: value
+                      ? "Curso " + _nombre + " creado!"
+                      : "No se ha podido realizar la creación del curso '" +
+                          _nombre +
+                          "'!",
+                  nav: value ? "controladorAdmin" : "")
+              .build(context);
+        },
+      );
     });
   }
 

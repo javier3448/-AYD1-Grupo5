@@ -218,6 +218,33 @@ class _tabs_pageState extends State<tabs_page> {
     );
   }
 
+  void reg() {
+    Map data = {
+      "nombre": _name,
+      "apellido": _last,
+      "CUI": _cui,
+      "carne": _number,
+      "username": _email,
+      "password": _pass
+    };
+
+    Metodos.registrarUsuario(data).then((value) async {
+      if (value) _formKey.currentState?.reset();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alerta(
+                  titulo: "Registro Estudiante",
+                  mensaje: value
+                      ? "Registro Realizado!"
+                      : "No se ha podido realizar registro!",
+                  nav: value ? "login" : "")
+              .build(context);
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,40 +279,7 @@ class _tabs_pageState extends State<tabs_page> {
                         _formKey.currentState.save();
                       }
 
-                      Map data = {
-                        "nombre": _name,
-                        "apellido": _last,
-                        "CUI": _cui,
-                        "carne": _number,
-                        "username": _email,
-                        "password": _pass
-                      };
-
-                      Metodos.registrarUsuario(data).then((value) async {
-                        if (value) {
-                          _formKey.currentState?.reset();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Alerta(
-                                      titulo: "Registro Estudiante",
-                                      mensaje: "Registro Realizado!",
-                                      nav: "login")
-                                  .build(context);
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Alerta(
-                                titulo: "Registro Estudiante",
-                                mensaje: "No se ha podido realizar registro!",
-                              ).build(context);
-                            },
-                          );
-                        }
-                      });
+                      reg();
                     },
                     child: Text(
                       "Registrar",

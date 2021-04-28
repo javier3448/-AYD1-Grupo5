@@ -1,5 +1,6 @@
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:app_students/src/pages/session.dart';
+import 'package:app_students/src/pages/tabs.dart';
 import 'package:test/test.dart';
 import 'dart:convert';
 import 'dart:io' as Io;
@@ -42,5 +43,9 @@ void main() {
     Metodos.actualizarFotoPerfil(
             datos, Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
         .then((value) => expect(value, TypeMatcher<Usuario>()));
+  });
+
+  test('registrar test', () {
+    tabs_page().createState().reg();
   });
 }
