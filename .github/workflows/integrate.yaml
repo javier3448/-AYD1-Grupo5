@@ -36,6 +36,14 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: "stable"
-      - run: cd ./app_estudiantes/app_students/
-      - run: flutter pub get
-      - run: flutter test --reporter expanded --coverage test/*.dart
+          flutter-version: '2.0.3'
+      - name: Instalar packetes
+        run: |
+          cd app_estudiantes
+          cd app_students
+          flutter pub get
+      - name: Correr tests
+        run: |
+          cd app_estudiantes
+          cd app_students
+          flutter test --reporter expanded --coverage test/*.dart
