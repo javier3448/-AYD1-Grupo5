@@ -43,7 +43,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
   String imagenPerfil =
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png";
 
-  Future<bool> actualizarPerfil() async {
+  bool actualizarPerfil() {
     cuiString = cui_Ctrl.text;
     carnetString = carnet_Ctrl.text;
     Map datos = {
@@ -55,18 +55,11 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
       "password": contrasena_Ctrl.text
     };
     Metodos.actualizarPerfil(datos, []).then((value) {
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Alerta(
-            titulo: "Editar Perfil",
-            mensaje: value != null
-                ? "Datos para " +
-                    datos['nombre'] +
-                    " actualizados exitosamente!"
-                : "Error al actualizar datos de " + datos['nombre'] + "!",
-            nav: 'estudiantes',
-          ).build(context);
+          return alertaActualizacion(value).build(context);
         },
       );
     });
@@ -76,24 +69,32 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
 
   void _openFileExplorer(Usuario usuario) async {
     filePath = await FilePicker.getFilePath(type: FileType.image);
-    final bytes = Io.File(filePath).readAsBytesSync();
-    img64 = base64Encode(bytes);
-    Map datos = {"carne": usuario.carnet, "image": img64.toString()};
+    actualizar(usuario, filePath);
+  }
+
+  void actualizar(Usuario usuario, String path) async {
+    Map datos = {
+      "carne": usuario.carnet,
+      "image": base64Encode(Io.File(path).readAsBytesSync()).toString()
+    };
     Metodos.actualizarFotoPerfil(datos, usuario).then((value) async {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Alerta(
-                  titulo: "Editar Perfil",
-                  mensaje: value != null
-                      ? "¡Imagen de perfil de " +
-                          value.nombre +
-                          " actualizada exitosamente!"
-                      : "¡Error al actualizar imagen!")
-              .build(context);
+          return alertaActualizacion(value).build(context);
         },
       );
     });
+  }
+
+  Alerta alertaActualizacion(Usuario value) {
+    return Alerta(
+      titulo: "Editar Perfil",
+      mensaje: value != null
+          ? "Datos para " + value.nombre + " actualizados exitosamente!"
+          : "Error al actualizar datos!",
+      nav: 'controladorAdmin',
+    );
   }
 
   void editBtn() {
@@ -357,6 +358,7 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                                     color:
                                                         Colors.lightGreen[600],
                                                     onPressed: () {
+                                                      if (!mounted) return;
                                                       setState(() {
                                                         //nombreCString =  nombreCompleto_Cntrl.text;
                                                         //usuString = usu_Ctrl.text;

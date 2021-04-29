@@ -4,6 +4,7 @@ import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
 import 'package:app_students/src/pages/profile_admin.dart';
+import 'package:app_students/src/pages/tabs.dart';
 import 'package:flutter/material.dart' as Material;
 import 'package:test/test.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
@@ -143,8 +144,7 @@ void main() {
     };
     Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
         .createState()
-        .actualizarPerfil()
-        .then((value) => expect(value, TypeMatcher<bool>()));
+        .actualizarPerfil();
   });
 
   test('test a edit button', () {
@@ -203,5 +203,90 @@ void main() {
   test('retornar boton flotante', () {
     var boton = Estudiantes().createState().floatButton();
     expect(boton, TypeMatcher<Material.FloatingActionButton>());
+  });
+
+  test('Actualizar foto de perfil de un estudiante desde administrador', () {
+    Map nuevo = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Levi",
+      "apellido": "Ackermann",
+      "CUI": "3445667722510",
+      "carne": "202230456",
+      "username": "levi@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+    };
+
+    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+        .createState()
+        .actualizar(Usuario.fromJson(nuevo.cast<String, dynamic>(), []),
+            'test/img/marlo.png');
+  });
+
+  test('alerta de datos actualizados', () {
+    Map nuevo = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Levi",
+      "apellido": "Ackermann",
+      "CUI": "3445667722510",
+      "carne": "202230456",
+      "username": "levi@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+    };
+
+    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+        .createState()
+        .alertaActualizacion(
+            Usuario.fromJson(nuevo.cast<String, dynamic>(), []));
+  });
+
+  test('alerta de datos actualizados con nulo', () {
+    Map nuevo = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Levi",
+      "apellido": "Ackermann",
+      "CUI": "3445667722510",
+      "carne": "202230456",
+      "username": "levi@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+    };
+
+    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+        .createState()
+        .alertaActualizacion(null);
+  });
+
+  test('alerta para agregar un curso true', () {
+    add_curse().createState().crearCursoAlarma(true);
+  });
+
+  test('alerta para agregar un curso false', () {
+    add_curse().createState().crearCursoAlarma(false);
+  });
+
+  test('alerta para agregar un estudiante true', () {
+    admin_student().createState().alertaCrearEstudiante(true);
+  });
+
+  test('alerta para agregar un estudiante false', () {
+    admin_student().createState().alertaCrearEstudiante(false);
+  });
+
+  test('alerta para tabs true', () {
+    tabs_page().createState().alertaTabs(true);
+  });
+
+  test('alerta para tabs false', () {
+    tabs_page().createState().alertaTabs(false);
+  });
+
+  test('alerta para estudiantes true', () {
+    Estudiantes().createState().alertaEstudiante(true, 'Estudiante');
+  });
+
+  test('alerta para estudiantes false', () {
+    Estudiantes().createState().alertaEstudiante(false, 'Estudiante');
   });
 }

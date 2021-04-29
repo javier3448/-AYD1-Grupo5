@@ -101,7 +101,8 @@ class _CursosState extends State<Cursos> {
                   child: Center(
                     child: Container(
                       child: ListView(
-                        children: obtenerCursos(snapshot.data['cursosAsignados']),
+                        children:
+                            obtenerCursos(snapshot.data['cursosAsignados']),
                       ),
                     ),
                   ),

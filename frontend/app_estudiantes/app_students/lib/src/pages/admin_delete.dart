@@ -71,36 +71,42 @@ class _Delete_pageState extends State<Delete_page> {
     return lista;
   }
 
+  FloatingActionButton btnAdd() {
+    return FloatingActionButton(
+      elevation: 0,
+      highlightElevation: 0,
+      child: Icon(Icons.my_library_add),
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => add_curse()));
+      },
+    );
+  }
+
+  Scaffold containerRet(List<Curso> cursos) {
+    return Scaffold(
+      floatingActionButton: btnAdd(),
+      resizeToAvoidBottomInset: true,
+      appBar: null,
+      body: Container(
+        child: Center(
+          child: Container(
+            child: ListView(
+              children: obtenerWidgetsCursos(cursos),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: Metodos.apiCursos(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                elevation: 0,
-                highlightElevation: 0,
-                child: Icon(Icons.my_library_add),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => add_curse()));
-                },
-              ),
-              resizeToAvoidBottomInset: true,
-              appBar: null,
-              body: Container(
-                child: Center(
-                  child: Container(
-                    child: ListView(
-                      children: obtenerWidgetsCursos(snapshot.data),
-                    ),
-                  ),
-                ),
-              ),
-            );
+            return containerRet(snapshot.data);
           } else if (snapshot.hasError) {
             // TODO: poner un 'textTheme' especial o algo asi para que se sepa
             // que hubo error o al menos que este en rojo o algo asi

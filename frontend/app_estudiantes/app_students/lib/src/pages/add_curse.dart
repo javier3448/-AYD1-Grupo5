@@ -240,8 +240,8 @@ class _add_curseState extends State<add_curse> {
       "nombre": _nombre,
       "codigo": _codigo,
       "seccion": _seccion,
-      "horainicio": _horaI,
-      "horafinal": _horaF,
+      "horainicio": _horaI == null ? "00:00" : _horaI,
+      "horafinal": _horaF == null ? "00:30" : _horaF,
       "catedratico": _profesor,
       "lunes": _Lunes ? "Y" : "N",
       "martes": _Martes ? "Y" : "N",
@@ -257,18 +257,19 @@ class _add_curseState extends State<add_curse> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Alerta(
-                  titulo: "Creación de Cursos",
-                  mensaje: value
-                      ? "Curso " + _nombre + " creado!"
-                      : "No se ha podido realizar la creación del curso '" +
-                          _nombre +
-                          "'!",
-                  nav: value ? "controladorAdmin" : "")
-              .build(context);
+          return crearCursoAlarma(value).build(context);
         },
       );
     });
+  }
+
+  Alerta crearCursoAlarma(bool value) {
+    return Alerta(
+        titulo: "Creación de Cursos",
+        mensaje: value
+            ? "Curso creado!"
+            : "No se ha podido realizar la creación del curso!",
+        nav: value ? "controladorAdmin" : "");
   }
 
   @override
