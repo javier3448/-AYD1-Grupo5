@@ -9,6 +9,7 @@ on:
 
 jobs:
   automatizacion_pruebas:
+    name: Automatizando pruebas unitarias Nodejs
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -21,9 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run test
 
-      flutter:
-
-  name: Automatizando pruebas unitarias Flutter & Dart
+  flutter:
+    name: Automatizando pruebas unitarias Flutter & Dart
     runs-on: ubuntu-latest
     defaults:
       run:
