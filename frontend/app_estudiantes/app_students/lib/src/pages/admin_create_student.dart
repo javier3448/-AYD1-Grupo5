@@ -211,30 +211,23 @@ class _admin_studentState extends State<admin_student> {
     };
 
     Metodos.registrarUsuario(data).then((value) async {
-      if (value) {
-        _formKey.currentState?.reset();
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-                    titulo: "Registro Estudiante",
-                    mensaje: "Registro Realizado!",
-                    nav: "login")
-                .build(context);
-          },
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Alerta(
-              titulo: "Registro Estudiante",
-              mensaje: "No se ha podido realizar registro!",
-            ).build(context);
-          },
-        );
-      }
+      _formKey.currentState?.reset();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertaCrearEstudiante(value).build(context);
+        },
+      );
     });
+  }
+
+  Alerta alertaCrearEstudiante(bool value) {
+    return Alerta(
+      titulo: "Registro Estudiante",
+      mensaje:
+          value ? "Registro Realizado!" : "No se ha podido realizar registro!",
+      nav: value ? "controladorAdmin" : "",
+    );
   }
 
   @override

@@ -86,6 +86,7 @@ void main() {
 
   testWidgets('Press button on Add Course page', (WidgetTester tester) async {
     await tester.pumpWidget(widgetTest(child: add_curse()));
+    await tester.pumpAndSettle();
 
     /*expect(find.byKey(new Key('code-txt')), findsOneWidget);
     await tester.enterText(find.byKey(new Key('code-txt')), "001");*/
@@ -93,6 +94,7 @@ void main() {
     for (int i = 1; i < 8; i++) {
       expect(find.byKey(new Key('D' + i.toString())), findsOneWidget);
       await tester.tap(find.byKey(new Key('D' + i.toString())));
+      await tester.pumpAndSettle();
     }
 
     /*expect(find.byKey(new Key('press-btn')), findsOneWidget);
@@ -187,4 +189,57 @@ void main() {
     await tester.longPress(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
   });*/
+
+  testWidgets('test add course button', (WidgetTester tester) async {
+    await tester
+        .pumpWidget(widgetTest2(child: Delete_page().createState().btnAdd()));
+  });
+
+  testWidgets('test scaffold widget on courses page',
+      (WidgetTester tester) async {
+    Map objetoJSON = {
+      "_id": "605e68d0e046883547da2727",
+      "nombre": "Analisis y diseño 1",
+      "codigo": 774,
+      "seccion": "A-",
+      "horainicio": "7:00",
+      "horafinal": "8:50",
+      "catedratico": "Ivonne Aldana",
+      "lunes": "N",
+      "martes": "Y",
+      "miercoles": "N",
+      "jueves": "Y",
+      "viernes": "N",
+      "sabado": "N",
+      "domingo": "N",
+      "__v": 0
+    };
+    await tester.pumpWidget(widgetTest2(
+        child: Delete_page().createState().containerRet(
+            [Curso.fromJson(objetoJSON.cast<String, dynamic>())])));
+  });
+
+  testWidgets('test scaffold estudiante', (WidgetTester tester) async {
+    Map objetoJSON = {
+      "_id": "605e6868e046883547da2726",
+      "nombre": "Mariana",
+      "apellido": "Sic",
+      "CUI": "3017873870101",
+      "carne": "201504051",
+      "username": "sicmariana8@gmail.com",
+      "password": "123456789",
+      "__v": 0,
+      "image":
+          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
+    };
+    await tester.pumpWidget(widgetTest2(
+        child: Estudiantes().createState().scaffRet(
+            [Usuario.fromJson(objetoJSON.cast<String, dynamic>(), [])])));
+  });
+
+  testWidgets('return user\'s avatar', (WidgetTester tester) async {
+    await tester.pumpWidget(widgetTest2(
+        child: Estudiantes().createState().avatar(NetworkImage(
+            "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"))));
+  });
 }

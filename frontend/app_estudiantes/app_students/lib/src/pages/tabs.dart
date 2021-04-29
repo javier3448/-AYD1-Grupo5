@@ -233,16 +233,19 @@ class _tabs_pageState extends State<tabs_page> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Alerta(
-                  titulo: "Registro Estudiante",
-                  mensaje: value
-                      ? "Registro Realizado!"
-                      : "No se ha podido realizar registro!",
-                  nav: value ? "login" : "")
-              .build(context);
+          return alertaTabs(value).build(context);
         },
       );
     });
+  }
+
+  Alerta alertaTabs(bool value) {
+    return Alerta(
+        titulo: "Registro Estudiante",
+        mensaje: value
+            ? "Registro Realizado!"
+            : "No se ha podido realizar registro!",
+        nav: value ? "login" : "");
   }
 
   @override

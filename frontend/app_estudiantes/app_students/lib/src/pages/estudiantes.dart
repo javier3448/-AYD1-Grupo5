@@ -21,13 +21,9 @@ class _EstudiantesState extends State<Estudiantes> {
         future: Metodos.loadImageEstudiante(estudiante.image),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return CircleAvatar(
-              backgroundImage: snapshot.data,
-              backgroundColor: Color.fromRGBO(15, 40, 80, 1),
-            );
+            return avatar(snapshot.data);
           } else if (snapshot.hasError) {
-            return ErrorWidget(
-                'Error al obtener imagen:\n\n' + snapshot.error.toString());
+            return ErrorWidget('IMG:\n\n' + snapshot.error.toString());
           } else {
             // TODO: poner una animacion o algo asi para que se vea que esta cargando
             // BUG: Estos tres puntos se deberian de ver mientras se carga la imagen
@@ -81,6 +77,13 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
+  CircleAvatar avatar(var img) {
+    return CircleAvatar(
+      backgroundImage: img,
+      backgroundColor: Color.fromRGBO(15, 40, 80, 1),
+    );
+  }
+
   List<Widget> widgetsEstudiantes(List<Usuario> estudiantes) {
     List<Widget> lista = new List<Widget>();
     Widget tituloContainer = Metodos.retornarTitulo();
@@ -102,12 +105,7 @@ class _EstudiantesState extends State<Estudiantes> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return Alerta(
-                mensaje: value
-                    ? "Estudiante '" + estudiante.nombre + "' eliminado!"
-                    : "No se ha podido eliminar el estudiante!",
-                titulo: 'Eliminar Estudiante!',
-              ).build(context);
+              return alertaEstudiante(value, estudiante.nombre).build(context);
             },
           );
         });
@@ -136,6 +134,15 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
+  Alerta alertaEstudiante(bool value, String nombre) {
+    return Alerta(
+      mensaje: value
+          ? "Estudiante '" + nombre + "' eliminado!"
+          : "No se ha podido eliminar el estudiante!",
+      titulo: 'Eliminar Estudiante!',
+    );
+  }
+
   FloatingActionButton floatButton() {
     return FloatingActionButton(
       elevation: 0,
@@ -150,6 +157,23 @@ class _EstudiantesState extends State<Estudiantes> {
     );
   }
 
+  Scaffold scaffRet(List<Usuario> usuarios) {
+    return Scaffold(
+      floatingActionButton: floatButton(),
+      resizeToAvoidBottomInset: true,
+      appBar: null,
+      body: Container(
+        child: Center(
+          child: Container(
+            child: ListView(
+              children: widgetsEstudiantes(usuarios),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -157,25 +181,11 @@ class _EstudiantesState extends State<Estudiantes> {
           future: Metodos.apiEstudiantes(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Scaffold(
-                floatingActionButton: floatButton(),
-                resizeToAvoidBottomInset: true,
-                appBar: null,
-                body: Container(
-                  child: Center(
-                    child: Container(
-                      child: ListView(
-                        children: widgetsEstudiantes(snapshot.data),
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return scaffRet(snapshot.data);
             } else if (snapshot.hasError) {
               // TODO: poner un 'textTheme' especial o algo asi para que se sepa
               // que hubo error o al menos que este en rojo o algo asi
-              return ErrorWidget('Error al hacer la peticion:\n\n' +
-                  snapshot.error.toString());
+              return ErrorWidget('Peticion :\n\n' + snapshot.error.toString());
             } else {
               //todavia estamos esperando al future
               return Center(

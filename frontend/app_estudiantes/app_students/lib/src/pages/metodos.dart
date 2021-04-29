@@ -1,4 +1,3 @@
-import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -20,8 +19,7 @@ Future<Usuario> ingresoUsuario(String nombre, String pass) async {
 
   if (response.statusCode >= 200 && response.statusCode < 300) {
     Map respuesta = json.decode(response.body);
-    List<Curso> cursosAsignados = mapeoCurso(respuesta);
-    return Usuario.fromJson(respuesta, cursosAsignados);
+    return Usuario.fromJson(respuesta, mapeoCurso(respuesta));
   }
 
   return null;

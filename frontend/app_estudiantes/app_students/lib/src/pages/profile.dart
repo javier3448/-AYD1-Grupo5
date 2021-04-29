@@ -203,7 +203,8 @@ class _Profile_pageState extends State<Profile_page> {
 
                                   Container(
                                     padding: EdgeInsets.all(10.0),
-                                    width: MediaQuery.of(context).size.width / 2,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
                                     height: 220,
                                     decoration: BoxDecoration(
                                       border: Border.all(
@@ -222,7 +223,8 @@ class _Profile_pageState extends State<Profile_page> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: 30, left: 140),
+                                    padding:
+                                        EdgeInsets.only(top: 30, left: 140),
                                     child: CircleAvatar(
                                       backgroundColor: Colors.lightBlue[300],
                                       child: IconButton(
@@ -231,11 +233,12 @@ class _Profile_pageState extends State<Profile_page> {
                                           color: Colors.white,
                                         ),
                                         onPressed: () {
-                                          List<Curso> cursos = new List<Curso>();
+                                          List<Curso> cursos =
+                                              new List<Curso>();
                                           snapshot.data['cursosAsignados']
                                               .forEach((element) {
-                                            cursos
-                                                .add(Curso.fromDynamic(element));
+                                            cursos.add(
+                                                Curso.fromDynamic(element));
                                           });
 
                                           _openFileExplorer(Usuario.fromDynamic(
@@ -249,9 +252,11 @@ class _Profile_pageState extends State<Profile_page> {
                                   Container(
                                     height: 550,
                                     width: double.infinity,
-                                    margin: EdgeInsets.symmetric(horizontal: 10),
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 10),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
@@ -267,7 +272,8 @@ class _Profile_pageState extends State<Profile_page> {
                                           child: textfield(
                                             tipoDato: TextInputType.text,
                                             contrl: apellido_Ctrl
-                                              ..text = snapshot.data['apellido'],
+                                              ..text =
+                                                  snapshot.data['apellido'],
                                             labelText: "Apellido",
                                           ),
                                         ),
@@ -294,9 +300,11 @@ class _Profile_pageState extends State<Profile_page> {
                                         Padding(
                                           padding: const EdgeInsets.all(3.0),
                                           child: textfieldFalse(
-                                            tipoDato: TextInputType.emailAddress,
+                                            tipoDato:
+                                                TextInputType.emailAddress,
                                             contrl: usuario_Ctrl
-                                              ..text = snapshot.data['username'],
+                                              ..text =
+                                                  snapshot.data['username'],
                                             labelText: "Correo Electrónico",
                                             //hintText: snapshot.data['password']
                                           ),
@@ -306,7 +314,8 @@ class _Profile_pageState extends State<Profile_page> {
                                           child: textfield(
                                             tipoDato: TextInputType.text,
                                             contrl: contrasena_Ctrl
-                                              ..text = snapshot.data['password'],
+                                              ..text =
+                                                  snapshot.data['password'],
                                             labelText: "Contraseña",
                                             //hintText: snapshot.data['password']
                                           ),
@@ -339,9 +348,10 @@ class _Profile_pageState extends State<Profile_page> {
                                                       child: Text("CANCELAR",
                                                           style: TextStyle(
                                                               fontSize: 14.0,
-                                                              letterSpacing: 2.2,
-                                                              color:
-                                                                  Colors.black))),
+                                                              letterSpacing:
+                                                                  2.2,
+                                                              color: Colors
+                                                                  .black))),
                                                   RaisedButton(
                                                       padding:
                                                           EdgeInsets.symmetric(
@@ -352,8 +362,8 @@ class _Profile_pageState extends State<Profile_page> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           20)),
-                                                      color:
-                                                          Colors.lightGreen[600],
+                                                      color: Colors
+                                                          .lightGreen[600],
                                                       onPressed: () {
                                                         setState(() {
                                                           cuiString =
@@ -368,8 +378,9 @@ class _Profile_pageState extends State<Profile_page> {
                                                                 .data['cui'],
                                                             "carne": snapshot
                                                                 .data['carnet'],
-                                                            "username": snapshot
-                                                                .data['username'],
+                                                            "username":
+                                                                snapshot.data[
+                                                                    'username'],
                                                             "nombre":
                                                                 nombreCompleto_Cntrl
                                                                     .text,
@@ -387,8 +398,8 @@ class _Profile_pageState extends State<Profile_page> {
                                                                         .toString() ==
                                                                     null
                                                                 ? imagenPerfil
-                                                                : snapshot
-                                                                    .data['image']
+                                                                : snapshot.data[
+                                                                        'image']
                                                                     .toString()
                                                           };
 
@@ -398,10 +409,11 @@ class _Profile_pageState extends State<Profile_page> {
                                                           List<dynamic> lista =
                                                               snapshot.data[
                                                                   'cursosAsignados'];
-                                                          lista
-                                                              .forEach((element) {
+                                                          lista.forEach(
+                                                              (element) {
                                                             cursos.add(Curso(
-                                                                id: element['id'],
+                                                                id: element[
+                                                                    'id'],
                                                                 nombre: element[
                                                                     'nombre'],
                                                                 codigo: element[
@@ -426,12 +438,14 @@ class _Profile_pageState extends State<Profile_page> {
                                                                     'sabado'],
                                                                 domingo: element[
                                                                     'domingo'],
-                                                                catedratico: element[
-                                                                    'catedratico']));
+                                                                catedratico:
+                                                                    element[
+                                                                        'catedratico']));
                                                           });
 
                                                           Metodos.actualizarPerfil(
-                                                                  llaves, cursos)
+                                                                  llaves,
+                                                                  cursos)
                                                               .then(
                                                                   (value) async {
                                                             if (value != null) {
@@ -441,7 +455,8 @@ class _Profile_pageState extends State<Profile_page> {
 
                                                               Widget okButton =
                                                                   FlatButton(
-                                                                child: Text("OK"),
+                                                                child:
+                                                                    Text("OK"),
                                                                 onPressed: () {
                                                                   setState(() {
                                                                     esEditable =
@@ -455,7 +470,8 @@ class _Profile_pageState extends State<Profile_page> {
                                                                 },
                                                               );
 
-                                                              AlertDialog alert =
+                                                              AlertDialog
+                                                                  alert =
                                                                   AlertDialog(
                                                                 title: Text(
                                                                     "Editar Perfil"),
@@ -469,7 +485,8 @@ class _Profile_pageState extends State<Profile_page> {
                                                                 ],
                                                               );
                                                               showDialog(
-                                                                context: context,
+                                                                context:
+                                                                    context,
                                                                 builder:
                                                                     (BuildContext
                                                                         context) {
@@ -479,7 +496,8 @@ class _Profile_pageState extends State<Profile_page> {
                                                             } else {
                                                               Widget okButton =
                                                                   FlatButton(
-                                                                child: Text("OK"),
+                                                                child:
+                                                                    Text("OK"),
                                                                 onPressed: () {
                                                                   Navigator.of(
                                                                           context)
@@ -487,21 +505,23 @@ class _Profile_pageState extends State<Profile_page> {
                                                                 },
                                                               );
 
-                                                              AlertDialog alert =
+                                                              AlertDialog
+                                                                  alert =
                                                                   AlertDialog(
                                                                 title: Text(
                                                                     "Editar Perfil"),
                                                                 content: Text(
                                                                     "Error al actualizar datos de " +
-                                                                        snapshot.data[
-                                                                            'nombre'] +
+                                                                        snapshot
+                                                                            .data['nombre'] +
                                                                         "!"),
                                                                 actions: [
                                                                   okButton,
                                                                 ],
                                                               );
                                                               showDialog(
-                                                                context: context,
+                                                                context:
+                                                                    context,
                                                                 builder:
                                                                     (BuildContext
                                                                         context) {
@@ -515,9 +535,10 @@ class _Profile_pageState extends State<Profile_page> {
                                                       child: Text("GUARDAR",
                                                           style: TextStyle(
                                                               fontSize: 14.0,
-                                                              letterSpacing: 2.2,
-                                                              color:
-                                                                  Colors.black)))
+                                                              letterSpacing:
+                                                                  2.2,
+                                                              color: Colors
+                                                                  .black)))
                                                 ],
                                               ),
                                             ))
@@ -525,7 +546,8 @@ class _Profile_pageState extends State<Profile_page> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(top: 13, left: 315),
+                                    padding:
+                                        EdgeInsets.only(top: 13, left: 315),
                                     child: CircleAvatar(
                                       backgroundColor: Colors.lightBlue[300],
                                       child: IconButton(
@@ -550,14 +572,12 @@ class _Profile_pageState extends State<Profile_page> {
                     )
                   ],
                 )));
-          }
-          else if(snapshot.hasError){
+          } else if (snapshot.hasError) {
             // TODO: poner un 'textTheme' especial o algo asi para que se sepa
             // que hubo error o al menos que este en rojo o algo asi
-            return ErrorWidget('Error al hacer la peticion:\n\n' +
-                snapshot.error.toString());
-          }
-          else{
+            return ErrorWidget(
+                'Error al hacer la peticion:\n\n' + snapshot.error.toString());
+          } else {
             //todavia estamos esperando al future
             return Center(
               child: CircularProgressIndicator(
