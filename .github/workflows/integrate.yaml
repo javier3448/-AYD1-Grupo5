@@ -37,4 +37,5 @@ jobs:
         with:
           channel: "stable"
       - run: cd ./app_estudiantes/app_students/
-      - run: flutter doctor
+      - run: flutter pub get
+      - run: flutter test --reporter expanded --coverage test/*.dart
