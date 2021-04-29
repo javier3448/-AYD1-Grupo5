@@ -33,11 +33,8 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8.x'
-      
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable' # 'dev', 'alpha', default to: 'stable'
-          flutter-version: '2.0.3' # you can also specify exact version of flutter
-
+          channel: "stable"
       - run: flutter pub get
       - run: flutter test --reporter expanded --coverage test/*.dart
