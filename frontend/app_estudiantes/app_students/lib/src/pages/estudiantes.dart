@@ -64,7 +64,7 @@ class _EstudiantesState extends State<Estudiantes> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return confirmacion(estudiante);
+                      return confirmacion(estudiante).build(context);
                     },
                   );
                 },
@@ -140,6 +140,7 @@ class _EstudiantesState extends State<Estudiantes> {
           ? "Estudiante '" + nombre + "' eliminado!"
           : "No se ha podido eliminar el estudiante!",
       titulo: 'Eliminar Estudiante!',
+      nav: value ? "controladorAdmin" : "",
     );
   }
 

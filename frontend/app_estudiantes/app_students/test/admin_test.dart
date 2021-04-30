@@ -1,5 +1,6 @@
 import 'package:app_students/src/pages/add_curse.dart';
 import 'package:app_students/src/pages/admin_create_student.dart';
+import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
@@ -13,6 +14,19 @@ import 'package:app_students/src/pages/metodos.dart' as Metodos;
 //genhtml coverage/lcov.info -o coverage/html
 
 void main() {
+  Map estudiante = {
+    "_id": "605e6868e046883547da2726",
+    "nombre": "Levi",
+    "apellido": "Ackermann",
+    "CUI": "3445667722510",
+    "carne": "202230456",
+    "username": "levi@gmail.com",
+    "password": "123456789",
+    "__v": 0,
+  };
+
+  Usuario estudiantePrueba =
+      Usuario.fromJson(estudiante.cast<String, dynamic>(), []);
   test('Obtener titulo de Estudiantes', () {
     var titulo = Metodos.retornarTitulo();
     expect(titulo, TypeMatcher<Material.Container>());
@@ -75,94 +89,27 @@ void main() {
   });
 
   test('prueba a metodo widgetestudiante', () {
-    Map objetoJSON = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Mariana",
-      "apellido": "Sic",
-      "CUI": "3017873870101",
-      "carne": "201504051",
-      "username": "sicmariana8@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-      "image":
-          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
-    };
-    var res = Estudiantes().createState().WidgetEstudiante(
-        Usuario.fromJson(objetoJSON.cast<String, dynamic>(), []));
+    var res = Estudiantes().createState().WidgetEstudiante(estudiantePrueba);
     expect(res, TypeMatcher<Material.ExpansionTile>());
   });
 
   test('lista de widget estudiante', () {
-    Map objetoJSON = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Mariana",
-      "apellido": "Sic",
-      "CUI": "3017873870101",
-      "carne": "201504051",
-      "username": "sicmariana8@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-      "image":
-          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
-    };
-    var lista = Estudiantes().createState().widgetsEstudiantes(
-        [Usuario.fromJson(objetoJSON.cast<String, dynamic>(), [])]);
+    var lista =
+        Estudiantes().createState().widgetsEstudiantes([estudiantePrueba]);
     expect(lista, TypeMatcher<List<Material.Widget>>());
   });
 
   test('alarma de eliminar estudiante', () {
-    Map objetoJSON = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Mariana",
-      "apellido": "Sic",
-      "CUI": "3017873870101",
-      "carne": "201504051",
-      "username": "sicmariana8@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-      "image":
-          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
-    };
-    var lista = Estudiantes()
-        .createState()
-        .confirmacion(Usuario.fromJson(objetoJSON.cast<String, dynamic>(), []));
+    var lista = Estudiantes().createState().confirmacion(estudiantePrueba);
     expect(lista, TypeMatcher<Material.AlertDialog>());
   });
 
   test('actualizar perfil estudiante admin', () {
-    Map user = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Mariana",
-      "apellido": "Sic",
-      "CUI": "3017873870101",
-      "carne": "201504051",
-      "username": "sicmariana8@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-      "image":
-          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
-    };
-    Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
-        .createState()
-        .actualizarPerfil();
+    Profile_page_admin(estudiantePrueba).createState().actualizarPerfil();
   });
 
   test('test a edit button', () {
-    Map user = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Mariana",
-      "apellido": "Sic",
-      "CUI": "3017873870101",
-      "carne": "201504051",
-      "username": "sicmariana8@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-      "image":
-          "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"
-    };
-    Profile_page_admin(Usuario.fromJson(user.cast<String, dynamic>(), []))
-        .createState()
-        .editBtn();
+    Profile_page_admin(estudiantePrueba).createState().editBtn();
   });
 
   test('retornar titulo en cursos admin', () {
@@ -206,54 +153,19 @@ void main() {
   });
 
   test('Actualizar foto de perfil de un estudiante desde administrador', () {
-    Map nuevo = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Levi",
-      "apellido": "Ackermann",
-      "CUI": "3445667722510",
-      "carne": "202230456",
-      "username": "levi@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-    };
-
-    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+    Profile_page_admin(estudiantePrueba)
         .createState()
-        .actualizar(Usuario.fromJson(nuevo.cast<String, dynamic>(), []),
-            'test/img/marlo.png');
+        .actualizar(estudiantePrueba, 'test/img/marlo.png');
   });
 
   test('alerta de datos actualizados', () {
-    Map nuevo = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Levi",
-      "apellido": "Ackermann",
-      "CUI": "3445667722510",
-      "carne": "202230456",
-      "username": "levi@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-    };
-
-    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+    Profile_page_admin(estudiantePrueba)
         .createState()
-        .alertaActualizacion(
-            Usuario.fromJson(nuevo.cast<String, dynamic>(), []));
+        .alertaActualizacion(estudiantePrueba);
   });
 
   test('alerta de datos actualizados con nulo', () {
-    Map nuevo = {
-      "_id": "605e6868e046883547da2726",
-      "nombre": "Levi",
-      "apellido": "Ackermann",
-      "CUI": "3445667722510",
-      "carne": "202230456",
-      "username": "levi@gmail.com",
-      "password": "123456789",
-      "__v": 0,
-    };
-
-    Profile_page_admin(Usuario.fromJson(nuevo.cast<String, dynamic>(), []))
+    Profile_page_admin(estudiantePrueba)
         .createState()
         .alertaActualizacion(null);
   });
@@ -288,5 +200,13 @@ void main() {
 
   test('alerta para estudiantes false', () {
     Estudiantes().createState().alertaEstudiante(false, 'Estudiante');
+  });
+
+  test('alerta para login true', () {
+    login_page().createState().alertaLogin(estudiantePrueba);
+  });
+
+  test('alerta para login false', () {
+    login_page().createState().alertaLogin(null);
   });
 }

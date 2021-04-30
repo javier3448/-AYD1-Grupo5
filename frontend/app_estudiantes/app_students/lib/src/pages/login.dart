@@ -118,6 +118,15 @@ class loginpageState extends State<login_page> {
     );
   }
 
+  Alerta alertaLogin(Usuario value) {
+    return Alerta(
+        titulo: "Ingreso Estudiante",
+        mensaje: value == null
+            ? "Credenciales Incorrectas!"
+            : "Bienvenido/a " + value.nombre + "!",
+        nav: value != null ? "controlador" : "");
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -161,15 +170,7 @@ class loginpageState extends State<login_page> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return Alerta(
-                                        titulo: "Ingreso Estudiante",
-                                        mensaje: value == null
-                                            ? "Credenciales Incorrectas!"
-                                            : "Bienvenido/a " +
-                                                value.nombre +
-                                                "!",
-                                        nav: value != null ? "controlador" : "")
-                                    .build(context);
+                                return alertaLogin(value).build(context);
                               },
                             );
                           });

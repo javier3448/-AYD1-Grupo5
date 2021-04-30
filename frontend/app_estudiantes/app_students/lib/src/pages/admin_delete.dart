@@ -110,8 +110,7 @@ class _Delete_pageState extends State<Delete_page> {
           } else if (snapshot.hasError) {
             // TODO: poner un 'textTheme' especial o algo asi para que se sepa
             // que hubo error o al menos que este en rojo o algo asi
-            return ErrorWidget(
-                'Error al hacer la peticion:\n\n' + snapshot.error.toString());
+            return ErrorWidget('Error:\n\n' + snapshot.error.toString());
           } else {
             //todavia estamos esperando al future
             return Center(

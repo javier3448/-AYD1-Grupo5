@@ -18,8 +18,8 @@ Future<Usuario> ingresoUsuario(String nombre, String pass) async {
   );
 
   if (response.statusCode >= 200 && response.statusCode < 300) {
-    Map respuesta = json.decode(response.body);
-    return Usuario.fromJson(respuesta, mapeoCurso(respuesta));
+    return Usuario.fromJson(
+        json.decode(response.body), mapeoCurso(json.decode(response.body)));
   }
 
   return null;
@@ -99,10 +99,8 @@ Future<List> obtenerDatos() async {
     headers: HEADERS,
   );
 
-  if (response.statusCode == 202) {
-    Map respuesta = json.decode(response.body);
-    datos.add(respuesta['cursos']);
-  }
+  if (response.statusCode == 202)
+    datos.add(json.decode(response.body)['cursos']);
   await obtenerEstudiantes().then((value) => datos.add(value));
 
   return datos;
@@ -114,11 +112,9 @@ Future<int> obtenerEstudiantes() async {
     headers: HEADERS,
   );
 
-  if (response2.statusCode == 202) {
-    Map respuesta = json.decode(response2.body);
-    return respuesta['estudiantes'];
-  }
-  return 0;
+  return response2.statusCode == 202
+      ? json.decode(response2.body)['estudiantes']
+      : 0;
 }
 
 Future<bool> crearCursoAdmin(Map datos) async {

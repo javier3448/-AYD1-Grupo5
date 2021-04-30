@@ -92,11 +92,8 @@ class _add_curseState extends State<add_curse> {
           ),
         ),
         validator: (value) {
-          if (value.isEmpty) {
-            return "Campo obligatorio.";
-          } else {
-            return null;
-          }
+          String variable = "Campo obligatorio";
+          return value.isEmpty ? variable : null;
         },
         onSaved: (String value) {
           _nombre = value;
@@ -253,7 +250,6 @@ class _add_curseState extends State<add_curse> {
     };
 
     Metodos.crearCursoAdmin(datosCurso).then((value) async {
-      _formKey.currentState?.reset();
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -261,6 +257,7 @@ class _add_curseState extends State<add_curse> {
         },
       );
     });
+    _formKey.currentState?.reset();
   }
 
   Alerta crearCursoAlarma(bool value) {

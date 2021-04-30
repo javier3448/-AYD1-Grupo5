@@ -4,6 +4,7 @@ import 'package:app_students/src/pages/profile_admin.dart';
 import 'package:app_students/src/pages/add_curse.dart';
 import 'package:app_students/src/pages/admin_create_student.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
+import 'package:app_students/src/pages/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app_students/src/pages/adminTabs.dart';
@@ -36,8 +37,7 @@ void main() {
 
   setUpAll(() => HttpOverrides.global = null);
 
-  final TestWidgetsFlutterBinding binding =
-      TestWidgetsFlutterBinding.ensureInitialized();
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Find an AppBar admin controller', (WidgetTester tester) async {
     await tester.pumpWidget(widgetTest(child: Admin_Tabs()));
@@ -241,5 +241,14 @@ void main() {
     await tester.pumpWidget(widgetTest2(
         child: Estudiantes().createState().avatar(NetworkImage(
             "https://proyecto1-ayd1.s3.us-east-2.amazonaws.com/7bc23af3-f06e-4492-bb0f-6a05de505324.jpg"))));
+  });
+
+  testWidgets('press raisedbutton on tabs page', (WidgetTester tester) async {
+    await tester.pumpWidget(widgetTest(child: tabs_page()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(new Key('register-btn')));
+    await tester.pump(const Duration(milliseconds: 100));
+
+    await tester.pumpAndSettle();
   });
 }

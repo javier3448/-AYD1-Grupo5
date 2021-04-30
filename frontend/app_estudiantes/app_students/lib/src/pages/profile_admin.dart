@@ -4,7 +4,6 @@ import 'package:app_students/src/pages/alert_dialog.dart';
 import 'package:app_students/src/pages/session.dart';
 import 'package:app_students/src/pages/metodos.dart' as Metodos;
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
@@ -65,11 +64,6 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
     });
 
     return false;
-  }
-
-  void _openFileExplorer(Usuario usuario) async {
-    filePath = await FilePicker.getFilePath(type: FileType.image);
-    actualizar(usuario, filePath);
   }
 
   void actualizar(Usuario usuario, String path) async {
@@ -233,8 +227,10 @@ class _Profile_page_adminState extends State<Profile_page_admin> {
                                         Icons.edit,
                                         color: Colors.white,
                                       ),
-                                      onPressed: () {
-                                        _openFileExplorer(estudiante);
+                                      onPressed: () async {
+                                        filePath = await FilePicker.getFilePath(
+                                            type: FileType.image);
+                                        actualizar(estudiante, filePath);
                                       },
                                     ),
                                   ),
