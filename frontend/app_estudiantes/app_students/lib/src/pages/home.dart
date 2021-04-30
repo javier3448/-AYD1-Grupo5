@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_students/src/pages/session.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_session/flutter_session.dart';
-
-import '../../main.dart';
 
 class Home_page extends StatefulWidget {
   Home_page({Key key}) : super(key: key);
@@ -355,88 +351,103 @@ class _Home_pageState extends State<Home_page> {
       child: FutureBuilder(
           future: FlutterSession().get('user'),
           builder: (context, snapshot) {
-            return Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: null,
-              body: Container(
-                child: Center(
-                  child: Container(
-                    child: ListView(
-                      children: obtenerCursos(snapshot.data['cursosAsignados']),
+            if (snapshot.hasData) {
+              return Scaffold(
+                resizeToAvoidBottomInset: true,
+                appBar: null,
+                body: Container(
+                  child: Center(
+                    child: Container(
+                      child: ListView(
+                        children:
+                            obtenerCursos(snapshot.data['cursosAsignados']),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              floatingActionButton: FloatingActionButton(
-                  child: Icon(Icons.save),
-                  onPressed: () {
-                    // Aqui hacemos la asignacion. Creo que el carrito ya no sirviria
-                    // de nada entonces. El listview nos debe mostrar si el curso esta
-                    // asignado, 'agregado', o ninguno
-                    debugPrint("Ir a preview");
-                    if (listaAuxiliar.isEmpty) {
-                      Widget okButton = FlatButton(
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // dismiss dialog
-                        },
-                      );
+                floatingActionButton: FloatingActionButton(
+                    child: Icon(Icons.save),
+                    onPressed: () {
+                      // Aqui hacemos la asignacion. Creo que el carrito ya no sirviria
+                      // de nada entonces. El listview nos debe mostrar si el curso esta
+                      // asignado, 'agregado', o ninguno
+                      debugPrint("Ir a preview");
+                      if (listaAuxiliar.isEmpty) {
+                        Widget okButton = FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // dismiss dialog
+                          },
+                        );
 
-                      // set up the AlertDialog
-                      AlertDialog alert = AlertDialog(
-                        title: Text("Asignación de Estudiante"),
-                        content:
-                            Text("No hay cursos seleccionados por asignar!"),
-                        actions: [
-                          okButton,
-                        ],
-                      );
+                        // set up the AlertDialog
+                        AlertDialog alert = AlertDialog(
+                          title: Text("Asignación de Estudiante"),
+                          content:
+                              Text("No hay cursos seleccionados por asignar!"),
+                          actions: [
+                            okButton,
+                          ],
+                        );
 
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    } else {
-                      Map llaves = {
-                        "_id": snapshot.data['id'],
-                        "CUI": snapshot.data['cui'],
-                        "carne": snapshot.data['carnet'],
-                        "username": snapshot.data['username'],
-                        "nombre": snapshot.data['nombre'],
-                        "apellido": snapshot.data['apellido'],
-                        "password": snapshot.data['password'],
-                        "__v": snapshot.data['v']
-                      };
+                        // show the dialog
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
+                      } else {
+                        Map llaves = {
+                          "_id": snapshot.data['id'],
+                          "CUI": snapshot.data['cui'],
+                          "carne": snapshot.data['carnet'],
+                          "username": snapshot.data['username'],
+                          "nombre": snapshot.data['nombre'],
+                          "apellido": snapshot.data['apellido'],
+                          "password": snapshot.data['password'],
+                          "__v": snapshot.data['v']
+                        };
 
-                      List<Curso> cursos = new List<Curso>();
+                        List<Curso> cursos = new List<Curso>();
 
-                      List<dynamic> lista = snapshot.data['cursosAsignados'];
-                      lista.forEach((element) {
-                        cursos.add(Curso(
-                            id: element['id'],
-                            nombre: element['nombre'],
-                            codigo: element['codigo'],
-                            seccion: element['seccion'],
-                            horaInicio: element['horaInicio'],
-                            horaFinal: element['horaFinal'],
-                            lunes: element['lunes'],
-                            martes: element['martes'],
-                            miercoles: element['miercoles'],
-                            jueves: element['jueves'],
-                            viernes: element['viernes'],
-                            sabado: element['sabado'],
-                            domingo: element['domingo'],
-                            catedratico: element['catedratico']));
-                      });
+                        List<dynamic> lista = snapshot.data['cursosAsignados'];
+                        lista.forEach((element) {
+                          cursos.add(Curso(
+                              id: element['id'],
+                              nombre: element['nombre'],
+                              codigo: element['codigo'],
+                              seccion: element['seccion'],
+                              horaInicio: element['horaInicio'],
+                              horaFinal: element['horaFinal'],
+                              lunes: element['lunes'],
+                              martes: element['martes'],
+                              miercoles: element['miercoles'],
+                              jueves: element['jueves'],
+                              viernes: element['viernes'],
+                              sabado: element['sabado'],
+                              domingo: element['domingo'],
+                              catedratico: element['catedratico']));
+                        });
 
-                      asignaciones(
-                          snapshot.data['carnet'].toString(), cursos, llaves);
-                    }
-                  }),
-            );
+                        asignaciones(
+                            snapshot.data['carnet'].toString(), cursos, llaves);
+                      }
+                    }),
+              );
+            } else if (snapshot.hasError) {
+              // TODO: poner un 'textTheme' especial o algo asi para que se sepa
+              // que hubo error o al menos que este en rojo o algo asi
+              return ErrorWidget('Error al hacer la peticion:\n\n' +
+                  snapshot.error.toString());
+            } else {
+              //todavia estamos esperando al future
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                ),
+              );
+            }
           }),
     );
   }

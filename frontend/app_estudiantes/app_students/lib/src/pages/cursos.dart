@@ -93,19 +93,34 @@ class _CursosState extends State<Cursos> {
       child: FutureBuilder(
           future: FlutterSession().get('user'),
           builder: (context, snapshot) {
-            return Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: null,
-              body: Container(
-                child: Center(
-                  child: Container(
-                    child: ListView(
-                      children: obtenerCursos(snapshot.data['cursosAsignados']),
+            if (snapshot.hasData) {
+              return Scaffold(
+                resizeToAvoidBottomInset: true,
+                appBar: null,
+                body: Container(
+                  child: Center(
+                    child: Container(
+                      child: ListView(
+                        children:
+                            obtenerCursos(snapshot.data['cursosAsignados']),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            } else if (snapshot.hasError) {
+              // TODO: poner un 'textTheme' especial o algo asi para que se sepa
+              // que hubo error o al menos que este en rojo o algo asi
+              return ErrorWidget('Error al hacer la peticion:\n\n' +
+                  snapshot.error.toString());
+            } else {
+              //todavia estamos esperando al future
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                ),
+              );
+            }
           }),
     );
   }

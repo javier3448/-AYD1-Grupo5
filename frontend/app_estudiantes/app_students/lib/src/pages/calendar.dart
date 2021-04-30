@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:time_machine/time_machine.dart';
 import 'package:timetable/timetable.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'cursos.dart';
 import 'dart:math' show Random;
 
 class CursoSemanal {
@@ -230,56 +229,70 @@ class _Calendar_pageState extends State<Calendar_page> {
       child: FutureBuilder(
           future: FlutterSession().get('user'),
           builder: (context, snapshot) {
-            TimeTablePlus ctrlPlus = TimeTablePlus(
-                eventProvider: WeeklyEventProvider(
-                    obtenerCursos(snapshot.data['cursosAsignados'])));
-            return Scaffold(
-              key: _scaffoldKey,
-              body: Timetable<BasicEvent>(
-                controller: ctrlPlus,
-                onEventBackgroundTap: (start, isAllDay) {},
-                eventBuilder: (event) {
-                  return BasicEventWidget(
+            if (snapshot.hasData) {
+              TimeTablePlus ctrlPlus = TimeTablePlus(
+                  eventProvider: WeeklyEventProvider(
+                      obtenerCursos(snapshot.data['cursosAsignados'])));
+              return Scaffold(
+                key: _scaffoldKey,
+                body: Timetable<BasicEvent>(
+                  controller: ctrlPlus,
+                  onEventBackgroundTap: (start, isAllDay) {},
+                  eventBuilder: (event) {
+                    return BasicEventWidget(
+                      event,
+                      onTap: () {
+                        String eventoString = event.title.toString();
+                        var eventoInfo = eventoString.split('\n');
+                        Widget okButton = FlatButton(
+                          child: Text("OK"),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // dismiss dialog
+                          },
+                        );
+                        AlertDialog alert = AlertDialog(
+                          title: Text(eventoInfo[0]),
+                          backgroundColor: Colors.blue[50],
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(15)),
+                          content: Text('\nCatedrático: ' +
+                              eventoInfo[1] +
+                              '\n\nSección: ' +
+                              eventoInfo[2]),
+                          actions: [
+                            okButton,
+                          ],
+                        );
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alert;
+                          },
+                        );
+                      },
+                    );
+                  },
+                  allDayEventBuilder: (context, event, info) =>
+                      BasicAllDayEventWidget(
                     event,
-                    onTap: () {
-                      String eventoString = event.title.toString();
-                      var eventoInfo = eventoString.split('\n');
-                      Widget okButton = FlatButton(
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // dismiss dialog
-                        },
-                      );
-                      AlertDialog alert = AlertDialog(
-                        title: Text(eventoInfo[0]),
-                        backgroundColor: Colors.blue[50],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(15)),
-                        content: Text('\nCatedrático: ' +
-                            eventoInfo[1] +
-                            '\n\nSección: ' +
-                            eventoInfo[2]),
-                        actions: [
-                          okButton,
-                        ],
-                      );
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    },
-                  );
-                },
-                allDayEventBuilder: (context, event, info) =>
-                    BasicAllDayEventWidget(
-                  event,
-                  info: info,
-                  onTap: () => _showSnackBar('All-day event $event tapped'),
+                    info: info,
+                    onTap: () => _showSnackBar('All-day event $event tapped'),
+                  ),
                 ),
-              ),
-            );
+              );
+            } else if (snapshot.hasError) {
+              // TODO: poner un 'textTheme' especial o algo asi para que se sepa
+              // que hubo error o al menos que este en rojo o algo asi
+              return ErrorWidget('Error al hacer la peticion:\n\n' +
+                  snapshot.error.toString());
+            } else {
+              //todavia estamos esperando al future
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 8,
+                ),
+              );
+            }
           }),
     );
   }

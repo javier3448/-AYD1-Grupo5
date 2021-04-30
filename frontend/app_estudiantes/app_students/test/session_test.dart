@@ -1,7 +1,7 @@
 import 'package:app_students/src/pages/session.dart';
 import 'package:test/test.dart';
 
-//flutter test --reporter expanded --coverage test/src/dart/dart_test.dart
+//flutter test --reporter expanded --coverage test/*.dart
 //genhtml coverage/lcov.info -o coverage/html
 
 void main() {

@@ -3,7 +3,6 @@ import 'package:app_students/src/pages/login.dart';
 import 'package:app_students/src/pages/tabs.dart';
 import 'package:app_students/src/pages/cursos.dart';
 import 'package:app_students/src/pages/adminTabs.dart';
-import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -24,7 +23,6 @@ class MyApp extends StatelessWidget {
         'controlador': (BuildContext context) => Controller_page(),
         'cursitos': (BuildContext context) => Cursos(),
         'controladorAdmin': (BuildContext context) => Admin_Tabs(),
-        'estudiantes': (BuildContext context) => Estudiantes()
       },
     );
   }

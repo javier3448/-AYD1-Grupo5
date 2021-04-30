@@ -1,11 +1,8 @@
-import 'package:app_students/src/pages/admin_create.dart';
+import 'package:app_students/src/pages/about.dart';
 import 'package:app_students/src/pages/admin_delete.dart';
 import 'package:app_students/src/pages/admin_home.dart';
 import 'package:app_students/src/pages/estudiantes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
-
-import 'cursos.dart';
 
 class Admin_Tabs extends StatefulWidget {
   Admin_Tabs({Key key}) : super(key: key);
@@ -30,9 +27,13 @@ class _Admin_TabsState extends State<Admin_Tabs> {
     _controller.dispose();
   }
 
-  Future SalirSesion(BuildContext context) async {
-    await FlutterSession().set("user", "");
+  void SalirSesion(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+  }
+
+  void AboutPage(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext context) => about()));
   }
 
   @override
@@ -46,14 +47,18 @@ class _Admin_TabsState extends State<Admin_Tabs> {
           Padding(
               padding: EdgeInsets.all(5.0),
               child: PopupMenuButton(
+                key: new Key('pop-btn'),
                 onSelected: (result) {
                   if (result == 0) {
                     SalirSesion(context);
+                  } else if (result == 1) {
+                    AboutPage(context);
                   }
                 },
                 icon: Icon(Icons.more_vert),
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    value: 1,
                     child: Row(
                       children: [
                         Icon(

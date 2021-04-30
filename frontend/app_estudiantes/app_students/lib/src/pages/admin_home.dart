@@ -1,9 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
+import 'package:app_students/src/pages/metodos.dart' as Metodos;
 
 class Admin_page extends StatefulWidget {
   Admin_page({Key key}) : super(key: key);
@@ -30,25 +29,10 @@ class _Admin_pageState extends State<Admin_page> {
   );
 
   Future obtenerDatos() async {
-    http.Response response = await http.get(
-      'http://13.58.126.153:4000/numeroCursos',
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 202) {
-      Map respuesta = json.decode(response.body);
-      cantidadCursos = respuesta['cursos'];
-    }
-
-    http.Response response2 = await http.get(
-      'http://13.58.126.153:4000/numeroEstudiantes',
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response2.statusCode == 202) {
-      Map respuesta = json.decode(response2.body);
-      cantidadEstudiantes = respuesta['estudiantes'];
-    }
+    await Metodos.obtenerDatos().then((value) {
+      cantidadCursos = value[0];
+      cantidadEstudiantes = value[1];
+    });
     setState(() {});
   }
 

@@ -67,4 +67,16 @@ void main() {
 
     Metodos.registrarUsuario(datos).then((value) => expect(value, true));
   });
+
+  test('ObtenerDatos method', () {
+    Metodos.obtenerDatos().then((value) {
+      expect(value, TypeMatcher<List>());
+    });
+  });
+
+  test('ObtenerEstudiantes method', () {
+    Metodos.obtenerEstudiantes().then((value) {
+      expect(value, TypeMatcher<int>());
+    });
+  });
 }

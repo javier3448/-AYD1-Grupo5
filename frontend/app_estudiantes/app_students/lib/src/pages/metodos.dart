@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:app_students/src/pages/session.dart';
+import 'package:flutter/material.dart';
 
 const URL_API = 'http://13.58.126.153:4000/';
 const HEADERS = {'Content-Type': 'application/json'};
@@ -17,9 +18,8 @@ Future<Usuario> ingresoUsuario(String nombre, String pass) async {
   );
 
   if (response.statusCode >= 200 && response.statusCode < 300) {
-    Map respuesta = json.decode(response.body);
-    List<Curso> cursosAsignados = mapeoCurso(respuesta);
-    return Usuario.fromJson(respuesta, cursosAsignados);
+    return Usuario.fromJson(
+        json.decode(response.body), mapeoCurso(json.decode(response.body)));
   }
 
   return null;
@@ -90,4 +90,122 @@ Future<Usuario> actualizarFotoPerfil(Map datos, Usuario user) async {
     return user;
   }
   return null;
+}
+
+Future<List> obtenerDatos() async {
+  List<int> datos = [];
+  http.Response response = await http.get(
+    URL_API + 'numeroCursos',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode == 202)
+    datos.add(json.decode(response.body)['cursos']);
+  await obtenerEstudiantes().then((value) => datos.add(value));
+
+  return datos;
+}
+
+Future<int> obtenerEstudiantes() async {
+  http.Response response2 = await http.get(
+    URL_API + 'numeroEstudiantes',
+    headers: HEADERS,
+  );
+
+  return response2.statusCode == 202
+      ? json.decode(response2.body)['estudiantes']
+      : 0;
+}
+
+Future<bool> crearCursoAdmin(Map datos) async {
+  String body = json.encode(datos);
+  http.Response response = await http.post(
+    URL_API + 'newcourse',
+    headers: HEADERS,
+    body: body,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300)
+    return true;
+  else
+    return false;
+}
+
+Widget retornarTitulo() {
+  return Container(
+    child: Text(
+      "ESTUDIANTES",
+      style: TextStyle(
+          color: Colors.white, fontSize: 25.0, fontStyle: FontStyle.italic),
+    ),
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+        shape: BoxShape.rectangle, color: Color.fromRGBO(15, 40, 80, 1)),
+    margin: EdgeInsets.all(25.0),
+    padding: EdgeInsets.all(40.0),
+  );
+}
+
+Future<List<Usuario>> apiEstudiantes() async {
+  http.Response response = await http.get(
+    URL_API + 'getStudents',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    Iterable lista = json.decode(response.body);
+    //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+    List<Usuario> result = [];
+    lista.forEach((estudianteApi) {
+      result.add(Usuario.fromJson(estudianteApi, []));
+    });
+
+    return Future.value(result);
+  }
+  return Future.error(response.body);
+}
+
+Future<ImageProvider<Object>> loadImageEstudiante(String url) {
+  if (url == null) {
+    return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+  } else if (url == "") {
+    return Future.value(AssetImage("assets/defaultProfilePicture.png"));
+  } else {
+    return Future.value(NetworkImage(url));
+  }
+}
+
+Future<bool> eliminarUsuario(String carnet, String nombre) async {
+  //ACA SE MANDA LA PETICION A LA BD
+  Map datos = {"carne": carnet};
+  String cuerpo = json.encode(datos);
+
+  http.Response response = await http.post(
+    URL_API + 'deleteStudent',
+    headers: HEADERS,
+    body: cuerpo,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) return true;
+  return false;
+}
+
+// @TODO: hacerle una prueba unitaria
+Future<List<Curso>> apiCursos() async {
+  http.Response response = await http.get(
+    URL_API + 'getcourses',
+    headers: HEADERS,
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    Iterable lista = json.decode(response.body);
+    //listadoCursos = List<Curso>.from(lista.map((e) => Curso.fromJson(e)));
+    List<Curso> result = [];
+    lista.forEach((cursoApi) {
+      result.add(Curso.fromJson(cursoApi));
+    });
+
+    return Future.value(result);
+  }
+  return Future.error(response.body);
 }
